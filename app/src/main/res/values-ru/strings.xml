@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkillCinema</string>
+
+    <string name="menu_home">Домой</string>
+    <string name="menu_search">Поиск</string>
+    <string name="menu_profile">Мой профиль</string>
+
+    <string name="hello_start">Старт</string>
+    <string name="hello_skip">Пропустить</string>
+    <string name="hello_premiere">Узнавай о премьерах</string>
+    <string name="hello_collection">Создавай коллекции</string>
+    <string name="hello_friends">Делись с друзьями</string>
+
+    <string name="home_btn_reload">Перезагрузить</string>
+    <string name="home_text_error">Ошибка загрузки. Проверьте интернет и повторите попытку позднее</string>
+    <string name="home_text_premier">Премьеры</string>
+    <string name="home_text_populars">Популярное</string>
+    <string name="home_text_top">Топ 250</string>
+    <string name="home_text_serials">Сериалы</string>
+    <string name="home_text_no_name">Нет названия</string>
+    <string name="home_text_all">Все</string>
+    <string name="home_text_show_all">Показать все</string>
+
+    <string name="detail_text_acters">В фильме снимались</string>
+    <string name="detail_text_producers">Над фильмом работали</string>
+    <string name="detail_text_gallery">Галерея</string>
+    <string name="detail_text_similar">Похожие фильмы</string>
+    <string name="detail_text_series">Сезоны и серии</string>
+    <string name="detail_string_time">%1$d ч %2$d мин</string>
+
+    <string name="detail_text_best">Лучшее</string>
+    <string name="detail_text_all_films">Фильмография</string>
+    <string name="detail_text_to_list">К списку</string>
+    <string name="detail_text_priz">Награды: %1$d</string>
+
+    <string name="series_text_season">Сезон</string>
+    <string name="series_text_number">%1$d Серия.</string>
+</resources>

@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">SkillCinema</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_profile">My profile</string>
+
+    <string name="hello_start">Start</string>
+    <string name="hello_skip">Skip</string>
+    <string name="hello_premiere">Find out about premieres</string>
+    <string name="hello_collection">Create collections</string>
+    <string name="hello_friends">Share with friends</string>
+
+    <string name="home_btn_reload">Reload</string>
+    <string name="home_text_error">Error of loading. Check your connection and repeat later</string>
+    <string name="home_text_premier">Premiers</string>
+    <string name="home_text_populars">Populars</string>
+    <string name="home_text_top">Top 250</string>
+    <string name="home_text_serials">Serials</string>
+    <string name="home_text_no_name">No name</string>
+    <string name="home_text_all">All</string>
+    <string name="home_text_show_all">Show all</string>
+
+    <string name="detail_text_acters">Starred in the film</string>
+    <string name="detail_text_producers">Worked on the film</string>
+    <string name="detail_text_gallery">Gallery</string>
+    <string name="detail_text_similar">Similar films</string>
+    <string name="detail_text_series">Seasons and series</string>
+    <string name="detail_string_time">%1$d h %2$d min</string>
+
+    <string name="detail_text_best">The best</string>
+    <string name="detail_text_all_films">Filmography</string>
+    <string name="detail_text_to_list">To list</string>
+    <string name="detail_text_priz">Awards: %1$d</string>
+
+    <string name="series_text_season">Season</string>
+    <string name="series_text_number">%1$d Episode.</string>
+</resources>

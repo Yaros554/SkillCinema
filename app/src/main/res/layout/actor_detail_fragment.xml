@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/parentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="16dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:srcCompat="@tools:sample/avatars"/>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/actorInfoLayout"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="40dp"
+                app:layout_constraintStart_toEndOf="@id/cardView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/skill_black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Кристина Поддубная-Островская" />
+
+                <TextView
+                    android:id="@+id/profi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/skill_grey2"
+                    android:textSize="14sp"
+                    tools:text="Сценарист, Продюсер, Актер, Инженер, Программист" />
+
+                <TextView
+                    android:id="@+id/age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/skill_grey2"
+                    android:textSize="14sp"
+                    tools:text="84 года, 1967-02-10 (Ричмонд, Вирджиния, Российская империя) - 1967-02-10 (Ричмонд, Вирджиния, Австро-венгерская империя)" />
+
+                <TextView
+                    android:id="@+id/priz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/skill_grey2"
+                    android:textSize="14sp"
+                    tools:text="Награды: 100" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/facts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="32dp"
+                android:focusable="true"
+                android:textColor="@color/skill_grey2"
+                android:textSize="14sp"
+                tools:text="Это тестовый текст с различными фактами рандомного содержания. Тестовый набор слов.\nИспользуется для проверки этого макета"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardView"/>
+
+            <FrameLayout
+                android:id="@+id/layoutFilms"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintTop_toBottomOf="@id/facts"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:textColor="@color/skill_black"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="@string/detail_text_best" />
+
+                <TextView
+                    android:id="@+id/text_count_films"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:textColor="@color/skill_purple"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:text="@string/home_text_all" />
+            </FrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listFilms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/film_preview"
+                app:layout_constraintTop_toBottomOf="@id/layoutFilms"/>
+
+            <FrameLayout
+                android:id="@+id/layoutAllFilms"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintTop_toBottomOf="@id/listFilms"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    android:textColor="@color/skill_black"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="@string/detail_text_all_films" />
+
+                <TextView
+                    android:id="@+id/countFilms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|bottom"
+                    android:textColor="@color/skill_grey2"
+                    android:textSize="12sp"
+                    tools:text="44 фильма" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    android:textColor="@color/skill_purple"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:text="@string/detail_text_to_list" />
+
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+
+    <LinearLayout
+        android:id="@+id/errorLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/textError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:text="@string/home_text_error"
+            android:textColor="@color/skill_black"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/imageError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/load_error" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_reload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="8dp"
+        android:text="@string/home_btn_reload" />
+</FrameLayout>

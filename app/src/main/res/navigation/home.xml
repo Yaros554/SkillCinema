@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.skyyaros.skillcinema.ui.home.HomeFragment"
+        android:label="Skillcinema"
+        tools:layout="@layout/home_fragment">
+        <action
+            android:id="@+id/action_homeFragment_to_helloFragment"
+            app:destination="@id/helloFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_homeFragment_to_listpageFragment"
+            app:destination="@id/listpageFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailFilmFragment"
+            app:destination="@id/detailFilmFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/helloFragment"
+        android:name="com.skyyaros.skillcinema.ui.hello.HelloFragment"
+        android:label="HelloFragment"
+        tools:layout="@layout/hello_fragment">
+        <action
+            android:id="@+id/action_helloFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/listpageFragment"
+        android:name="com.skyyaros.skillcinema.ui.listpage.ListpageFragment"
+        android:label="ListpageFragment"
+        tools:layout="@layout/listpage_fragment">
+        <argument
+            android:name="listPreload"
+            app:argType="com.skyyaros.skillcinema.entity.FilmPreview[]" />
+        <argument
+            android:name="mode"
+            app:argType="integer" />
+        <argument
+            android:name="countryId"
+            app:argType="long" />
+        <argument
+            android:name="countryName"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="genreId"
+            app:argType="long" />
+        <argument
+            android:name="genreName"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_listpageFragment_to_detailFilmFragment"
+            app:destination="@id/detailFilmFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFilmFragment"
+        android:name="com.skyyaros.skillcinema.ui.detailfilm.DetailFilmFragment"
+        android:label="DetailFilmFragment"
+        tools:layout="@layout/detail_film_fragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_detailFilmFragment"
+            app:destination="@+id/detailFilmFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_listpageFragment"
+            app:destination="@id/listpageFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_acterListFragment"
+            app:destination="@id/acterListFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_actorDetailFragment"
+            app:destination="@id/actorDetailFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_photographyFragment"
+            app:destination="@id/photographyFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_seriesFragment"
+            app:destination="@id/seriesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/acterListFragment"
+        android:name="com.skyyaros.skillcinema.ui.detailfilm.ActerListFragment"
+        android:label="ActerListFragment"
+        tools:layout="@layout/acter_list_fragment" >
+
+        <argument
+            android:name="listPreload"
+            app:argType="com.skyyaros.skillcinema.entity.ActorPreview[]" />
+        <argument
+            android:name="role"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_acterListFragment_to_actorDetailFragment"
+            app:destination="@id/actorDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/actorDetailFragment"
+        android:name="com.skyyaros.skillcinema.ui.detailactor.ActorDetailFragment"
+        android:label="ActorDetailFragment"
+        tools:layout="@layout/actor_detail_fragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_detailFilmFragment"
+            app:destination="@id/detailFilmFragment" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_listpageFragment"
+            app:destination="@id/listpageFragment" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_filmographyFragment"
+            app:destination="@id/filmographyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/filmographyFragment"
+        android:name="com.skyyaros.skillcinema.ui.filmography.FilmographyFragment"
+        android:label="FilmographyFragment"
+        tools:layout="@layout/filmography_fragment">
+        <argument
+            android:name="listFilms"
+            app:argType="com.skyyaros.skillcinema.entity.FilmPreview[]" />
+        <argument
+            android:name="nameActor"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_filmographyFragment_to_detailFilmFragment"
+            app:destination="@id/detailFilmFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photographyFragment"
+        android:name="com.skyyaros.skillcinema.ui.photography.PhotographyFragment"
+        android:label="PhotographyFragment"
+        tools:layout="@layout/photography_fragment">
+        <argument
+            android:name="data"
+            app:argType="com.skyyaros.skillcinema.entity.ImageResponse[]" />
+        <argument
+            android:name="id"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/seriesFragment"
+        android:name="com.skyyaros.skillcinema.ui.series.SeriesFragment"
+        android:label="SeriesFragment"
+        tools:layout="@layout/series_fragment">
+        <argument
+            android:name="data"
+            app:argType="com.skyyaros.skillcinema.entity.Season[]" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+    </fragment>
+</navigation>

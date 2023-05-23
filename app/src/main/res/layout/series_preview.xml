@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/skill_black"
+        android:textSize="14sp"
+        tools:text="1 Серия. Рождение трагедии" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/skill_grey2"
+        android:textSize="12sp"
+        tools:text="26 марта 2020" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/skill_black"
+        android:textSize="12sp"
+        tools:text="Группа молодых москвичей, столкнувшись с неразрешимыми проблемами, собирают чемоданы и едет к черту на куличики, чтобы к уже имеющимся проблемам прибавились новые. Невероятный экшен, доказывающий, что тупость человека безгранична как космос." />
+
+</LinearLayout>

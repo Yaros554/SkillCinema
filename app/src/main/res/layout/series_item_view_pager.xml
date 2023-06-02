@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/skill_grey"
-        android:textSize="14sp"
         tools:text="5 сезон, 18 серий" />
 
     <androidx.recyclerview.widget.RecyclerView

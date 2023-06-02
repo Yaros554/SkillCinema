@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.FilmographyFragmentBinding
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import java.util.*
 
 class FilmographyFragment: Fragment() {
     private var _bind: FilmographyFragmentBinding? = null
@@ -47,7 +48,34 @@ class FilmographyFragment: Fragment() {
         )
         bind.viewPager.adapter = adapter
         TabLayoutMediator(bind.tabs, bind.viewPager) { tab, position ->
-            tab.text = "${items[position].first().professionKey!!} ${items[position].size}"
+            val roles = mapOf(
+                Pair("WRITER", "АВТОР СЦЕНАРИЯ"),
+                Pair("OPERATOR", "ОПЕРАТОР"),
+                Pair("EDITOR", "РЕДАКТОР"),
+                Pair("COMPOSER", "КОМПОЗИТОР"),
+                Pair("PRODUCER_USSR", "ПРОДЮСЕР_СССР"),
+                Pair("HIMSELF", "АКТЕР ИГРАЕТ САМОГО СЕБЯ"),
+                Pair("HERSELF", "АКТРИСА ИГРАЕТ САМУ СЕБЯ"),
+                Pair("HRONO_TITR_MALE", "АКТЕР В ХРОНОТИТРАХ"),
+                Pair("HRONO_TITR_FEMALE", "АКТРИСА В ХРОНОТИТРАХ"),
+                Pair("TRANSLATOR", "ПЕРЕВОДЧИК"),
+                Pair("DIRECTOR", "ДИРЕКТОР"),
+                Pair("DESIGN", "ДИЗАЙНЕР"),
+                Pair("PRODUCER", "ПРОДЮСЕР"),
+                Pair("ACTOR", "АКТЕР"),
+                Pair("VOICE_DIRECTOR", "ОЗВУЧКА"),
+                Pair("UNKNOWN", "НЕИЗВЕСТНО")
+            )
+            val role = if (Locale.getDefault().language == "ru")
+                roles[items[position].first().professionKey!!] ?: items[position].first().professionKey!!
+            else
+                items[position].first().professionKey!!
+            tab.text = "${role.lowercase().replaceFirstChar { 
+                if (it.isLowerCase()) 
+                    it.titlecase() 
+                else 
+                    it.toString() 
+            }} ${items[position].size}"
         }.attach()
         for (i in 0 until bind.tabs.tabCount) {
             val tab = (bind.tabs.getChildAt(0) as ViewGroup).getChildAt(i)

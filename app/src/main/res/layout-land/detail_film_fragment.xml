@@ -196,7 +196,6 @@
                 android:layout_marginEnd="16dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
                 tools:text="Хакер Нео узнает, что его мир — виртуальный. Выдающийся экшен, доказавший, что зрелищное кино может быть умным" />
 
             <TextView
@@ -206,7 +205,6 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:focusable="true"
-                android:textSize="14sp"
                 tools:text="Жизнь Томаса Андерсона разделена на две части: днём он - самый обычный офисный работник, получающий нагоняи от начальства, а ночью превращается в хакера по имени Нео, и нет места в сети, куда он бы не смог проникнуть. Но однажды всё меняется. Томас узнаёт ужасающую правду о реальности." />
 
             <FrameLayout
@@ -221,7 +219,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
-                    android:textColor="@color/skill_black"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:text="@string/detail_text_series" />
@@ -239,9 +236,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|top"
-                    android:textColor="@color/skill_purple"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
-                    android:textSize="14sp"
                     android:text="@string/home_text_all" />
 
             </FrameLayout>
@@ -258,7 +254,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
-                    android:textColor="@color/skill_black"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:text="@string/detail_text_acters" />
@@ -268,9 +263,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
-                    android:textColor="@color/skill_purple"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
-                    android:textSize="14sp"
                     tools:text="27" />
             </FrameLayout>
 
@@ -296,7 +290,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
-                    android:textColor="@color/skill_black"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:text="@string/detail_text_producers" />
@@ -306,9 +299,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
-                    android:textColor="@color/skill_purple"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
-                    android:textSize="14sp"
                     tools:text="20" />
             </FrameLayout>
 
@@ -334,7 +326,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
-                    android:textColor="@color/skill_black"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:text="@string/detail_text_gallery" />
@@ -344,9 +335,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
-                    android:textColor="@color/skill_purple"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
-                    android:textSize="14sp"
                     tools:text="9" />
             </FrameLayout>
 
@@ -371,7 +361,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
-                    android:textColor="@color/skill_black"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:text="@string/detail_text_similar" />
@@ -381,9 +370,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
-                    android:textColor="@color/skill_purple"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
-                    android:textSize="14sp"
                     tools:text="4" />
             </FrameLayout>
 
@@ -430,7 +418,6 @@
             android:gravity="center"
             android:layout_marginBottom="8dp"
             android:text="@string/home_text_error"
-            android:textColor="@color/skill_black"
             android:textSize="20sp" />
 
         <ImageView
@@ -441,7 +428,7 @@
 
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_reload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -449,6 +436,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
+        app:cornerRadius="8dp"
         android:text="@string/home_btn_reload" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

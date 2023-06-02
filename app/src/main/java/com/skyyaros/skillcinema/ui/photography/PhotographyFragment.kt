@@ -15,6 +15,7 @@ import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.PhotographyFragmentBinding
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import java.util.*
 
 class PhotographyFragment: Fragment() {
     private var _bind: PhotographyFragmentBinding? = null
@@ -46,7 +47,27 @@ class PhotographyFragment: Fragment() {
         val adapter = PhotographyItemAdapter(items, this)
         bind.viewPager.adapter = adapter
         TabLayoutMediator(bind.tabs, bind.viewPager) { tab, position ->
-            tab.text = "${items[position].imageType!!} ${items[position].total}"
+            val types = mapOf(
+                Pair("STILL", "КАДРЫ"),
+                Pair("SHOOTING", "СО СЪЕМОК"),
+                Pair("POSTER", "ПОСТЕРЫ"),
+                Pair("FAN_ART", "ФАН-АРТЫ"),
+                Pair("PROMO", "ПРОМО"),
+                Pair("CONCEPT", "КОНЦЕПТ-АРТЫ"),
+                Pair("WALLPAPER", "ОБОИ"),
+                Pair("COVER", "ОБЛОЖКИ"),
+                Pair("SCREENSHOT", "СКРИНШОТЫ")
+            )
+            val type = if (Locale.getDefault().language == "ru")
+                types[items[position].imageType!!] ?: items[position].imageType!!
+            else
+                items[position].imageType!!
+            tab.text = "${type.lowercase().replaceFirstChar { 
+                if (it.isLowerCase()) 
+                    it.titlecase() 
+                else 
+                    it.toString() }
+            } ${items[position].total}"
         }.attach()
         for (i in 0 until bind.tabs.tabCount) {
             val tab = (bind.tabs.getChildAt(0) as ViewGroup).getChildAt(i)

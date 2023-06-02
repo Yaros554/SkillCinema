@@ -5,7 +5,7 @@
 
     <corners android:radius="10dp" />
     <!-- This is the border color -->
-    <stroke android:width="2dp" android:color="@color/skill_purple" />
+    <stroke android:width="2dp" android:color="?attr/colorPrimary" />
     <!--- This is the background color -->
-    <solid android:color="@color/skill_purple" />
+    <solid android:color="?attr/colorPrimary" />
 </shape>

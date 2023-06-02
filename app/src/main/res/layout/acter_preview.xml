@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardCornerRadius="8dp"
-        app:cardBackgroundColor="#fff0f0f0"
+        app:cardBackgroundColor="?attr/colorBackgroundVariant"
         android:layout_gravity="center" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,8 +48,6 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/skill_black"
-                    android:textSize="14sp"
                     tools:text="Стерлинг Холлоуэй" />
 
                 <TextView

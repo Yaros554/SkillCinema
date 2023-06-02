@@ -1,9 +1,10 @@
 package com.skyyaros.skillcinema.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -54,6 +55,9 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
         appBarConfiguration = AppBarConfiguration(setOf(R.id.homeFragment, R.id.searchFragment, R.id.personFragment, R.id.helloFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
         viewModel.isInit = true
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        if (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
+            binding.bottomNav.elevation = 1.0F
     }
 
     override fun onSupportNavigateUp(): Boolean {

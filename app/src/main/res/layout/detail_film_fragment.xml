@@ -76,10 +76,12 @@
 
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/background_info3"
+            <LinearLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
                 android:paddingBottom="8dp"
                 android:background="@color/black"
                 android:alpha="0.75"
@@ -88,50 +90,17 @@
                 app:layout_constraintEnd_toEndOf="@id/poster">
 
                 <TextView
-                    android:id="@+id/info3"
+                    android:id="@+id/bigName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:textSize="12sp"
-                    android:textColor="@color/skill_grey"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="32sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
                     android:gravity="center"
-                    tools:text="Россия, 1 ч 33 мин, 16+" />
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/background_info2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/black"
-                android:alpha="0.75"
-                app:layout_constraintBottom_toTopOf="@id/background_info3"
-                app:layout_constraintStart_toStartOf="@id/poster"
-                app:layout_constraintEnd_toEndOf="@id/poster">
-
-                <TextView
-                    android:id="@+id/info2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:textSize="12sp"
-                    android:textColor="@color/skill_grey"
-                    android:gravity="center"
-                    tools:text="2020, драма, приключения" />
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/background_info1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/black"
-                android:alpha="0.75"
-                app:layout_constraintBottom_toTopOf="@id/background_info2"
-                app:layout_constraintStart_toStartOf="@id/poster"
-                app:layout_constraintEnd_toEndOf="@id/poster" >
+                    tools:text="Притяжение" />
 
                 <TextView
                     android:id="@+id/info1"
@@ -144,7 +113,29 @@
                     android:gravity="center"
                     tools:text="6.4 Китобой" />
 
-            </FrameLayout>
+                <TextView
+                    android:id="@+id/info2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/skill_grey"
+                    android:gravity="center"
+                    tools:text="2020, драма, приключения" />
+
+                <TextView
+                    android:id="@+id/info3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/skill_grey"
+                    android:gravity="center"
+                    tools:text="Россия, 1 ч 33 мин, 16+" />
+
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/logo"
@@ -156,32 +147,7 @@
                 tools:srcCompat="@tools:sample/avatars"
                 app:layout_constraintStart_toStartOf="@id/poster"
                 app:layout_constraintEnd_toEndOf="@id/poster"
-                app:layout_constraintBottom_toTopOf="@id/background_info1" />
-
-            <FrameLayout
-                android:id="@+id/background_bigName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
-                android:background="@color/black"
-                android:alpha="0.75"
-                app:layout_constraintBottom_toTopOf="@id/background_info1"
-                app:layout_constraintStart_toStartOf="@id/poster"
-                app:layout_constraintEnd_toEndOf="@id/poster">
-
-                <TextView
-                    android:id="@+id/bigName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:textSize="32sp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    tools:text="Притяжение" />
-
-            </FrameLayout>
+                app:layout_constraintBottom_toTopOf="@id/linearLayout2" />
 
             <TextView
                 android:id="@+id/shortDescription"

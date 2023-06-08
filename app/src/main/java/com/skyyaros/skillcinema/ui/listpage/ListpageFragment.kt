@@ -1,6 +1,8 @@
 package com.skyyaros.skillcinema.ui.listpage
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -59,7 +61,6 @@ class ListpageFragment: Fragment() {
             else -> "${args.genreName}, ${args.countryName}"
         }
         activityCallbacks!!.showUpBar(label)
-        val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.big_margin).toInt(), false)
         if (args.mode == 1 || args.mode == 7 || args.mode == 8) {
             val adapter = if (args.mode == 8)
                 FilmPreviewAdapter(args.listPreload.toList(), requireContext(), onClickFilm, activityCallbacks!!.getMainViewModel(), viewLifecycleOwner.lifecycleScope)
@@ -77,7 +78,17 @@ class ListpageFragment: Fragment() {
                 }
             }
         }
-        bind.recyclerView.addItemDecoration(itemMargin)
+        if (bind.recyclerView.itemDecorationCount == 0) {
+            val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.big_margin).toInt(), false)
+            bind.recyclerView.addItemDecoration(itemMargin)
+        }
+        val recyclerViewSize = Resources.getSystem().displayMetrics.widthPixels
+        val groupSize = if (requireContext().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+            requireContext().resources.getDimension(R.dimen.port_film_margin).toInt()
+        else
+            requireContext().resources.getDimension(R.dimen.land_film_margin).toInt()
+        val padding = (recyclerViewSize - groupSize) / 2
+        bind.recyclerView.setPadding(padding, 0, padding, 0)
     }
 
     override fun onDestroyView() {

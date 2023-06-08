@@ -1,6 +1,8 @@
 package com.skyyaros.skillcinema.ui.detailfilm
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +43,13 @@ class ActerListFragment: Fragment() {
         val adapter = ActerPreviewAdapter(args.listPreload.toList(), requireContext(), onClick)
         bind.recyclerView.adapter = adapter
         bind.recyclerView.addItemDecoration(itemMargin)
+        val recyclerViewSize = Resources.getSystem().displayMetrics.widthPixels
+        val groupSize = if (requireContext().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+            requireContext().resources.getDimension(R.dimen.port_actor_margin).toInt()
+        else
+            requireContext().resources.getDimension(R.dimen.land_actor_margin).toInt()
+        val padding = (recyclerViewSize - groupSize) / 2
+        bind.recyclerView.setPadding(padding, 0, padding, 0)
     }
 
     override fun onDestroyView() {

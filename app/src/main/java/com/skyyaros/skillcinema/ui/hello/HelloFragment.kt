@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.HelloFragmentBinding
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
@@ -29,15 +30,38 @@ class HelloFragment: Fragment(), BackPressedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val dataList = listOf(
-            HelloFragmentData("hello_1", getString(R.string.hello_premiere), "three_points_1", false),
-            HelloFragmentData("hello_3", getString(R.string.hello_collection), "three_points_2", false),
-            HelloFragmentData("hello_2", getString(R.string.hello_friends), "three_points_3", true)
+            HelloFragmentData(R.drawable.hello_1, getString(R.string.hello_premiere)),
+            HelloFragmentData(R.drawable.hello_3, getString(R.string.hello_collection)),
+            HelloFragmentData(R.drawable.hello_2, getString(R.string.hello_friends))
         )
-        val adapter = ViewPagerAdapter(dataList, requireContext()) {
+        val adapter = ViewPagerAdapter(dataList)
+        bind.viewPager.adapter = adapter
+        bind.viewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                when (position) {
+                    0 -> {
+                        bind.skip.text = getString(R.string.hello_skip)
+                        bind.imagePoints.setImageResource(R.drawable.three_points_1)
+                    }
+                    1 -> {
+                        bind.skip.text = getString(R.string.hello_skip)
+                        bind.imagePoints.setImageResource(R.drawable.three_points_2)
+                    }
+                    2 -> {
+                        bind.skip.text = getString(R.string.hello_start)
+                        bind.imagePoints.setImageResource(R.drawable.three_points_3)
+                    }
+                    else -> {
+                        bind.skip.text = "Error!"
+                    }
+                }
+            }
+        })
+        bind.skip.setOnClickListener {
             val action = HelloFragmentDirections.actionHelloFragmentToHomeFragment()
             findNavController().navigate(action)
         }
-        bind.viewPager.adapter = adapter
     }
 
     override fun onStart() {
@@ -72,10 +96,8 @@ class HelloFragment: Fragment(), BackPressedListener {
     }
 
     data class HelloFragmentData(
-        val image: String,
-        val text: String,
-        val imagePoints: String,
-        val isFinish: Boolean
+        val imageRes: Int,
+        val text: String
     )
 
     companion object {

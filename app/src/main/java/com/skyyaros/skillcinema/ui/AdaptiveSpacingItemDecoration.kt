@@ -8,12 +8,6 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
-/**
- * Give equal margin around each [RecyclerView] items, adaptively. Supports known direct subclasses of
- * [RecyclerView.LayoutManager] such as: [LinearLayoutManager], [GridLayoutManager], and [StaggeredGridLayoutManager]
- *
- * Created by Fatah F on Fri, 14 Jan 2022
- */
 class AdaptiveSpacingItemDecoration(
     private val size: Int,
     private val edgeEnabled: Boolean = false,

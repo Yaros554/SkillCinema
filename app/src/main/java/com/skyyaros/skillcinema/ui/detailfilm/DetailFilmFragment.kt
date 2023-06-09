@@ -78,6 +78,7 @@ class DetailFilmFragment: Fragment() {
                         setupPoster(item)
                         setupOptions()
                         setupFilmInfo(item)
+                        setupMoney(stateDetailFilm.data.moneys)
                         if (item.shortDescription != null)
                             bind.shortDescription.text = item.shortDescription
                         else
@@ -179,6 +180,42 @@ class DetailFilmFragment: Fragment() {
             ""
         }
         bind.info3.text = "$countries$time, ${item.ratingAgeLimits?.substring(3)?.plus("+") ?: ""}"
+    }
+
+    private fun setupMoney(items: List<MoneyInfo>?) {
+        if (items != null) {
+            val budget = items.find { it.type == "BUDGET" }
+            var stringBudget: String? = null
+            if (budget != null && budget.amount >0 && budget.symbol.isNotBlank())
+                stringBudget = getString(R.string.detail_string_budget, getUsableString(budget.amount), budget.symbol)
+            val boxOffice = items.find { it.type == "WORLD" }
+            var stringBoxOffice: String? = null
+            if (boxOffice != null && boxOffice.amount >0 && boxOffice.symbol.isNotBlank())
+                stringBoxOffice = getString(R.string.detail_string_box_office, getUsableString(boxOffice.amount), boxOffice.symbol)
+            if (stringBudget != null || stringBoxOffice != null) {
+                if (stringBudget != null && stringBoxOffice != null)
+                    bind.info4.text = "$stringBudget, $stringBoxOffice"
+                else if (stringBudget != null)
+                    bind.info4.text = stringBudget
+                else
+                    bind.info4.text = stringBoxOffice
+            } else {
+                bind.info4.visibility = View.GONE
+            }
+        } else {
+            bind.info4.visibility = View.GONE
+        }
+    }
+
+    private fun getUsableString(amount: Int): String {
+        val tempString = amount.toString().reversed()
+        val stringBuilder = StringBuilder()
+        tempString.forEachIndexed { index, c ->
+            stringBuilder.append(c)
+            if (index % 3 == 2 && index != tempString.lastIndex)
+                stringBuilder.append('.')
+        }
+        return stringBuilder.toString().reversed()
     }
 
     private fun setupFilmDescription(item: DetailFilm) {

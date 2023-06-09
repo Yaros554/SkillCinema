@@ -27,6 +27,8 @@
     <string name="detail_text_similar">Similar films</string>
     <string name="detail_text_series">Seasons and series</string>
     <string name="detail_string_time">%1$d h %2$d min</string>
+    <string name="detail_string_budget">Budget: %1$s%2$s</string>
+    <string name="detail_string_box_office">Box office: %1$s%2$s</string>
 
     <string name="detail_text_best">The best</string>
     <string name="detail_text_all_films">Filmography</string>

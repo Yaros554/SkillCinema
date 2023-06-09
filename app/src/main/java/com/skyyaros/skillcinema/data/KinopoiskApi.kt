@@ -55,6 +55,9 @@ interface KinopoiskApi {
     @GET("api/v2.2/films/{id}")
     suspend fun getDopInfoForFilm(@Path("id") id: Long, @HeaderMap header: Map<String, String>): Response<DopInfoForFilm>
 
+    @GET("api/v2.2/films/{id}/box_office")
+    suspend fun getMoney(@Path("id") id: Long, @HeaderMap header: Map<String, String>): Response<MoneyResponse>
+
     companion object RetrofitProvider {
         private val mutex = Mutex()
         private val keys = listOf(

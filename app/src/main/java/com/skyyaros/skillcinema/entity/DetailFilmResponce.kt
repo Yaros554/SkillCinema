@@ -81,10 +81,23 @@ data class Episode(
     @Json(name = "releaseDate") val releaseDate: String?
 ): Parcelable
 
+@JsonClass(generateAdapter = true)
+data class MoneyResponse(
+    @Json(name = "items") val items: List<MoneyInfo>
+)
+
+@JsonClass(generateAdapter = true)
+data class MoneyInfo(
+    @Json(name = "type") val type: String,
+    @Json(name = "amount") val amount: Int,
+    @Json(name = "symbol") val symbol: String
+)
+
 data class FullDetailFilm(
     val detailFilm: DetailFilm,
     val actors: List<ActorPreview>?,
     val images: List<ImageResponse>?,
     val similar: List<FilmPreview>?,
-    val series: List<Season>?
+    val series: List<Season>?,
+    val moneys: List<MoneyInfo>?
 )

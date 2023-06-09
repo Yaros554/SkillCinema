@@ -28,6 +28,8 @@
     <string name="detail_text_similar">Похожие фильмы</string>
     <string name="detail_text_series">Сезоны и серии</string>
     <string name="detail_string_time">%1$d ч %2$d мин</string>
+    <string name="detail_string_budget">Бюджет: %1$s%2$s</string>
+    <string name="detail_string_box_office">Кассовые сборы: %1$s%2$s</string>
 
     <string name="detail_text_best">Лучшее</string>
     <string name="detail_text_all_films">Фильмография</string>

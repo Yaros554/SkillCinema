@@ -124,6 +124,17 @@
             android:gravity="center"
             tools:text="Россия, 1 ч 33 мин, 16+" />
 
+        <TextView
+            android:id="@+id/info4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="12sp"
+            android:textColor="@color/skill_grey"
+            android:gravity="center"
+            tools:text="Бюджет: 1000000000R, кассовые сборы: 5000000000R" />
+
     </LinearLayout>
 
     <ImageView

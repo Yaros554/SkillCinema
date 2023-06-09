@@ -215,7 +215,8 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
                 getSeasons(id)
             else
                 null
-            FullDetailFilm(detailFilm, actors, images, similars, seasons)
+            val money = getMoney(id)
+            FullDetailFilm(detailFilm, actors, images, similars, seasons, money)
         } else {
             null
         }
@@ -397,6 +398,28 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
             }
             if (res.isSuccessful) {
                 res.body()!!
+            } else {
+                null
+            }
+        } catch (t: Throwable) {
+            null
+        }
+    }
+
+    suspend fun getMoney(id: Long): List<MoneyInfo>? {
+        return try {
+            var apiKey = KinopoiskApi.getCurrentKey()
+            var res = kinopoiskApi.getMoney(id, apiKey)
+            var count = 1
+            val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
+            while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
+                apiKey = KinopoiskApi.getNewKey(apiKey)
+                res = kinopoiskApi.getMoney(id, apiKey)
+                count++
+            }
+            if (res.isSuccessful) {
+                val data = res.body()!!.items
+                data.ifEmpty { null }
             } else {
                 null
             }

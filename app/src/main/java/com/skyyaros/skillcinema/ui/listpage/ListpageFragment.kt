@@ -29,7 +29,7 @@ class ListpageFragment: Fragment() {
     private val viewModel: ListpageViewModel by viewModels {
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ListpageViewModel(App.component.getKinopoiskRepository(), args.mode, args.countryId, args.genreId, args.listPreload.toList()) as T
+                return ListpageViewModel(App.component.getKinopoiskRepository(), args.mode, args.countryId, args.genreId, args.listPreload?.toList(), args.listHalf?.toList()) as T
             }
         }
     }
@@ -61,11 +61,8 @@ class ListpageFragment: Fragment() {
             else -> "${args.genreName}, ${args.countryName}"
         }
         activityCallbacks!!.showUpBar(label)
-        if (args.mode == 1 || args.mode == 7 || args.mode == 8) {
-            val adapter = if (args.mode == 8)
-                FilmPreviewAdapter(args.listPreload.toList(), requireContext(), onClickFilm, activityCallbacks!!.getMainViewModel(), viewLifecycleOwner.lifecycleScope)
-            else
-                FilmPreviewAdapter(args.listPreload.toList(), requireContext(), onClickFilm)
+        if (args.mode == 1) {
+            val adapter = FilmPreviewAdapter(args.listPreload!!.toList(), requireContext(), onClickFilm)
             bind.recyclerView.adapter = adapter
         } else {
             val adapter = ListpageAdapter(requireContext(), onClickFilm)

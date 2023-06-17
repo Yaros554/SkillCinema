@@ -34,10 +34,10 @@ data class FilmPreview(
     @Json(name = "nameEn") val nameEn: String?,
     @Json(name = "nameOriginal") val nameOriginal: String?,
     @Json(name = "genres") val genres: List<Genre>?,
-    @Json(name = "rating") val rating: String?,
+    @Json(name = "rating") var rating: String?,
     @Json(name = "ratingKinopoisk") val ratingKinopoisk: String?,
     @Json(name = "premiereRu") val premiereRu: String?,
-    @Json(name = "professionKey") val professionKey: String?
+    @Json(name = "year") val year: Int?
 ) : Parcelable
 
 @Parcelize

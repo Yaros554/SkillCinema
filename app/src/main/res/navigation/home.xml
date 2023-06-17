@@ -39,7 +39,8 @@
         tools:layout="@layout/listpage_fragment">
         <argument
             android:name="listPreload"
-            app:argType="com.skyyaros.skillcinema.entity.FilmPreview[]" />
+            app:argType="com.skyyaros.skillcinema.entity.FilmPreview[]"
+            app:nullable="true" />
         <argument
             android:name="mode"
             app:argType="integer" />
@@ -60,6 +61,10 @@
         <action
             android:id="@+id/action_listpageFragment_to_detailFilmFragment"
             app:destination="@id/detailFilmFragment" />
+        <argument
+            android:name="listHalf"
+            app:argType="com.skyyaros.skillcinema.entity.FilmPreviewHalf[]"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/detailFilmFragment"
@@ -128,8 +133,8 @@
         android:label="FilmographyFragment"
         tools:layout="@layout/filmography_fragment">
         <argument
-            android:name="listFilms"
-            app:argType="com.skyyaros.skillcinema.entity.FilmPreview[]" />
+            android:name="listHalf"
+            app:argType="com.skyyaros.skillcinema.entity.FilmPreviewHalf[]" />
         <argument
             android:name="nameActor"
             app:argType="string" />

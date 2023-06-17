@@ -189,7 +189,8 @@ class HomeFragment: Fragment() {
                 val action = HomeFragmentDirections.actionHomeFragmentToListpageFragment(
                     item.toTypedArray(), mode,
                     countryId, countryName,
-                    genreId, genreName
+                    genreId, genreName,
+                    null
                 )
                 findNavController().navigate(action)
             }

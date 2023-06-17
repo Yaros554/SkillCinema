@@ -7,12 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayoutMediator
+import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.FilmographyFragmentBinding
+import com.skyyaros.skillcinema.entity.FilmPreviewHalf
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import java.util.*
 
@@ -21,6 +26,18 @@ class FilmographyFragment: Fragment() {
     private val bind get() = _bind!!
     private var activityCallbacks: ActivityCallbacks? = null
     private val args: FilmographyFragmentArgs by navArgs()
+    lateinit var items: List<List<FilmPreviewHalf>>
+    val viewModel: FilmographyViewModel by viewModels {
+        object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return FilmographyViewModel(items, App.component.getKinopoiskRepository()) as T
+            }
+        }
+    }
+    val onClick: (Long) -> Unit = {
+        val action = FilmographyFragmentDirections.actionFilmographyFragmentToDetailFilmFragment(it)
+        findNavController().navigate(action)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -34,18 +51,11 @@ class FilmographyFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        items = args.listHalf.toList().groupBy { it.professionKey }.map { it.value.distinctBy { item -> item.filmId } }
+        viewModel.isInit = true
         activityCallbacks!!.showUpBar(getString(R.string.detail_text_all_films))
         bind.actorName.text = args.nameActor
-        val items = args.listFilms.toList().groupBy { it.professionKey!! }.map { it.value.distinctBy { item -> item.filmId } }
-        val adapter = FilmographyItemAdapter(
-            items, requireContext(),
-            {
-                val action = FilmographyFragmentDirections.actionFilmographyFragmentToDetailFilmFragment(it)
-                findNavController().navigate(action)
-            },
-            activityCallbacks!!.getMainViewModel(),
-            viewLifecycleOwner.lifecycleScope
-        )
+        val adapter = FilmographyItemAdapter(items, this)
         bind.viewPager.adapter = adapter
         TabLayoutMediator(bind.tabs, bind.viewPager) { tab, position ->
             val roles = mapOf(
@@ -67,10 +77,10 @@ class FilmographyFragment: Fragment() {
                 Pair("UNKNOWN", "НЕИЗВЕСТНО")
             )
             val role = if (Locale.getDefault().language == "ru")
-                roles[items[position].first().professionKey!!] ?: items[position].first().professionKey!!
+                roles[items[position].first().professionKey] ?: items[position].first().professionKey
             else
-                items[position].first().professionKey!!
-            tab.text = "${role.lowercase().replaceFirstChar { 
+                items[position].first().professionKey
+            tab.text = "${role!!.lowercase().replaceFirstChar { 
                 if (it.isLowerCase()) 
                     it.titlecase() 
                 else 

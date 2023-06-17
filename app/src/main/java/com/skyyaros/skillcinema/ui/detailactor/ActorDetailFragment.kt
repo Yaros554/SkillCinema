@@ -217,34 +217,24 @@ class ActorDetailFragment: Fragment() {
     }
 
     private fun setupFilms(item: DetailActor) {
-        val bestFilms = item.films?.filter {
-            val rating = it.rating?.toDoubleOrNull() ?: (it.rating?.substring(0, 2)?.toIntOrNull()?.div(10.0) ?: 0.0)
-            rating >= 7.0
-        }?.distinctBy { it.filmId!! }
-        if (bestFilms != null && bestFilms.isNotEmpty()) {
+        if (item.best10Films != null && item.best10Films!!.isNotEmpty()) {
             val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.small_margin).toInt(), false)
             val leftMargin = LeftSpaceDecorator(requireContext().resources.getDimension(R.dimen.big_margin).toInt())
             val onClickList: ()->Unit = {
                 val action = ActorDetailFragmentDirections.actionActorDetailFragmentToListpageFragment(
-                    bestFilms.toTypedArray(),
+                    null,
                     8,
                     -1, null,
-                    -1, null
+                    -1, null,
+                    item.listBestFilmPreviewHalf!!.toTypedArray()
                 )
                 findNavController().navigate(action)
             }
-            val trimList = if (bestFilms.size > 10) bestFilms.subList(0, 10) else bestFilms
-            val adapter = FilmPreviewAdapter(
-                trimList,
-                requireContext(),
-                {
-                    val action = ActorDetailFragmentDirections.actionActorDetailFragmentToDetailFilmFragment(it)
-                    findNavController().navigate(action)
-                },
-                activityCallbacks!!.getMainViewModel(),
-                viewLifecycleOwner.lifecycleScope
-            )
-            if (bestFilms.size > 10) {
+            val adapter = FilmPreviewAdapter(item.best10Films!!, requireContext()) {
+                val action = ActorDetailFragmentDirections.actionActorDetailFragmentToDetailFilmFragment(it)
+                findNavController().navigate(action)
+            }
+            if (item.listBestFilmPreviewHalf!!.size > 10) {
                 val allAdapter = FilmPreviewAllAdapter { onClickList() }
                 bind.listFilms.adapter = ConcatAdapter(adapter, allAdapter)
             } else {
@@ -254,7 +244,7 @@ class ActorDetailFragment: Fragment() {
                 bind.listFilms.addItemDecoration(itemMargin)
                 bind.listFilms.addItemDecoration(leftMargin)
             }
-            if (bestFilms.size > 10) {
+            if (item.listBestFilmPreviewHalf!!.size > 10) {
                 bind.textCountFilms.setOnClickListener { onClickList() }
             } else {
                 bind.textCountFilms.visibility = View.GONE
@@ -263,7 +253,8 @@ class ActorDetailFragment: Fragment() {
             bind.layoutFilms.visibility = View.GONE
             bind.listFilms.visibility = View.GONE
         }
-        val allFilms = item.films?.distinctBy { it.filmId!! }
+
+        val allFilms = item.listFilmPreviewHalf?.distinctBy { it.filmId }
         if (allFilms != null && allFilms.isNotEmpty()) {
             bind.countFilms.text = if (Locale.getDefault().language == "ru") {
                 val form = if (allFilms.size in 11..19)
@@ -280,7 +271,7 @@ class ActorDetailFragment: Fragment() {
             }
             bind.layoutAllFilms.setOnClickListener {
                 val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFilmographyFragment(
-                    item.films.toTypedArray(),
+                    item.listFilmPreviewHalf.toTypedArray(),
                     if (Locale.getDefault().language == "ru")
                         item.nameRu ?: (item.nameEn ?: getString(R.string.home_text_no_name))
                     else

@@ -1,7 +1,9 @@
 package com.skyyaros.skillcinema.entity
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
 
 @JsonClass(generateAdapter = true)
 data class DetailActor(
@@ -17,12 +19,18 @@ data class DetailActor(
     @Json(name = "hasAwards")val hasAwards: Int?,
     @Json(name = "profession") val profession: String?,
     @Json(name = "facts") val facts: List<String>?,
-    @Json(name = "films") val films: List<FilmPreview>?
+    @Json(name = "films") val listFilmPreviewHalf: List<FilmPreviewHalf>?,
+    var listBestFilmPreviewHalf: List<FilmPreviewHalf>?,
+    var best10Films: List<FilmPreview>?
 )
 
+@Parcelize
 @JsonClass(generateAdapter = true)
-data class DopInfoForFilm(
-    @Json(name = "posterUrlPreview") val posterUrlPreview: String,
-    @Json(name = "year") val year: Int?,
-    @Json(name = "genres") val genres: List<Genre>
-)
+data class FilmPreviewHalf(
+    @Json(name = "filmId") val filmId: Long,
+    @Json(name = "nameRu") val nameRu: String?,
+    @Json(name = "nameEn") val nameEn: String?,
+    @Json(name = "professionKey") val professionKey: String?,
+    @Json(name = "rating") val rating: String?,
+    @Json(name = "posterUrlPreview") val imageUrl: String?
+): Parcelable

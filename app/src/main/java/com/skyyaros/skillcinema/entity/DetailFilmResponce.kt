@@ -55,7 +55,7 @@ data class ImageItem(
 
 @JsonClass(generateAdapter = true)
 data class SimilarFilmsResponse(
-    @Json(name = "items") val items: List<FilmPreview>
+    @Json(name = "items") val items: List<FilmPreviewHalf>
 )
 
 @JsonClass(generateAdapter = true)
@@ -97,7 +97,8 @@ data class FullDetailFilm(
     val detailFilm: DetailFilm,
     val actors: List<ActorPreview>?,
     val images: List<ImageResponse>?,
-    val similar: List<FilmPreview>?,
+    val similarHalf: List<FilmPreviewHalf>?,
+    val similar10: List<FilmPreview>?,
     val series: List<Season>?,
     val moneys: List<MoneyInfo>?
 )

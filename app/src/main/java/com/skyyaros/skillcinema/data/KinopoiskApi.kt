@@ -53,7 +53,7 @@ interface KinopoiskApi {
     suspend fun getActorDetail(@Path("id") id: Long, @HeaderMap header: Map<String, String>): Response<DetailActor>
 
     @GET("api/v2.2/films/{id}")
-    suspend fun getDopInfoForFilm(@Path("id") id: Long, @HeaderMap header: Map<String, String>): Response<DopInfoForFilm>
+    suspend fun getFilmPreview(@Path("id") id: Long, @HeaderMap header: Map<String, String>): Response<FilmPreview>
 
     @GET("api/v2.2/films/{id}/box_office")
     suspend fun getMoney(@Path("id") id: Long, @HeaderMap header: Map<String, String>): Response<MoneyResponse>

@@ -88,7 +88,7 @@ class DetailFilmFragment: Fragment() {
                         val leftMargin = LeftSpaceDecorator(requireContext().resources.getDimension(R.dimen.big_margin).toInt())
                         setupActorList(stateDetailFilm.data.actors, itemMargin, leftMargin)
                         setupImages(stateDetailFilm.data.images, itemMargin, leftMargin)
-                        setupSimilarFilm(stateDetailFilm.data.similar, itemMargin, leftMargin)
+                        setupSimilarFilm(stateDetailFilm.data.similarHalf, stateDetailFilm.data.similar10, itemMargin, leftMargin)
                         setupSerials(stateDetailFilm.data.series, item)
                     }
                     is StateDetailFilm.Error -> {
@@ -373,24 +373,24 @@ class DetailFilmFragment: Fragment() {
         }
     }
 
-    private fun setupSimilarFilm(item: List<FilmPreview>?, itemMargin: AdaptiveSpacingItemDecoration, leftMargin: LeftSpaceDecorator) {
-        if (item != null && item.isNotEmpty()) {
+    private fun setupSimilarFilm(itemsHalf: List<FilmPreviewHalf>?, items10: List<FilmPreview>?, itemMargin: AdaptiveSpacingItemDecoration, leftMargin: LeftSpaceDecorator) {
+        if (itemsHalf != null && itemsHalf.isNotEmpty()) {
             val onClick: (Long)->Unit = {
                 val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToDetailFilmFragment(it)
                 findNavController().navigate(action)
             }
             val onClickList: ()->Unit = {
                 val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToListpageFragment(
-                    item.toTypedArray(),
+                    null,
                     7,
                     -1, null,
-                    -1, null
+                    -1, null,
+                    itemsHalf.toTypedArray()
                 )
                 findNavController().navigate(action)
             }
-            val trimList = if (item.size > 10) item.subList(0, 10) else item
-            val adapter = FilmPreviewAdapter(trimList, requireContext(), onClick)
-            if (item.size > 10) {
+            val adapter = FilmPreviewAdapter(items10!!, requireContext(), onClick)
+            if (itemsHalf.size > 10) {
                 val allAdapter = FilmPreviewAllAdapter { onClickList() }
                 bind.listFilms.adapter = ConcatAdapter(adapter, allAdapter)
             } else {
@@ -400,8 +400,8 @@ class DetailFilmFragment: Fragment() {
                 bind.listFilms.addItemDecoration(itemMargin)
                 bind.listFilms.addItemDecoration(leftMargin)
             }
-            bind.textCountFilms.text = item.size.toString()
-            if (item.size > 10) {
+            bind.textCountFilms.text = itemsHalf.size.toString()
+            if (itemsHalf.size > 10) {
                 bind.textCountFilms.setOnClickListener { onClickList() }
             }
         } else {

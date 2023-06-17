@@ -22,13 +22,6 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
-    private val viewModel: MainViewModel by viewModels {
-        object: ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MainViewModel(App.component.getKinopoiskRepository()) as T
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +47,6 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
         }
         appBarConfiguration = AppBarConfiguration(setOf(R.id.homeFragment, R.id.searchFragment, R.id.personFragment, R.id.helloFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
-        viewModel.isInit = true
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         if (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
             binding.bottomNav.elevation = 1.0F
@@ -85,9 +77,5 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
 
     override fun hideUpBar() {
         binding.toolbar.visibility = View.GONE
-    }
-
-    override fun getMainViewModel(): MainViewModel {
-        return viewModel
     }
 }

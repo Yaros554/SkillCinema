@@ -16,7 +16,7 @@ class ListpageAdapter(
     override fun onBindViewHolder(holder: FilmPreviewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
-            holder.bind(item, null, null)
+            holder.bind(item)
             val id = item.kinopoiskId ?: item.filmId
             holder.binding.root.setOnClickListener { onClick(id!!) }
         }
@@ -27,7 +27,7 @@ class ListpageAdapter(
     }
 }
 
-class DiffUtilCallback : DiffUtil.ItemCallback<FilmPreview>() {
+class DiffUtilCallback: DiffUtil.ItemCallback<FilmPreview>() {
     override fun areItemsTheSame(oldItem: FilmPreview, newItem: FilmPreview): Boolean {
         return if (oldItem.kinopoiskId != null && newItem.kinopoiskId != null)
             oldItem.kinopoiskId == newItem.kinopoiskId

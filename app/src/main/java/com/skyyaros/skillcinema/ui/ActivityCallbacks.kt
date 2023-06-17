@@ -5,5 +5,4 @@ interface ActivityCallbacks {
     fun hideDownBar()
     fun showUpBar(label: String)
     fun hideUpBar()
-    fun getMainViewModel(): MainViewModel
 }

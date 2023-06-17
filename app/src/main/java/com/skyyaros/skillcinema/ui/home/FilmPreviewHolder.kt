@@ -3,18 +3,15 @@ package com.skyyaros.skillcinema.ui.home
 import android.content.Context
 import android.content.res.Configuration
 import android.view.View
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.FilmPreviewBinding
 import com.skyyaros.skillcinema.entity.FilmPreview
-import com.skyyaros.skillcinema.ui.MainViewModel
-import kotlinx.coroutines.launch
 import java.util.*
 
 class FilmPreviewHolder(val binding: FilmPreviewBinding, private val context: Context): RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: FilmPreview, viewModel: MainViewModel?, coroutineScope: LifecycleCoroutineScope?) {
+    fun bind(item: FilmPreview) {
         binding.name.text = if (Locale.getDefault().language == "ru") {
             if (!item.nameRu.isNullOrBlank())
                 item.nameRu
@@ -65,11 +62,5 @@ class FilmPreviewHolder(val binding: FilmPreviewBinding, private val context: Co
         binding.posterPreview.setImageDrawable(placeholder)
         if (item.imageUrl != null)
             Glide.with(binding.posterPreview.context).load(item.imageUrl).placeholder(placeholder).into(binding.posterPreview)
-        else {
-            coroutineScope!!.launch {
-                val dopInfo = viewModel!!.getDopInfoForFilm(item.filmId!!)
-                Glide.with(binding.posterPreview.context).load(dopInfo?.posterUrlPreview).placeholder(placeholder).into(binding.posterPreview)
-            }
-        }
     }
 }

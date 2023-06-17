@@ -3,29 +3,37 @@ package com.skyyaros.skillcinema.ui.filmography
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.recyclerview.widget.RecyclerView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import com.skyyaros.skillcinema.databinding.FilmPreviewTwoBinding
 import com.skyyaros.skillcinema.entity.FilmPreview
-import com.skyyaros.skillcinema.ui.MainViewModel
 
 class FilmPreviewTwoAdapter(
-    private val items: List<FilmPreview>,
     private val context: Context,
-    private val onClick: (Long)->Unit,
-    private val viewModel: MainViewModel,
-    private val coroutineScope: LifecycleCoroutineScope
-): RecyclerView.Adapter<FilmPreviewTwoHolder>() {
+    private val onClick: (Long)->Unit
+): PagingDataAdapter<FilmPreview, FilmPreviewTwoHolder>(DiffUtilCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmPreviewTwoHolder {
         return FilmPreviewTwoHolder(FilmPreviewTwoBinding.inflate(LayoutInflater.from(parent.context), parent, false), context)
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
     override fun onBindViewHolder(holder: FilmPreviewTwoHolder, position: Int) {
-        holder.bind(items[position], viewModel, coroutineScope)
-        holder.binding.root.setOnClickListener { onClick(items[position].filmId!!) }
+        val item = getItem(position)
+        if (item != null) {
+            holder.bind(item)
+            val id = item.kinopoiskId ?: item.filmId
+            holder.binding.root.setOnClickListener { onClick(id!!) }
+        }
     }
+}
+
+class DiffUtilCallback: DiffUtil.ItemCallback<FilmPreview>() {
+    override fun areItemsTheSame(oldItem: FilmPreview, newItem: FilmPreview): Boolean {
+        return if (oldItem.kinopoiskId != null && newItem.kinopoiskId != null)
+            oldItem.kinopoiskId == newItem.kinopoiskId
+        else if (oldItem.filmId != null && newItem.filmId != null)
+            oldItem.filmId == newItem.filmId
+        else
+            false
+    }
+    override fun areContentsTheSame(oldItem: FilmPreview, newItem: FilmPreview): Boolean = oldItem == newItem
 }

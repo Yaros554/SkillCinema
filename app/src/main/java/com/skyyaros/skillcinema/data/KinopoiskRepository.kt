@@ -5,10 +5,15 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.text.SimpleDateFormat
 import java.util.*
 
 class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
+    private val cacheFilms = mutableMapOf<Long, FilmPreview>()
+    private val mutex = Mutex()
+
     suspend fun getFilmsForHome(): FilmsPreviewWithData? = coroutineScope {
         var dynamicFilms1: List<FilmPreview>? = null
         var dynamicFilms2: List<FilmPreview>? = null
@@ -210,13 +215,17 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
         return if (detailFilm != null) {
             val actors = getActorsInFilm(id)
             val images = getImagesInFilm(id)
-            val similars = getSimilarFilms(id)
+            val similarsHalf = getSimilarFilms(id)
+            val similars10 = if (similarsHalf != null)
+                getFilmPreviewPage(similarsHalf, 1)
+            else
+                null
             val seasons = if (detailFilm.type == "TV_SERIES" || detailFilm.type == "MINI_SERIES" || detailFilm.type == "TV_SHOW")
                 getSeasons(id)
             else
                 null
             val money = getMoney(id)
-            FullDetailFilm(detailFilm, actors, images, similars, seasons, money)
+            FullDetailFilm(detailFilm, actors, images, similarsHalf, similars10, seasons, money)
         } else {
             null
         }
@@ -301,7 +310,7 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
         }
     }
 
-    private suspend fun getSimilarFilms(id: Long): List<FilmPreview>? {
+    private suspend fun getSimilarFilms(id: Long): List<FilmPreviewHalf>? {
         return try {
             var apiKey = KinopoiskApi.getCurrentKey()
             var res = kinopoiskApi.getSimilarFilms(id, apiKey)
@@ -355,7 +364,14 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
                 count++
             }
             if (res.isSuccessful) {
-                res.body()!!
+                val item = res.body()!!
+                item.listBestFilmPreviewHalf = item.listFilmPreviewHalf?.filter {
+                    val rating = it.rating?.toDoubleOrNull() ?: (it.rating?.substring(0, 2)?.toIntOrNull()?.div(10.0) ?: 0.0)
+                    rating >= 7.0
+                }?.distinctBy { it.filmId }
+                if (item.listBestFilmPreviewHalf != null)
+                    item.best10Films = getFilmPreviewPage(item.listBestFilmPreviewHalf!!, 1)
+                item
             } else {
                 null
             }
@@ -364,25 +380,53 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
         }
     }
 
-    suspend fun getDopInfoForFilm(id: Long): DopInfoForFilm? {
-        return try {
-            var apiKey = KinopoiskApi.getCurrentKey()
-            var res = kinopoiskApi.getDopInfoForFilm(id, apiKey)
-            var count = 1
-            val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
-            while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
-                apiKey = KinopoiskApi.getNewKey(apiKey)
-                res = kinopoiskApi.getDopInfoForFilm(id, apiKey)
-                count++
+    suspend fun getFilmPreviewPage(listFilmPreviewHalf: List<FilmPreviewHalf>, page: Int): List<FilmPreview> = coroutineScope {
+        var upEdge = page * 10 - 1
+        val downEdge = page * 10 - 10
+        if (downEdge > listFilmPreviewHalf.lastIndex)
+            return@coroutineScope emptyList()
+        if (upEdge > listFilmPreviewHalf.lastIndex)
+            upEdge = listFilmPreviewHalf.lastIndex
+        val deferreds = listFilmPreviewHalf.subList(downEdge, upEdge + 1).map {
+            async {
+                try {
+                    if (cacheFilms.containsKey(it.filmId))
+                        cacheFilms[it.filmId]!!
+                    else {
+                        var apiKey = KinopoiskApi.getCurrentKey()
+                        var res = kinopoiskApi.getFilmPreview(it.filmId, apiKey)
+                        var count = 1
+                        val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
+                        while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
+                            apiKey = KinopoiskApi.getNewKey(apiKey)
+                            res = kinopoiskApi.getFilmPreview(it.filmId, apiKey)
+                            count++
+                        }
+                        if (res.isSuccessful) {
+                            val resBody = res.body()!!
+                            resBody.rating = it.rating
+                            mutex.withLock { cacheFilms += Pair(it.filmId, resBody) }
+                            resBody
+                        } else {
+                            FilmPreview(
+                                it.filmId, null, it.imageUrl,
+                                it.nameRu, it.nameEn, null,
+                                null, it.rating, null,
+                                null, null
+                            )
+                        }
+                    }
+                } catch (t: Throwable) {
+                    FilmPreview(
+                        it.filmId, null, it.imageUrl,
+                        it.nameRu, it.nameEn, null,
+                        null, it.rating, null,
+                        null, null
+                    )
+                }
             }
-            if (res.isSuccessful) {
-                res.body()!!
-            } else {
-                null
-            }
-        } catch (t: Throwable) {
-            null
         }
+        return@coroutineScope deferreds.awaitAll()
     }
 
     suspend fun getImagesForFilmPaging(id: Long, page: Int, type: String): ImageResponse? {
@@ -406,7 +450,7 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
         }
     }
 
-    suspend fun getMoney(id: Long): List<MoneyInfo>? {
+    private suspend fun getMoney(id: Long): List<MoneyInfo>? {
         return try {
             var apiKey = KinopoiskApi.getCurrentKey()
             var res = kinopoiskApi.getMoney(id, apiKey)

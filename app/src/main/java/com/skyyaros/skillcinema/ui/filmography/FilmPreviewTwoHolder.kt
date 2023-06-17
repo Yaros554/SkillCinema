@@ -3,18 +3,15 @@ package com.skyyaros.skillcinema.ui.filmography
 import android.content.Context
 import android.content.res.Configuration
 import android.view.View
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.FilmPreviewTwoBinding
 import com.skyyaros.skillcinema.entity.FilmPreview
-import com.skyyaros.skillcinema.ui.MainViewModel
-import kotlinx.coroutines.launch
 import java.util.*
 
 class FilmPreviewTwoHolder(val binding: FilmPreviewTwoBinding, private val context: Context): RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: FilmPreview, viewModel: MainViewModel, coroutineScope: LifecycleCoroutineScope) {
+    fun bind(item: FilmPreview) {
         binding.name.text = if (Locale.getDefault().language == "ru") {
             if (!item.nameRu.isNullOrBlank())
                 item.nameRu
@@ -57,20 +54,15 @@ class FilmPreviewTwoHolder(val binding: FilmPreviewTwoBinding, private val conte
             context.getDrawable(R.drawable.empty)
         }
         binding.imageView.setImageDrawable(placeholder)
-        coroutineScope.launch {
-            val dopInfo = viewModel.getDopInfoForFilm(item.filmId!!)
-            if (dopInfo != null) {
-                Glide.with(binding.imageView.context).load(dopInfo.posterUrlPreview).placeholder(placeholder).into(binding.imageView)
-                val tempStr = StringBuilder("")
-                if (dopInfo.year != null) {
-                    tempStr.append("${dopInfo.year}, ")
-                }
-                dopInfo.genres.forEach {
-                    tempStr.append(it.genre)
-                    tempStr.append(", ")
-                }
-                binding.genre.text = tempStr.removeSuffix(", ").toString()
-            }
+        Glide.with(binding.imageView.context).load(item.imageUrl).placeholder(placeholder).into(binding.imageView)
+        val tempStr = StringBuilder("")
+        if (item.year != null) {
+            tempStr.append("${item.year}, ")
         }
+        item.genres?.forEach {
+            tempStr.append(it.genre)
+            tempStr.append(", ")
+        }
+        binding.genre.text = tempStr.removeSuffix(", ").toString()
     }
 }

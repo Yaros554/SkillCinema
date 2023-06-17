@@ -13,7 +13,19 @@ class FilmPreviewAdapter(
     private val onClick: (Long)->Unit
     ): RecyclerView.Adapter<FilmPreviewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmPreviewHolder {
-        return FilmPreviewHolder(FilmPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false), context)
+        val binding = FilmPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val filmPreviewHolder = FilmPreviewHolder(binding, context)
+        binding.root.setOnClickListener {
+            val position = filmPreviewHolder.bindingAdapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                val id = if (items[position].kinopoiskId != null)
+                    items[position].kinopoiskId
+                else
+                    items[position].filmId
+                onClick(id!!)
+            }
+        }
+        return filmPreviewHolder
     }
 
     override fun getItemCount(): Int {
@@ -22,7 +34,5 @@ class FilmPreviewAdapter(
 
     override fun onBindViewHolder(holder: FilmPreviewHolder, position: Int) {
         holder.bind(items[position])
-        val id = if (items[position].kinopoiskId != null) items[position].kinopoiskId else items[position].filmId
-        holder.binding.root.setOnClickListener { onClick(id!!) }
     }
 }

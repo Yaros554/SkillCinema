@@ -13,11 +13,15 @@ class ActerPreviewAdapter(
     private val onClick: (Long)->Unit
     ): RecyclerView.Adapter<ActerPreviewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActerPreviewHolder {
-        return ActerPreviewHolder(
-            ActerPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-            context,
-            onClick
-        )
+        val binding = ActerPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val actorPreviewHolder = ActerPreviewHolder(binding, context)
+        binding.root.setOnClickListener {
+            val position = actorPreviewHolder.bindingAdapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                onClick(items[position].staffId)
+            }
+        }
+        return actorPreviewHolder
     }
 
     override fun getItemCount(): Int {

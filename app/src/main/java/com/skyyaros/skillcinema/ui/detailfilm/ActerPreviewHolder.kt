@@ -9,7 +9,7 @@ import com.skyyaros.skillcinema.databinding.ActerPreviewBinding
 import com.skyyaros.skillcinema.entity.ActorPreview
 import java.util.Locale
 
-class ActerPreviewHolder(private val binding: ActerPreviewBinding, private val context: Context, private val onClick: (Long)->Unit): RecyclerView.ViewHolder(binding.root) {
+class ActerPreviewHolder(private val binding: ActerPreviewBinding, private val context: Context): RecyclerView.ViewHolder(binding.root) {
     fun bind(item: ActorPreview) {
         binding.name.text = if (Locale.getDefault().language == "ru") {
             if (!item.nameRu.isNullOrBlank())
@@ -34,6 +34,5 @@ class ActerPreviewHolder(private val binding: ActerPreviewBinding, private val c
             context.getDrawable(R.drawable.empty)
         }
         Glide.with(binding.imageView.context).load(item.posterUrl).placeholder(placeholderId).into(binding.imageView)
-        binding.root.setOnClickListener { onClick(item.staffId) }
     }
 }

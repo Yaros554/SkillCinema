@@ -13,15 +13,23 @@ class FilmPreviewTwoAdapter(
     private val onClick: (Long)->Unit
 ): PagingDataAdapter<FilmPreview, FilmPreviewTwoHolder>(DiffUtilCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmPreviewTwoHolder {
-        return FilmPreviewTwoHolder(FilmPreviewTwoBinding.inflate(LayoutInflater.from(parent.context), parent, false), context)
+        val binding = FilmPreviewTwoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val filmPreviewTwoHolder = FilmPreviewTwoHolder(binding, context)
+        binding.root.setOnClickListener {
+            val position = filmPreviewTwoHolder.bindingAdapterPosition
+            val item = getItem(position)
+            if (item != null) {
+                val id = item.kinopoiskId ?: item.filmId
+                onClick(id!!)
+            }
+        }
+        return filmPreviewTwoHolder
     }
 
     override fun onBindViewHolder(holder: FilmPreviewTwoHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
             holder.bind(item)
-            val id = item.kinopoiskId ?: item.filmId
-            holder.binding.root.setOnClickListener { onClick(id!!) }
         }
     }
 }

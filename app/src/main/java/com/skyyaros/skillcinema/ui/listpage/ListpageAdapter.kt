@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.skyyaros.skillcinema.databinding.FilmPreviewBinding
 import com.skyyaros.skillcinema.entity.FilmPreview
 import com.skyyaros.skillcinema.ui.home.FilmPreviewHolder
@@ -17,13 +18,21 @@ class ListpageAdapter(
         val item = getItem(position)
         if (item != null) {
             holder.bind(item)
-            val id = item.kinopoiskId ?: item.filmId
-            holder.binding.root.setOnClickListener { onClick(id!!) }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmPreviewHolder {
-        return FilmPreviewHolder(FilmPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false), context)
+        val binding = FilmPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val filmPreviewHolder = FilmPreviewHolder(binding, context)
+        binding.root.setOnClickListener {
+            val position = filmPreviewHolder.bindingAdapterPosition
+            val item = getItem(position)
+            if (item != null) {
+                val id = item.kinopoiskId ?: item.filmId
+                onClick(id!!)
+            }
+        }
+        return filmPreviewHolder
     }
 }
 

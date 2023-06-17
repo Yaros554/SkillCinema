@@ -10,7 +10,7 @@ import com.skyyaros.skillcinema.databinding.FilmPreviewBinding
 import com.skyyaros.skillcinema.entity.FilmPreview
 import java.util.*
 
-class FilmPreviewHolder(val binding: FilmPreviewBinding, private val context: Context): RecyclerView.ViewHolder(binding.root) {
+class FilmPreviewHolder(private val binding: FilmPreviewBinding, private val context: Context): RecyclerView.ViewHolder(binding.root) {
     fun bind(item: FilmPreview) {
         binding.name.text = if (Locale.getDefault().language == "ru") {
             if (!item.nameRu.isNullOrBlank())

@@ -16,6 +16,14 @@ import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 class PhotographyItemFragment: Fragment() {
     private var _bind: PhotographyItemFragmentBinding? = null
     private val bind get() = _bind!!
+    private lateinit var adapter: PhotoPreviewTwoAdapter
+    private val goToPhotos: (String)->Unit = { curUrl ->
+        (parentFragment as PhotographyFragment).goToPhotos(
+            requireArguments().getString(argsBundle, ""),
+            adapter.snapshot().items,
+            curUrl
+        )
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _bind = PhotographyItemFragmentBinding.inflate(inflater, container, false)
@@ -27,7 +35,7 @@ class PhotographyItemFragment: Fragment() {
         val viewModel = (parentFragment as PhotographyFragment).viewModel
         val orientation = requireContext().resources.configuration.orientation
         val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.small_margin).toInt(), false, if (orientation == Configuration.ORIENTATION_PORTRAIT) 1 else 0)
-        val adapter = PhotoPreviewTwoAdapter(requireContext(), orientation)
+        adapter = PhotoPreviewTwoAdapter(requireContext(), orientation, goToPhotos)
         bind.recycler.adapter = adapter.withLoadStateFooter(MyLoadStateAdapterTwo { adapter.retry() })
         val gridLayoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false).apply {
             spanSizeLookup = object: SpanSizeLookup() {

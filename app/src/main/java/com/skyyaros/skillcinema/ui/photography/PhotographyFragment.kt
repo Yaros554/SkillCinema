@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayoutMediator
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.PhotographyFragmentBinding
+import com.skyyaros.skillcinema.entity.ImageItem
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import java.util.*
 
@@ -29,6 +31,10 @@ class PhotographyFragment: Fragment() {
             }
         }
     }
+    val goToPhotos: (String, List<ImageItem>, String)->Unit = { title, urls, curUrl ->
+        val action = PhotographyFragmentDirections.actionPhotographyFragmentToFullPhotoVPFragment(title, urls.toTypedArray(), curUrl, args.id)
+        findNavController().navigate(action)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,6 +48,7 @@ class PhotographyFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activityCallbacks!!.goToFullScreenMode(false)
         activityCallbacks!!.showUpBar(getString(R.string.detail_text_gallery))
         val items = args.data.toList()
         val adapter = PhotographyItemAdapter(items, this)

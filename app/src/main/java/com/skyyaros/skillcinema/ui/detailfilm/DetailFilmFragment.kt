@@ -54,6 +54,7 @@ class DetailFilmFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activityCallbacks!!.goToFullScreenMode(false)
         activityCallbacks!!.showUpBar("")
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.detailFilmFlow.collect { stateDetailFilm ->
@@ -352,7 +353,12 @@ class DetailFilmFragment: Fragment() {
                 count += it.total
             }
             val trimList = if (imageList.size > 20) imageList.subList(0, 20).toList() else imageList.toList()
-            val listPhotoPreviewAdapter = PhotoPreviewAdapter(trimList, requireContext())
+            val listPhotoPreviewAdapter = PhotoPreviewAdapter(trimList, requireContext()) {
+                val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullPhotoVPFragment(
+                    "NO CATEGORY", trimList.toTypedArray(), it, -1L
+                )
+                findNavController().navigate(action)
+            }
             bind.listPhotos.adapter = listPhotoPreviewAdapter
             if (bind.listPhotos.itemDecorationCount == 0) {
                 bind.listPhotos.addItemDecoration(itemMargin)

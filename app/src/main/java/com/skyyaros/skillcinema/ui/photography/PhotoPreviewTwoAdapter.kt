@@ -11,7 +11,11 @@ import com.skyyaros.skillcinema.databinding.PhotoPreviewTwoBigBinding
 import com.skyyaros.skillcinema.databinding.PhotoPreviewTwoSmallBinding
 import com.skyyaros.skillcinema.entity.ImageItem
 
-class PhotoPreviewTwoAdapter(private val context: Context, private val orientation: Int): PagingDataAdapter<ImageItem, RecyclerView.ViewHolder>(DiffUtilCallback()) {
+class PhotoPreviewTwoAdapter(
+    private val context: Context,
+    private val orientation: Int,
+    private val onClick:(String)->Unit
+): PagingDataAdapter<ImageItem, RecyclerView.ViewHolder>(DiffUtilCallback()) {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
@@ -23,10 +27,30 @@ class PhotoPreviewTwoAdapter(private val context: Context, private val orientati
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == VIEW_TYPE_ONE && orientation == Configuration.ORIENTATION_PORTRAIT)
-            PhotoPreviewTwoSmallHolder(PhotoPreviewTwoSmallBinding.inflate(LayoutInflater.from(parent.context), parent, false), context)
-        else
-            PhotoPreviewTwoBigHolder(PhotoPreviewTwoBigBinding.inflate(LayoutInflater.from(parent.context), parent, false), context)
+        return if (viewType == VIEW_TYPE_ONE && orientation == Configuration.ORIENTATION_PORTRAIT) {
+            val binding = PhotoPreviewTwoSmallBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val myHolder = PhotoPreviewTwoSmallHolder(binding, context)
+            binding.root.setOnClickListener {
+                val position = myHolder.bindingAdapterPosition
+                val item = getItem(position)
+                if (item != null) {
+                    onClick(item.imageUrl)
+                }
+            }
+            myHolder
+        }
+        else {
+            val binding = PhotoPreviewTwoBigBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val myHolder = PhotoPreviewTwoBigHolder(binding, context)
+            binding.root.setOnClickListener {
+                val position = myHolder.bindingAdapterPosition
+                val item = getItem(position)
+                if (item != null) {
+                    onClick(item.imageUrl)
+                }
+            }
+            myHolder
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

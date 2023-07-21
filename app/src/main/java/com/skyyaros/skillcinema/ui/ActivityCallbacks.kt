@@ -5,4 +5,7 @@ interface ActivityCallbacks {
     fun hideDownBar()
     fun showUpBar(label: String)
     fun hideUpBar()
+    fun fullScreenOn()
+    fun fullScreenOff()
+    fun goToFullScreenMode(needGo: Boolean)
 }

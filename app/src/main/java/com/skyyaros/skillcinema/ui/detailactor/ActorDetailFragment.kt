@@ -54,6 +54,7 @@ class ActorDetailFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activityCallbacks!!.goToFullScreenMode(false)
         activityCallbacks!!.showUpBar("")
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.detailActorFlow.collect { stateDetailActor ->
@@ -96,6 +97,14 @@ class ActorDetailFragment: Fragment() {
             resources.getDrawable(R.drawable.empty)
         }
         Glide.with(bind.photo.context).load(item.posterUrl).placeholder(placeholderId).into(bind.photo)
+        bind.photo.setOnClickListener {
+            val name = if (Locale.getDefault().language == "ru")
+                item.nameRu ?: item.nameEn ?: ""
+            else
+                item.nameEn ?: item.nameRu ?: ""
+            val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullPhotoFragment(name, item.posterUrl)
+            findNavController().navigate(action)
+        }
         bind.name.text = if (Locale.getDefault().language == "ru") {
             if (!item.nameRu.isNullOrBlank())
                 item.nameRu

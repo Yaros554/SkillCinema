@@ -92,6 +92,9 @@
         <action
             android:id="@+id/action_detailFilmFragment_to_seriesFragment"
             app:destination="@id/seriesFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_fullPhotoVPFragment"
+            app:destination="@id/fullPhotoVPFragment" />
     </fragment>
     <fragment
         android:id="@+id/acterListFragment"
@@ -126,6 +129,9 @@
         <action
             android:id="@+id/action_actorDetailFragment_to_filmographyFragment"
             app:destination="@id/filmographyFragment" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_fullPhotoFragment"
+            app:destination="@id/fullPhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/filmographyFragment"
@@ -153,6 +159,9 @@
         <argument
             android:name="id"
             app:argType="long" />
+        <action
+            android:id="@+id/action_photographyFragment_to_fullPhotoVPFragment"
+            app:destination="@id/fullPhotoVPFragment" />
     </fragment>
     <fragment
         android:id="@+id/seriesFragment"
@@ -165,5 +174,35 @@
         <argument
             android:name="name"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullPhotoFragment"
+        android:name="com.skyyaros.skillcinema.ui.fullphoto.FullPhotoFragment"
+        android:label="FullPhotoFragment"
+        tools:layout="@layout/full_photo_fr_and_vp">
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullPhotoVPFragment"
+        android:name="com.skyyaros.skillcinema.ui.fullphoto.FullPhotoVPFragment"
+        android:label="FullPhotoVPFragment"
+        tools:layout="@layout/full_photo_vp_fragment">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="urls"
+            app:argType="com.skyyaros.skillcinema.entity.ImageItem[]" />
+        <argument
+            android:name="curUrl"
+            app:argType="string" />
+        <argument
+            android:name="id"
+            app:argType="long" />
     </fragment>
 </navigation>

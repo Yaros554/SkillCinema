@@ -215,6 +215,7 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
         return if (detailFilm != null) {
             val actors = getActorsInFilm(id)
             val images = getImagesInFilm(id)
+            val videos = getVideosInFilm(id)
             val similarsHalf = getSimilarFilms(id)
             val similars10 = if (similarsHalf != null)
                 getFilmPreviewPage(similarsHalf, 1)
@@ -225,7 +226,7 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
             else
                 null
             val money = getMoney(id)
-            FullDetailFilm(detailFilm, actors, images, similarsHalf, similars10, seasons, money)
+            FullDetailFilm(detailFilm, actors, images, videos, similarsHalf, similars10, seasons, money)
         } else {
             null
         }
@@ -305,6 +306,27 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
             }
             val res: List<ImageResponse> = prevRes.filter { it != null && it.total > 0 } as List<ImageResponse>
             res.ifEmpty { null }
+        } catch (t: Throwable) {
+            null
+        }
+    }
+
+    private suspend fun getVideosInFilm(id: Long): List<VideoItem>? {
+        return try {
+            var apiKey = KinopoiskApi.getCurrentKey()
+            var res = kinopoiskApi.getVideoInFilm(id, apiKey)
+            var count = 1
+            val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
+            while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
+                apiKey = KinopoiskApi.getNewKey(apiKey)
+                res = kinopoiskApi.getVideoInFilm(id, apiKey)
+                count++
+            }
+            if (res.isSuccessful && res.body()!!.total > 0) {
+                res.body()!!.items
+            } else {
+                null
+            }
         } catch (t: Throwable) {
             null
         }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -27,6 +28,7 @@ import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAdapter
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAllAdapter
+import com.skyyaros.skillcinema.ui.video.VideoActivity
 import java.util.*
 
 class DetailFilmFragment: Fragment() {
@@ -89,6 +91,7 @@ class DetailFilmFragment: Fragment() {
                         val leftMargin = LeftSpaceDecorator(requireContext().resources.getDimension(R.dimen.big_margin).toInt())
                         setupActorList(stateDetailFilm.data.actors, itemMargin, leftMargin)
                         setupImages(stateDetailFilm.data.images, itemMargin, leftMargin)
+                        setupVideo(stateDetailFilm.data.videos, itemMargin, leftMargin)
                         setupSimilarFilm(stateDetailFilm.data.similarHalf, stateDetailFilm.data.similar10, itemMargin, leftMargin)
                         setupSerials(stateDetailFilm.data.series, item)
                     }
@@ -376,6 +379,25 @@ class DetailFilmFragment: Fragment() {
         } else {
             bind.layoutGallery.visibility = View.GONE
             bind.listPhotos.visibility = View.GONE
+        }
+    }
+
+    private fun setupVideo(items: List<VideoItem>?, itemMargin: AdaptiveSpacingItemDecoration, leftMargin: LeftSpaceDecorator) {
+        val filterItems = items?.filter { it.site == "YOUTUBE" }
+        if (!filterItems.isNullOrEmpty()) {
+            val listVideoPreviewAdapter = VideoPreviewAdapter(filterItems , viewLifecycleOwner.lifecycle) {
+                val intent = VideoActivity.newIntent(requireContext(), filterItems, it)
+                startActivity(intent)
+            }
+            bind.listVideos.adapter = listVideoPreviewAdapter
+            if (bind.listVideos.itemDecorationCount == 0) {
+                bind.listVideos.addItemDecoration(itemMargin)
+                bind.listVideos.addItemDecoration(leftMargin)
+            }
+            bind.textCountVideos.text = filterItems.size.toString()
+        } else {
+            bind.layoutVideo.visibility = View.GONE
+            bind.listVideos.visibility = View.GONE
         }
     }
 

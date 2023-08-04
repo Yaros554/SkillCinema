@@ -327,6 +327,40 @@
                 tools:listitem="@layout/photo_preview" />
 
             <FrameLayout
+                android:id="@+id/layoutVideo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="32dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="@string/detail_text_video" />
+
+                <TextView
+                    android:id="@+id/text_count_videos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:textColor="?attr/colorPrimary"
+                    android:textStyle="bold"
+                    tools:text="9" />
+            </FrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listVideos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <FrameLayout
                 android:id="@+id/layoutFilms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

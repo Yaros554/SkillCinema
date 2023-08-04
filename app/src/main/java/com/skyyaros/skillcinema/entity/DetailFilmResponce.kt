@@ -53,6 +53,21 @@ data class ImageItem(
     @Json(name = "previewUrl") val previewUrl: String
 ): Parcelable
 
+@Parcelize
+@JsonClass(generateAdapter = true)
+data class VideoResponse(
+    @Json(name = "total") val total: Int,
+    @Json(name = "items") val items: List<VideoItem>
+): Parcelable
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+data class VideoItem(
+    @Json(name = "url") val url: String,
+    @Json(name = "name") val name: String,
+    @Json(name = "site") val site: String
+): Parcelable
+
 @JsonClass(generateAdapter = true)
 data class SimilarFilmsResponse(
     @Json(name = "items") val items: List<FilmPreviewHalf>
@@ -97,6 +112,7 @@ data class FullDetailFilm(
     val detailFilm: DetailFilm,
     val actors: List<ActorPreview>?,
     val images: List<ImageResponse>?,
+    val videos: List<VideoItem>?,
     val similarHalf: List<FilmPreviewHalf>?,
     val similar10: List<FilmPreview>?,
     val series: List<Season>?,

@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkillCinema">
         <activity
+            android:name=".ui.video.VideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:exported="false" />
+        <activity
             android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>

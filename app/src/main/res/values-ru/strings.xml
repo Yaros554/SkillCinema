@@ -25,6 +25,7 @@
     <string name="detail_text_acters">В фильме снимались</string>
     <string name="detail_text_producers">Над фильмом работали</string>
     <string name="detail_text_gallery">Галерея</string>
+    <string name="detail_text_video">Триллеры и фрагменты</string>
     <string name="detail_text_similar">Похожие фильмы</string>
     <string name="detail_text_series">Сезоны и серии</string>
     <string name="detail_string_time">%1$d ч %2$d мин</string>

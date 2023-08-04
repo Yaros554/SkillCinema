@@ -43,6 +43,12 @@ interface KinopoiskApi {
         @HeaderMap header: Map<String, String>
     ): Response<ImageResponse>
 
+    @GET("api/v2.2/films/{id}/videos")
+    suspend fun getVideoInFilm(
+        @Path("id") id: Long,
+        @HeaderMap header: Map<String, String>
+    ): Response<VideoResponse>
+
     @GET("api/v2.2/films/{id}/similars")
     suspend fun getSimilarFilms(@Path("id") id: Long, @HeaderMap header: Map<String, String>): Response<SimilarFilmsResponse>
 

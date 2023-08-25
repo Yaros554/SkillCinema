@@ -95,6 +95,9 @@
         <action
             android:id="@+id/action_detailFilmFragment_to_fullPhotoVPFragment"
             app:destination="@id/fullPhotoVPFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_fullscreenDialogInfo"
+            app:destination="@id/fullscreenDialogInfo" />
     </fragment>
     <fragment
         android:id="@+id/acterListFragment"
@@ -132,6 +135,9 @@
         <action
             android:id="@+id/action_actorDetailFragment_to_fullPhotoFragment"
             app:destination="@id/fullPhotoFragment" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_fullscreenDialogInfo"
+            app:destination="@id/fullscreenDialogInfo" />
     </fragment>
     <fragment
         android:id="@+id/filmographyFragment"
@@ -162,6 +168,9 @@
         <action
             android:id="@+id/action_photographyFragment_to_fullPhotoVPFragment"
             app:destination="@id/fullPhotoVPFragment" />
+        <action
+            android:id="@+id/action_photographyFragment_to_fullscreenDialogInfo"
+            app:destination="@id/fullscreenDialogInfo" />
     </fragment>
     <fragment
         android:id="@+id/seriesFragment"
@@ -205,4 +214,18 @@
             android:name="id"
             app:argType="long" />
     </fragment>
+
+    <dialog
+        android:id="@+id/fullscreenDialogInfo"
+        android:name="com.skyyaros.skillcinema.ui.FullscreenDialogInfo"
+        android:label="FullscreenDialogInfo"
+        tools:layout="@layout/dialog_info" >
+
+        <argument
+            android:name="mode"
+            app:argType="integer" />
+        <argument
+            android:name="isChecked"
+            app:argType="boolean" />
+    </dialog>
 </navigation>

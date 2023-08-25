@@ -1,5 +1,7 @@
 package com.skyyaros.skillcinema.ui
 
+import kotlinx.coroutines.flow.SharedFlow
+
 interface ActivityCallbacks {
     fun showDownBar()
     fun hideDownBar()
@@ -8,4 +10,6 @@ interface ActivityCallbacks {
     fun fullScreenOn()
     fun fullScreenOff()
     fun goToFullScreenMode(needGo: Boolean)
+    fun emitResult(mode: Int, isChecked: Boolean)
+    fun getResultStream(mode: Int): SharedFlow<Boolean>
 }

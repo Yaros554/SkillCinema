@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayoutMediator
@@ -17,6 +18,8 @@ import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.PhotographyFragmentBinding
 import com.skyyaros.skillcinema.entity.ImageItem
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import java.util.*
 
 class PhotographyFragment: Fragment() {
@@ -27,13 +30,33 @@ class PhotographyFragment: Fragment() {
     val viewModel: PhotographyViewModel by viewModels {
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return PhotographyViewModel(args.data.toList(), args.id, App.component.getKinopoiskRepository()) as T
+                return PhotographyViewModel(
+                    args.data.toList(), args.id,
+                    App.component.getKinopoiskRepository(),
+                    App.component.getStoreRepository()
+                ) as T
             }
         }
     }
     val goToPhotos: (String, List<ImageItem>, String)->Unit = { title, urls, curUrl ->
-        val action = PhotographyFragmentDirections.actionPhotographyFragmentToFullPhotoVPFragment(title, urls.toTypedArray(), curUrl, args.id)
-        findNavController().navigate(action)
+        viewModel.title = title
+        viewModel.urls = urls
+        viewModel.curUrl = curUrl
+        val status = viewModel.statusPhotoDialogFlow.value
+        if (status != 2) {
+            val action = PhotographyFragmentDirections.actionPhotographyFragmentToFullscreenDialogInfo(
+                    1,
+                    status == 0
+                )
+            findNavController().navigate(action)
+        } else {
+            val action = PhotographyFragmentDirections.actionPhotographyFragmentToFullPhotoVPFragment(
+                viewModel.title,
+                viewModel.urls.toTypedArray(),
+                viewModel.curUrl, args.id
+            )
+            findNavController().navigate(action)
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -86,6 +109,24 @@ class PhotographyFragment: Fragment() {
             }
             tab.requestLayout()
         }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityCallbacks!!.getResultStream(1).collect { isChecked ->
+                viewModel.setDialogStatus(if (isChecked) 2 else 1)
+                val action = PhotographyFragmentDirections.actionPhotographyFragmentToFullPhotoVPFragment(
+                    viewModel.title,
+                    viewModel.urls.toTypedArray(),
+                    viewModel.curUrl, args.id
+                )
+                while ((findNavController().currentDestination?.label ?: "") != "PhotographyFragment")
+                    delay(1)
+                findNavController().navigate(action)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activityCallbacks!!.showUpBar(getString(R.string.detail_text_gallery))
     }
 
     override fun onDestroyView() {

@@ -38,4 +38,10 @@
 
     <string name="series_text_season">Season</string>
     <string name="series_text_number">%1$d Episode.</string>
+
+    <string name="dialog_fullscreen_title">Fullscreen mode</string>
+    <string name="dialog_fullscreen_text1">To exit full screen mode, tap the screen.\nTo return to full screen mode, tap the screen again.</string>
+    <string name="dialog_fullscreen_text2">To exit full screen mode, rotate your device to portrait mode.\nRotate your device to landscape mode to return to full screen mode.</string>
+    <string name="dialog_fullscreen_checkbox">Don\'t show again</string>
+    <string name="dialog_fullscreen_button">Okay</string>
 </resources>

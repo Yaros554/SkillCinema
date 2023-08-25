@@ -27,6 +27,8 @@ import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAdapter
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAllAdapter
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import java.util.Locale
 
 class ActorDetailFragment: Fragment() {
@@ -37,7 +39,11 @@ class ActorDetailFragment: Fragment() {
     private val viewModel: ActorDetailViewModel by viewModels {
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ActorDetailViewModel(App.component.getKinopoiskRepository(), args.id) as T
+                return ActorDetailViewModel(
+                    App.component.getKinopoiskRepository(),
+                    App.component.getStoreRepository(),
+                    args.id
+                ) as T
             }
         }
     }
@@ -102,8 +108,19 @@ class ActorDetailFragment: Fragment() {
                 item.nameRu ?: item.nameEn ?: ""
             else
                 item.nameEn ?: item.nameRu ?: ""
-            val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullPhotoFragment(name, item.posterUrl)
-            findNavController().navigate(action)
+            viewModel.name = name
+            viewModel.posterUrl = item.posterUrl
+            val status = viewModel.statusPhotoDialogFlow.value
+            if (status != 2) {
+                val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullscreenDialogInfo(
+                        1,
+                        status == 0
+                    )
+                findNavController().navigate(action)
+            } else {
+                val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullPhotoFragment(viewModel.name, viewModel.posterUrl)
+                findNavController().navigate(action)
+            }
         }
         bind.name.text = if (Locale.getDefault().language == "ru") {
             if (!item.nameRu.isNullOrBlank())
@@ -154,6 +171,15 @@ class ActorDetailFragment: Fragment() {
         bind.age.text = ageText.toString()
         if (item.hasAwards != null && item.hasAwards >= 1) {
             bind.priz.text = getString(R.string.detail_text_priz, item.hasAwards)
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityCallbacks!!.getResultStream(1).collect { isChecked ->
+                viewModel.setDialogStatus(if (isChecked) 2 else 1)
+                val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullPhotoFragment(viewModel.name, viewModel.posterUrl)
+                while ((findNavController().currentDestination?.label ?: "") != "ActorDetailFragment")
+                    delay(1)
+                findNavController().navigate(action)
+            }
         }
     }
 
@@ -291,6 +317,11 @@ class ActorDetailFragment: Fragment() {
         } else {
             bind.layoutAllFilms.visibility = View.GONE
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activityCallbacks!!.showUpBar("")
     }
 
     override fun onDestroyView() {

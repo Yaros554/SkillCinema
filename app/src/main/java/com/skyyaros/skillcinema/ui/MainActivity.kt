@@ -19,6 +19,7 @@ import com.skyyaros.skillcinema.databinding.ActivityMainBinding
 import com.skyyaros.skillcinema.ui.hello.HelloFragment
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 
@@ -144,5 +145,16 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
             delay(300)
             binding.toolbar.visibility = View.VISIBLE
         }
+    }
+
+    override fun emitResult(mode: Int, isChecked: Boolean) {
+        viewModel.emitResult(mode, isChecked)
+    }
+
+    override fun getResultStream(mode: Int): SharedFlow<Boolean> {
+        return if (mode == 1)
+            viewModel.resultF
+        else
+            viewModel.resultV
     }
 }

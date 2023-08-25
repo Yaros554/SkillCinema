@@ -39,4 +39,10 @@
 
     <string name="series_text_season">Сезон</string>
     <string name="series_text_number">%1$d Серия.</string>
+
+    <string name="dialog_fullscreen_title">Полноэкранный режим</string>
+    <string name="dialog_fullscreen_text1">Для выхода из полноэкранного режима нажмите на экран.\nДля возврата в полноэкранный режим нажмите на экран снова.</string>
+    <string name="dialog_fullscreen_text2">Для выхода из полноэкранного режима поверните устройство в портретный режим.\nДля возврата в полноэкранный режим поверните устройство в альбомный режим.</string>
+    <string name="dialog_fullscreen_checkbox">Не показывать больше</string>
+    <string name="dialog_fullscreen_button">Хорошо</string>
 </resources>

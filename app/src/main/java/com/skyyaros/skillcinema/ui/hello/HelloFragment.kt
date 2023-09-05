@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.HelloFragmentBinding
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import com.skyyaros.skillcinema.ui.BackPressedListener
 
 class HelloFragment: Fragment(), BackPressedListener {
     private var _bind: HelloFragmentBinding? = null
@@ -90,9 +91,10 @@ class HelloFragment: Fragment(), BackPressedListener {
         super.onDetach()
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed(): Boolean {
         val action = HelloFragmentDirections.actionHelloFragmentToHomeFragment()
         findNavController().navigate(action)
+        return true
     }
 
     data class HelloFragmentData(

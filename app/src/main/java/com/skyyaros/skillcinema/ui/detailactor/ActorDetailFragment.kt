@@ -28,7 +28,6 @@ import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAdapter
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAllAdapter
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import java.util.Locale
 
 class ActorDetailFragment: Fragment() {
@@ -173,7 +172,7 @@ class ActorDetailFragment: Fragment() {
             bind.priz.text = getString(R.string.detail_text_priz, item.hasAwards)
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getResultStream(1).collect { isChecked ->
+            activityCallbacks!!.getResultStreamFV(1).collect { isChecked ->
                 viewModel.setDialogStatus(if (isChecked) 2 else 1)
                 val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullPhotoFragment(viewModel.name, viewModel.posterUrl)
                 while ((findNavController().currentDestination?.label ?: "") != "ActorDetailFragment")

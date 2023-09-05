@@ -1,5 +1,6 @@
 package com.skyyaros.skillcinema.data
 
+import android.util.Log
 import com.skyyaros.skillcinema.entity.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -127,7 +128,7 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
                 count++
             }
             if (res.isSuccessful) {
-                val films = res.body()!!.usefulData.filter {
+                val films = res.body()!!.usefulData!!.filter {
                     val filmTimeMillis = formatter.parse(it.premiereRu!!)!!.time
                     filmTimeMillis in curTimeMillis..curTimeMillisTwoWeek
                 }
@@ -140,7 +141,7 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
                         count++
                     }
                     if (res2.isSuccessful) {
-                        val films2 = res2.body()!!.usefulData.filter {
+                        val films2 = res2.body()!!.usefulData!!.filter {
                             val filmTimeMillis = formatter.parse(it.premiereRu!!)!!.time
                             filmTimeMillis in curTimeMillis..curTimeMillisTwoWeek
                         }
@@ -171,7 +172,7 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
                 count++
             }
             if (res.isSuccessful) {
-                res.body()!!.usefulData
+                res.body()!!.usefulDataTop!!
             } else {
                 null
             }
@@ -201,7 +202,7 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
                 count++
             }
             if (res.isSuccessful) {
-                res.body()!!.usefulData
+                res.body()!!.usefulData!!
             } else {
                 null
             }
@@ -486,6 +487,41 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
             if (res.isSuccessful) {
                 val data = res.body()!!.items
                 data.ifEmpty { null }
+            } else {
+                null
+            }
+        } catch (t: Throwable) {
+            null
+        }
+    }
+
+    suspend fun getSearchFilms(searchQuery: SearchQuery, page: Int): List<FilmPreview>? {
+        return try {
+            var apiKey = KinopoiskApi.getCurrentKey()
+            var res = kinopoiskApi.getSearchFilms(
+                searchQuery.countries, searchQuery.genres,
+                searchQuery.order, searchQuery.type,
+                searchQuery.ratingFrom, searchQuery.ratingTo,
+                searchQuery.yearFrom, searchQuery.yearTo,
+                searchQuery.keyword, page,
+                apiKey
+            )
+            var count = 1
+            val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
+            while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
+                apiKey = KinopoiskApi.getNewKey(apiKey)
+                res = kinopoiskApi.getSearchFilms(
+                    searchQuery.countries, searchQuery.genres,
+                    searchQuery.order, searchQuery.type,
+                    searchQuery.ratingFrom, searchQuery.ratingTo,
+                    searchQuery.yearFrom, searchQuery.yearTo,
+                    searchQuery.keyword, page,
+                    apiKey
+                )
+                count++
+            }
+            if (res.isSuccessful) {
+                res.body()!!.usefulData!!
             } else {
                 null
             }

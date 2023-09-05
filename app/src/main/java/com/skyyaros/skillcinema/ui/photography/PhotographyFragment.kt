@@ -19,7 +19,6 @@ import com.skyyaros.skillcinema.databinding.PhotographyFragmentBinding
 import com.skyyaros.skillcinema.entity.ImageItem
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import java.util.*
 
 class PhotographyFragment: Fragment() {
@@ -110,7 +109,7 @@ class PhotographyFragment: Fragment() {
             tab.requestLayout()
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getResultStream(1).collect { isChecked ->
+            activityCallbacks!!.getResultStreamFV(1).collect { isChecked ->
                 viewModel.setDialogStatus(if (isChecked) 2 else 1)
                 val action = PhotographyFragmentDirections.actionPhotographyFragmentToFullPhotoVPFragment(
                     viewModel.title,

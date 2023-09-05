@@ -1,5 +1,6 @@
 package com.skyyaros.skillcinema.ui
 
+import com.skyyaros.skillcinema.entity.SearchQuery
 import kotlinx.coroutines.flow.SharedFlow
 
 interface ActivityCallbacks {
@@ -10,6 +11,10 @@ interface ActivityCallbacks {
     fun fullScreenOn()
     fun fullScreenOff()
     fun goToFullScreenMode(needGo: Boolean)
-    fun emitResult(mode: Int, isChecked: Boolean)
-    fun getResultStream(mode: Int): SharedFlow<Boolean>
+    fun emitResultFV(mode: Int, isChecked: Boolean)
+    fun getResultStreamFV(mode: Int): SharedFlow<Boolean>
+    fun getSearchQuery(): SearchQuery
+    fun setSearchQuery(searchQuery: SearchQuery)
+    fun emitResBackDialog(userSelect: Int)
+    fun getResStreamBackDialog(): SharedFlow<Int>
 }

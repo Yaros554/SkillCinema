@@ -24,9 +24,9 @@ class PersonFragment: Fragment() {
         return bind.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        activityCallbacks!!.showDownBar()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        activityCallbacks!!.hideUpBar()
     }
 
     override fun onDestroyView() {

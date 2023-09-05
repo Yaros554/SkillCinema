@@ -16,7 +16,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.ActivityMainBinding
+import com.skyyaros.skillcinema.entity.SearchQuery
 import com.skyyaros.skillcinema.ui.hello.HelloFragment
+import com.skyyaros.skillcinema.ui.search.SetSearchFragment
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
@@ -62,16 +64,43 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
     override fun onResume() {
         super.onResume()
         if (!viewModel.isFullPhotoFragment) {
-            goToFullScreenMode(viewModel.isFullPhotoFragment)
+            val statusBarHeightId = resources.getIdentifier("status_bar_height", "dimen", "android")
+            val statusBarHeight = resources.getDimensionPixelSize(statusBarHeightId)
+            val pToolbar = binding.toolbar.layoutParams as ViewGroup.MarginLayoutParams
+            pToolbar.setMargins(0, statusBarHeight, 0, 0)
+            binding.toolbar.requestLayout()
+            val pContainer = binding.navHostFragment.layoutParams as ViewGroup.MarginLayoutParams
+            pContainer.setMargins(0, statusBarHeight, 0, 0)
+            binding.navHostFragment.requestLayout()
+            val nightModeFlags: Int = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            window.decorView.systemUiVisibility = if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES)
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            else
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration)
+        return if (SetSearchFragment.backPressedListener != null) {
+            val did = SetSearchFragment.backPressedListener!!.onBackPressed()
+            if (!did)
+                navController.navigateUp(appBarConfiguration)
+            else
+                false
+        } else {
+            navController.navigateUp(appBarConfiguration)
+        }
     }
 
     override fun onBackPressed() {
-        HelloFragment.backPressedListener?.onBackPressed() ?: super.onBackPressed()
+        if (HelloFragment.backPressedListener != null)
+            HelloFragment.backPressedListener!!.onBackPressed()
+        else if (SetSearchFragment.backPressedListener != null) {
+            val did = SetSearchFragment.backPressedListener!!.onBackPressed()
+            if (!did)
+                super.onBackPressed()
+        } else
+            super.onBackPressed()
     }
 
     override fun showDownBar() {
@@ -147,14 +176,30 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
         }
     }
 
-    override fun emitResult(mode: Int, isChecked: Boolean) {
-        viewModel.emitResult(mode, isChecked)
+    override fun emitResultFV(mode: Int, isChecked: Boolean) {
+        viewModel.emitResultFV(mode, isChecked)
     }
 
-    override fun getResultStream(mode: Int): SharedFlow<Boolean> {
+    override fun getResultStreamFV(mode: Int): SharedFlow<Boolean> {
         return if (mode == 1)
             viewModel.resultF
         else
             viewModel.resultV
+    }
+
+    override fun emitResBackDialog(userSelect: Int) {
+        viewModel.emitResBackDialog(userSelect)
+    }
+
+    override fun getResStreamBackDialog(): SharedFlow<Int> {
+        return viewModel.resBackDialog
+    }
+
+    override fun getSearchQuery(): SearchQuery {
+        return viewModel.searchQuery
+    }
+
+    override fun setSearchQuery(searchQuery: SearchQuery) {
+        viewModel.searchQuery = searchQuery
     }
 }

@@ -32,7 +32,7 @@ class FullscreenDialogInfo: DialogFragment() {
                 requireContext().getString(R.string.dialog_fullscreen_text2)
             bind.checkbox.isChecked = args.isChecked
             bind.button.setOnClickListener {
-                activityCallbacks!!.emitResult(args.mode, bind.checkbox.isChecked)
+                activityCallbacks!!.emitResultFV(args.mode, bind.checkbox.isChecked)
                 dismiss()
             }
             builder.setView(bind.root)
@@ -43,7 +43,7 @@ class FullscreenDialogInfo: DialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        activityCallbacks!!.emitResult(args.mode, bind.checkbox.isChecked)
+        activityCallbacks!!.emitResultFV(args.mode, bind.checkbox.isChecked)
         super.onCancel(dialog)
     }
 

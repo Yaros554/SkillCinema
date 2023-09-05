@@ -12,10 +12,10 @@ import java.util.*
 
 interface KinopoiskApi {
     @GET("api/v2.2/films/premieres")
-    suspend fun getPremieres(@Query("year") year: Int, @Query("month") month: String, @HeaderMap header: Map<String, String>): Response<PremieresResponse>
+    suspend fun getPremieres(@Query("year") year: Int, @Query("month") month: String, @HeaderMap header: Map<String, String>): Response<ListFilmPreviewResponse>
 
     @GET("api/v2.2/films/top")
-    suspend fun getTop(@Query("type") type: String, @Query("page") page: Int, @HeaderMap header: Map<String, String>): Response<TopResponse>
+    suspend fun getTop(@Query("type") type: String, @Query("page") page: Int, @HeaderMap header: Map<String, String>): Response<ListFilmPreviewResponse>
 
     @GET("api/v2.2/films")
     suspend fun getFiltersOrSeries(
@@ -24,7 +24,7 @@ interface KinopoiskApi {
         @Query("genres") genres: Long?,
         @Query("page") page: Int,
         @HeaderMap header: Map<String, String>
-    ): Response<FiltersOrSeriesResponse>
+    ): Response<ListFilmPreviewResponse>
 
     @GET("api/v2.2/films/filters")
     suspend fun getGenresAndCountries(@HeaderMap header: Map<String, String>): Response<GenresAndCountriesResponse>
@@ -63,6 +63,21 @@ interface KinopoiskApi {
 
     @GET("api/v2.2/films/{id}/box_office")
     suspend fun getMoney(@Path("id") id: Long, @HeaderMap header: Map<String, String>): Response<MoneyResponse>
+
+    @GET("api/v2.2/films")
+    suspend fun getSearchFilms(
+        @Query("countries") countries: Long?,
+        @Query("genres") genres: Long?,
+        @Query("order") order: String,
+        @Query("type") type: String,
+        @Query("ratingFrom") ratingFrom: Int,
+        @Query("ratingTo") ratingTo: Int,
+        @Query("yearFrom") yearFrom: Int,
+        @Query("yearTo") yearTo: Int,
+        @Query("keyword") keyword: String?,
+        @Query("page") page: Int,
+        @HeaderMap header: Map<String, String>
+    ): Response<ListFilmPreviewResponse>
 
     companion object RetrofitProvider {
         private val mutex = Mutex()

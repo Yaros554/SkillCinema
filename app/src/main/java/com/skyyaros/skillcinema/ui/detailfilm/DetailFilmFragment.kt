@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -25,7 +24,6 @@ import com.skyyaros.skillcinema.databinding.DetailFilmFragmentBinding
 import com.skyyaros.skillcinema.entity.*
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
-import com.skyyaros.skillcinema.ui.FullscreenDialogInfo
 import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAdapter
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAllAdapter
@@ -393,7 +391,7 @@ class DetailFilmFragment: Fragment() {
                 bind.textCountPhotos.visibility = View.GONE
             }
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                activityCallbacks!!.getResultStream(1).collect { isChecked ->
+                activityCallbacks!!.getResultStreamFV(1).collect { isChecked ->
                     viewModel.setDialogStatus(1, if (isChecked) 2 else 1)
                     val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullPhotoVPFragment(
                         "NO CATEGORY",
@@ -437,7 +435,7 @@ class DetailFilmFragment: Fragment() {
             }
             bind.textCountVideos.text = filterItems.size.toString()
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                activityCallbacks!!.getResultStream(2).collect { isChecked ->
+                activityCallbacks!!.getResultStreamFV(2).collect { isChecked ->
                     viewModel.setDialogStatus(2, if (isChecked) 2 else 1)
                     val intent = VideoActivity.newIntent(requireContext(), viewModel.listVideoItemsSave!!, viewModel.curVideoUrlSave!!)
                     while ((findNavController().currentDestination?.label ?: "") != "DetailFilmFragment")

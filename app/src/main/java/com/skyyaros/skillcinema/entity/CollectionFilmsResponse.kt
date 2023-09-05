@@ -6,22 +6,9 @@ import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @JsonClass(generateAdapter = true)
-data class PremieresResponse(
-    @Json(name = "total") val count: Int,
-    @Json(name = "items") val usefulData: List<FilmPreview>
-)
-
-@JsonClass(generateAdapter = true)
-data class TopResponse(
-    @Json(name = "pagesCount") val pagesCount: Int,
-    @Json(name = "films") val usefulData: List<FilmPreview>
-)
-
-@JsonClass(generateAdapter = true)
-data class FiltersOrSeriesResponse(
-    @Json(name = "total") val count: Int,
-    @Json(name = "totalPages") val pagesCount: Int,
-    @Json(name = "items") val usefulData: List<FilmPreview>
+data class ListFilmPreviewResponse(
+    @Json(name = "items") val usefulData: List<FilmPreview>?,
+    @Json(name = "films") val usefulDataTop: List<FilmPreview>?
 )
 
 @Parcelize

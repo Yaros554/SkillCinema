@@ -214,7 +214,6 @@
             android:name="id"
             app:argType="long" />
     </fragment>
-
     <dialog
         android:id="@+id/fullscreenDialogInfo"
         android:name="com.skyyaros.skillcinema.ui.FullscreenDialogInfo"

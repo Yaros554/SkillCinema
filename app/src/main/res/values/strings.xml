@@ -44,4 +44,13 @@
     <string name="dialog_fullscreen_text2">To exit full screen mode, rotate your device to portrait mode.\nRotate your device to landscape mode to return to full screen mode.</string>
     <string name="dialog_fullscreen_checkbox">Don\'t show again</string>
     <string name="dialog_fullscreen_button">Okay</string>
+
+    <string name="search_text_no_result">Unfortunately, your search returned no results</string>
+    <string name="search_set_button_ok">Apply</string>
+    <string name="search_set_title">Search settings</string>
+    <string name="search_dialog_back_title">SaveAndExit</string>
+    <string name="search_dialog_back_text">Save current settings and exit?</string>
+    <string name="search_dialog_back_buttonOk">Okay</string>
+    <string name="search_dialog_back_buttonCancel">Cancel</string>
+    <string name="search_dialog_back_buttonNo">No</string>
 </resources>

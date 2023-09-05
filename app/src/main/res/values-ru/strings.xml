@@ -45,4 +45,13 @@
     <string name="dialog_fullscreen_text2">Для выхода из полноэкранного режима поверните устройство в портретный режим.\nДля возврата в полноэкранный режим поверните устройство в альбомный режим.</string>
     <string name="dialog_fullscreen_checkbox">Не показывать больше</string>
     <string name="dialog_fullscreen_button">Хорошо</string>
+
+    <string name="search_text_no_result">К сожалению, по вашему запросу ничего не найдено</string>
+    <string name="search_set_button_ok">Применить</string>
+    <string name="search_set_title">Настройки поиска</string>
+    <string name="search_dialog_back_title">Сохранить и Выйти</string>
+    <string name="search_dialog_back_text">Сохранить текущие настройки и выйти?</string>
+    <string name="search_dialog_back_buttonOk">Да</string>
+    <string name="search_dialog_back_buttonCancel">Отмена</string>
+    <string name="search_dialog_back_buttonNo">Нет</string>
 </resources>

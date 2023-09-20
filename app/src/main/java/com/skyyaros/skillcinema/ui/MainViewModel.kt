@@ -3,6 +3,8 @@ package com.skyyaros.skillcinema.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skyyaros.skillcinema.entity.SearchQuery
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -15,8 +17,12 @@ class MainViewModel: ViewModel() {
     val resultV = _resultsV.asSharedFlow()
     private val _resBackDialog = MutableSharedFlow<Int>()
     val resBackDialog = _resBackDialog.asSharedFlow()
+    private val _resGenreCountry = MutableSharedFlow<Long>(1)
+    val resGenreCountry = _resGenreCountry.asSharedFlow()
+    private val _resYear = MutableSharedFlow<Int>(1)
+    val resYear = _resYear.asSharedFlow()
     var searchQuery = SearchQuery(
-        null, null, "RATING", "ALL",
+        null, null, "YEAR", "ALL",
         0, 10, 1000, 3000,
         null
     )
@@ -34,5 +40,27 @@ class MainViewModel: ViewModel() {
         viewModelScope.launch {
             _resBackDialog.emit(userSelect)
         }
+    }
+
+    fun emitGenreCountry(id: Long) {
+        viewModelScope.launch {
+            _resGenreCountry.emit(id)
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun cleanGenreCountry() {
+        _resGenreCountry.resetReplayCache()
+    }
+
+    fun emitYear(years: Int) {
+        viewModelScope.launch {
+            _resYear.emit(years)
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun cleanYear() {
+        _resYear.resetReplayCache()
     }
 }

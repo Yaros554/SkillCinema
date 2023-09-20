@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip1"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip4"
+        app:layout_constraintEnd_toStartOf="@+id/chip2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip2"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip5"
+        app:layout_constraintEnd_toStartOf="@+id/chip3"
+        app:layout_constraintStart_toEndOf="@+id/chip1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip3"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chip2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip4"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip7"
+        app:layout_constraintEnd_toStartOf="@+id/chip5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chip1" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip5"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip8"
+        app:layout_constraintEnd_toStartOf="@+id/chip6"
+        app:layout_constraintStart_toEndOf="@+id/chip4"
+        app:layout_constraintTop_toBottomOf="@+id/chip2" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip6"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chip5"
+        app:layout_constraintTop_toBottomOf="@+id/chip3" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip7"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip10"
+        app:layout_constraintEnd_toStartOf="@+id/chip8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chip4" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip8"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip11"
+        app:layout_constraintEnd_toStartOf="@+id/chip9"
+        app:layout_constraintStart_toEndOf="@+id/chip7"
+        app:layout_constraintTop_toBottomOf="@+id/chip5" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip9"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toTopOf="@+id/chip12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chip8"
+        app:layout_constraintTop_toBottomOf="@+id/chip6" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip10"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/chip11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chip7" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip11"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/chip12"
+        app:layout_constraintStart_toEndOf="@+id/chip10"
+        app:layout_constraintTop_toBottomOf="@+id/chip8" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip12"
+        style="@style/Widget.App.ChipYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1998"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chip11"
+        app:layout_constraintTop_toBottomOf="@+id/chip9" />
+</androidx.constraintlayout.widget.ConstraintLayout>

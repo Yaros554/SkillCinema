@@ -2,6 +2,7 @@ package com.skyyaros.skillcinema.ui.search
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -41,6 +42,11 @@ class BackDialog: DialogFragment() {
             myDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             myDialog
         } ?: throw IllegalStateException("Activity can not be null")
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        activityCallbacks!!.emitResBackDialog(2)
+        super.onCancel(dialog)
     }
 
     override fun onDetach() {

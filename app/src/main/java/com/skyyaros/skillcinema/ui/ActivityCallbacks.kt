@@ -17,4 +17,10 @@ interface ActivityCallbacks {
     fun setSearchQuery(searchQuery: SearchQuery)
     fun emitResBackDialog(userSelect: Int)
     fun getResStreamBackDialog(): SharedFlow<Int>
+    fun emitGenreCountry(id: Long)
+    fun getGenreCountryFlow(): SharedFlow<Long>
+    fun cleanGenreCountry()
+    fun emitYear(years: Int)
+    fun getYearFlow(): SharedFlow<Int>
+    fun cleanYear()
 }

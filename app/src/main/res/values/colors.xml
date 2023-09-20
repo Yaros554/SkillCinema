@@ -12,5 +12,6 @@
     <color name="skill_black_variant" >#FF373737</color>
     <color name="skill_grey" >#FFB5B5C9</color>
     <color name="skill_grey2" >#FF838390</color>
+    <color name="skill_grey3">#FF434350</color>
     <color name="skill_purple">#FF3D3BFF</color>
 </resources>

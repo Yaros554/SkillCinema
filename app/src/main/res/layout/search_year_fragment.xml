@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:layout_marginBottom="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_set_year_text_all" />
+
+            <TextView
+                android:id="@+id/searchTextFrom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_set_year_text_from"
+                android:textColor="@color/skill_grey2"/>
+
+            <FrameLayout
+                android:id="@+id/frameLayoutFrom"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/ramka"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/yearFrom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="start|top"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="1998-2009" />
+
+                <ImageView
+                    android:id="@+id/image_forward_from"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/strelka_right"
+                    android:layout_gravity="end|top"
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageView
+                    android:id="@+id/image_back_from"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/strelka_left"
+                    android:layout_gravity="end|top"
+                    android:layout_marginEnd="42dp"/>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPagerFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="34dp" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/searchTextTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_set_year_text_to"
+                android:textColor="@color/skill_grey2"
+                android:layout_marginTop="16dp"/>
+
+            <FrameLayout
+                android:id="@+id/frameLayoutTo"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/ramka"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/yearTo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="start|top"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="1998-2009" />
+
+                <ImageView
+                    android:id="@+id/image_forward_to"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/strelka_right"
+                    android:layout_gravity="end|top" />
+
+                <ImageView
+                    android:id="@+id/image_back_to"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:src="@drawable/strelka_left"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="42dp"/>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPagerTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="34dp" />
+
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        app:cornerRadius="8dp"
+        android:text="@string/search_set_button_ok"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="8dp" />
+
+</FrameLayout>

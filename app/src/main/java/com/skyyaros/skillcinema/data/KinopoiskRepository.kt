@@ -14,6 +14,10 @@ import java.util.*
 class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
     private val cacheFilms = mutableMapOf<Long, FilmPreview>()
     private val mutex = Mutex()
+    var listGenres: List<GenreForFilter>? = null
+        private set
+    var listCountries: List<CountryForFilter>? = null
+        private set
 
     suspend fun getFilmsForHome(): FilmsPreviewWithData? = coroutineScope {
         var dynamicFilms1: List<FilmPreview>? = null
@@ -37,20 +41,20 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
                 count++
             }
             if (genresAndCountriesResponse.isSuccessful) {
-                val listGenres = genresAndCountriesResponse.body()!!.genres
-                val listCountries = genresAndCountriesResponse.body()!!.countries
+                listGenres = genresAndCountriesResponse.body()!!.genres.filter { it.genre.isNotEmpty() }
+                listCountries = genresAndCountriesResponse.body()!!.countries.filter { it.country.isNotEmpty() }
                 var needFilms = true
                 while (needFilms) {
-                    val indexCountry = kotlin.random.Random.nextInt(0, listCountries.size)
-                    val indexGenre = kotlin.random.Random.nextInt(0, listGenres.size)
-                    countryId1 = listCountries[indexCountry].id
-                    genreId1 = listGenres[indexGenre].id
+                    val indexCountry = kotlin.random.Random.nextInt(0, listCountries!!.size)
+                    val indexGenre = kotlin.random.Random.nextInt(0, listGenres!!.size)
+                    countryId1 = listCountries!![indexCountry].id
+                    genreId1 = listGenres!![indexGenre].id
                     val listFilms = getFiltersOrSeriesForHome(countryId1, genreId1)
                     if (listFilms == null) {
                         needFilms = false
                     } else if (listFilms.size > 5) {
-                        countryName1 = listCountries[indexCountry].country
-                        genreName1 = listGenres[indexGenre].genre
+                        countryName1 = listCountries!![indexCountry].country
+                        genreName1 = listGenres!![indexGenre].genre
                         dynamicFilms1 = listFilms
                         needFilms = false
                     }
@@ -61,17 +65,17 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
                         var indexCountry: Int
                         var indexGenre: Int
                         do {
-                            indexCountry = kotlin.random.Random.nextInt(0, listCountries.size)
-                            indexGenre = kotlin.random.Random.nextInt(0, listGenres.size)
-                            countryId2 = listCountries[indexCountry].id
-                            genreId2 = listGenres[indexGenre].id
+                            indexCountry = kotlin.random.Random.nextInt(0, listCountries!!.size)
+                            indexGenre = kotlin.random.Random.nextInt(0, listGenres!!.size)
+                            countryId2 = listCountries!![indexCountry].id
+                            genreId2 = listGenres!![indexGenre].id
                         } while (countryId2 == countryId1 && genreId2 == genreId1)
                         val listFilms = getFiltersOrSeriesForHome(countryId2, genreId2)
                         if (listFilms == null) {
                             needFilms = false
                         } else if (listFilms.size > 5) {
-                            countryName2 = listCountries[indexCountry].country
-                            genreName2 = listGenres[indexGenre].genre
+                            countryName2 = listCountries!![indexCountry].country
+                            genreName2 = listGenres!![indexGenre].genre
                             dynamicFilms2 = listFilms
                             needFilms = false
                         }

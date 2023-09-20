@@ -225,10 +225,40 @@
         <action
             android:id="@+id/action_setSearchFragment_to_backDialog"
             app:destination="@id/backDialog" />
+        <action
+            android:id="@+id/action_setSearchFragment_to_searchGenreCountryFragment"
+            app:destination="@id/searchGenreCountryFragment" />
+        <action
+            android:id="@+id/action_setSearchFragment_to_searchYearFragment"
+            app:destination="@id/searchYearFragment" />
     </fragment>
     <dialog
         android:id="@+id/backDialog"
         android:name="com.skyyaros.skillcinema.ui.search.BackDialog"
         android:label="BackDialog"
         tools:layout="@layout/back_dialog"/>
+    <fragment
+        android:id="@+id/searchGenreCountryFragment"
+        android:name="com.skyyaros.skillcinema.ui.dopsearch.SearchGenreCountryFragment"
+        android:label="SearchGenreCountryFragment"
+        tools:layout="@layout/search_genre_country_fragment">
+        <argument
+            android:name="mode"
+            app:argType="integer" />
+        <argument
+            android:name="id"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchYearFragment"
+        android:name="com.skyyaros.skillcinema.ui.dopsearch.SearchYearFragment"
+        android:label="SearchYearFragment"
+        tools:layout="@layout/search_year_fragment">
+        <argument
+            android:name="yearFrom"
+            app:argType="integer" />
+        <argument
+            android:name="yearTo"
+            app:argType="integer" />
+    </fragment>
 </navigation>

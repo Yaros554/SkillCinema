@@ -195,6 +195,30 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
         return viewModel.resBackDialog
     }
 
+    override fun emitGenreCountry(id: Long) {
+        viewModel.emitGenreCountry(id)
+    }
+
+    override fun getGenreCountryFlow(): SharedFlow<Long> {
+        return viewModel.resGenreCountry
+    }
+
+    override fun cleanGenreCountry() {
+        viewModel.cleanGenreCountry()
+    }
+
+    override fun emitYear(years: Int) {
+        viewModel.emitYear(years)
+    }
+
+    override fun getYearFlow(): SharedFlow<Int> {
+        return viewModel.resYear
+    }
+
+    override fun cleanYear() {
+        viewModel.cleanYear()
+    }
+
     override fun getSearchQuery(): SearchQuery {
         return viewModel.searchQuery
     }

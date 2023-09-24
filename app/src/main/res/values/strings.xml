@@ -46,7 +46,9 @@
     <string name="dialog_fullscreen_button">Okay</string>
 
     <string name="search_text_no_result">Unfortunately, your search returned no results</string>
+    <string name="search_text_actors">Enter the name of the actor you are interested in</string>
     <string name="search_edit_text_title">Films, actors, directors</string>
+    <string name="search_set_switch">Actor search mode</string>
     <string name="search_set_button_ok">Apply</string>
     <string name="search_set_title">Search settings</string>
     <string name="search_set_text_rating">Rating</string>

@@ -58,4 +58,12 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="MySwitchStyle" parent = "Widget.MaterialComponents.CompoundButton.Switch">
+        <item name="android:textAppearance">@style/MySwitchTextAppearance</item>
+    </style>
+
+    <style name="MySwitchTextAppearance" parent= "TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

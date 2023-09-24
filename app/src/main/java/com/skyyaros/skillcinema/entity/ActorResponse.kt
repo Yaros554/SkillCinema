@@ -34,3 +34,15 @@ data class FilmPreviewHalf(
     @Json(name = "rating") val rating: String?,
     @Json(name = "posterUrlPreview") val imageUrl: String?
 ): Parcelable
+
+@JsonClass(generateAdapter = true)
+data class ListSearchActorResponse(
+    @Json(name = "items") val items: List<SearchActor>
+)
+@JsonClass(generateAdapter = true)
+data class SearchActor(
+    @Json(name = "kinopoiskId") val kinopoiskId: Long,
+    @Json(name = "nameRu") val nameRu: String?,
+    @Json(name = "nameEn") val nameEn: String?,
+    @Json(name = "posterUrl") val posterUrl: String
+)

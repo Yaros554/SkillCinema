@@ -67,17 +67,19 @@ class SearchYearFragment: Fragment() {
         bind.yearFrom.text = "${viewModel.years[viewModel.currentPageFrom][0]}-${viewModel.years[viewModel.currentPageFrom][11]}"
         bind.yearTo.text = "${viewModel.years[viewModel.currentPageTo][0]}-${viewModel.years[viewModel.currentPageTo][11]}"
         if (viewModel.isChecked) {
-            bind.checkBox.isChecked = true
+            bind.switchMode.isChecked = true
             bind.searchTextFrom.visibility = View.GONE
             bind.frameLayoutFrom.visibility = View.GONE
             bind.searchTextTo.visibility = View.GONE
             bind.frameLayoutTo.visibility = View.GONE
+            bind.animation.visibility = View.VISIBLE
         } else {
-            bind.checkBox.isChecked = false
+            bind.switchMode.isChecked = false
             bind.searchTextFrom.visibility = View.VISIBLE
             bind.frameLayoutFrom.visibility = View.VISIBLE
             bind.searchTextTo.visibility = View.VISIBLE
             bind.frameLayoutTo.visibility = View.VISIBLE
+            bind.animation.visibility = View.GONE
         }
 
         bind.imageBackFrom.setOnClickListener {
@@ -124,22 +126,24 @@ class SearchYearFragment: Fragment() {
                 bind.imageBackTo.visibility = View.VISIBLE
             }
         }
-        bind.checkBox.setOnClickListener {
-            if (bind.checkBox.isChecked) {
+        bind.switchMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
                 bind.searchTextFrom.visibility = View.GONE
                 bind.frameLayoutFrom.visibility = View.GONE
                 bind.searchTextTo.visibility = View.GONE
                 bind.frameLayoutTo.visibility = View.GONE
+                bind.animation.visibility = View.VISIBLE
             } else {
                 bind.searchTextFrom.visibility = View.VISIBLE
                 bind.frameLayoutFrom.visibility = View.VISIBLE
                 bind.searchTextTo.visibility = View.VISIBLE
                 bind.frameLayoutTo.visibility = View.VISIBLE
+                bind.animation.visibility = View.GONE
             }
-            viewModel.isChecked = bind.checkBox.isChecked
+            viewModel.isChecked = isChecked
         }
         bind.button.setOnClickListener {
-            if (bind.checkBox.isChecked) {
+            if (bind.switchMode.isChecked) {
                 activityCallbacks!!.emitYear(1000 * 10000 + 3000)
                 requireActivity().onBackPressed()
             } else {

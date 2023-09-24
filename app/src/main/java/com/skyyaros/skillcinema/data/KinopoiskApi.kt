@@ -79,6 +79,13 @@ interface KinopoiskApi {
         @HeaderMap header: Map<String, String>
     ): Response<ListFilmPreviewResponse>
 
+    @GET("api/v1/persons")
+    suspend fun getSearchActors(
+        @Query("name") name: String,
+        @Query("page") page: Int,
+        @HeaderMap header: Map<String, String>
+    ):Response<ListSearchActorResponse>
+
     companion object RetrofitProvider {
         private val mutex = Mutex()
         private val keys = listOf(

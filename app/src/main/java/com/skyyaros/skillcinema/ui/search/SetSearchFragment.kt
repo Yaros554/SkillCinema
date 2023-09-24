@@ -50,6 +50,15 @@ class SetSearchFragment: Fragment(), BackPressedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bind.switchMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                hideShowUi(View.GONE)
+                viewModel.nameActor = ""
+            } else {
+                hideShowUi(View.VISIBLE)
+                viewModel.nameActor = null
+            }
+        }
         bind.rangeSlider.addOnChangeListener { _, _, _ ->
             if (bind.rangeSlider.values.min() == 0f && bind.rangeSlider.values.max() == 10f)
                 bind.rating.text = getString(R.string.search_set_text_rating_value1)
@@ -119,12 +128,19 @@ class SetSearchFragment: Fragment(), BackPressedListener {
             findNavController().navigate(action)
         }
         bind.button.setOnClickListener {
-            val newQuery = SearchQuery(
-                viewModel.country, viewModel.genre,
-                viewModel.order, viewModel.type,
-                viewModel.ratingFrom, viewModel.ratingTo,
-                viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
-            )
+            val newQuery = if (viewModel.nameActor == null) {
+                SearchQuery(
+                    viewModel.country, viewModel.genre,
+                    viewModel.order, viewModel.type,
+                    viewModel.ratingFrom, viewModel.ratingTo,
+                    viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
+                )
+            } else {
+                if (oldQuery.nameActor == null)
+                    SearchQuery(nameActor = viewModel.nameActor)
+                else
+                    SearchQuery(nameActor = oldQuery.nameActor)
+            }
             if (oldQuery != newQuery) {
                 activityCallbacks!!.setSearchQuery(newQuery)
                 val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchFragment()
@@ -143,12 +159,19 @@ class SetSearchFragment: Fragment(), BackPressedListener {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityCallbacks!!.getResStreamBackDialog().collect {
                 if (it == 1) {
-                    val newQuery = SearchQuery(
-                        viewModel.country, viewModel.genre,
-                        viewModel.order, viewModel.type,
-                        viewModel.ratingFrom, viewModel.ratingTo,
-                        viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
-                    )
+                    val newQuery = if (viewModel.nameActor == null) {
+                        SearchQuery(
+                            viewModel.country, viewModel.genre,
+                            viewModel.order, viewModel.type,
+                            viewModel.ratingFrom, viewModel.ratingTo,
+                            viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
+                        )
+                    } else {
+                        if (oldQuery.nameActor == null)
+                            SearchQuery(nameActor = viewModel.nameActor)
+                        else
+                            SearchQuery(nameActor = oldQuery.nameActor)
+                    }
                     activityCallbacks!!.setSearchQuery(newQuery)
                     val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchFragment()
                     while ((findNavController().currentDestination?.label ?: "") != "SetSearchFragment")
@@ -286,6 +309,32 @@ class SetSearchFragment: Fragment(), BackPressedListener {
             bind.chipPopularity.isChecked = false
             bind.chipRating.isChecked = true
         }
+        if (viewModel.nameActor == null) {
+            hideShowUi(View.VISIBLE)
+            bind.switchMode.isChecked = false
+        } else {
+            hideShowUi(View.GONE)
+            bind.switchMode.isChecked = true
+        }
+    }
+
+    private fun hideShowUi(hideShow: Int) {
+        bind.show.visibility = hideShow
+        bind.chipAll.visibility = hideShow
+        bind.chipSerials.visibility = hideShow
+        bind.chipFilms.visibility = hideShow
+        bind.linearLayout.visibility = hideShow
+        bind.sort.visibility = hideShow
+        bind.chipDate.visibility = hideShow
+        bind.chipRating.visibility = hideShow
+        bind.chipPopularity.visibility = hideShow
+        bind.divider.visibility = hideShow
+        bind.imageSee.visibility = hideShow
+        bind.textSee.visibility = hideShow
+        bind.animation.visibility = if (hideShow == View.VISIBLE)
+            View.GONE
+        else
+            View.VISIBLE
     }
 
     override fun onPause() {
@@ -304,12 +353,19 @@ class SetSearchFragment: Fragment(), BackPressedListener {
     }
 
     override fun onBackPressed(): Boolean {
-        val newQuery = SearchQuery(
-            viewModel.country, viewModel.genre,
-            viewModel.order, viewModel.type,
-            viewModel.ratingFrom, viewModel.ratingTo,
-            viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
-        )
+        val newQuery = if (viewModel.nameActor == null) {
+            SearchQuery(
+                viewModel.country, viewModel.genre,
+                viewModel.order, viewModel.type,
+                viewModel.ratingFrom, viewModel.ratingTo,
+                viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
+            )
+        } else {
+            if (oldQuery.nameActor == null)
+                SearchQuery(nameActor = viewModel.nameActor)
+            else
+                SearchQuery(nameActor = oldQuery.nameActor)
+        }
         return if (oldQuery == newQuery)
             false
         else {

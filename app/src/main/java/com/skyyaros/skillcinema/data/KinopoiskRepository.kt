@@ -533,4 +533,25 @@ class KinopoiskRepository(private val kinopoiskApi: KinopoiskApi) {
             null
         }
     }
+
+    suspend fun getSearchActors(name: String, page: Int): List<SearchActor>? {
+        return try {
+            var apiKey = KinopoiskApi.getCurrentKey()
+            var res = kinopoiskApi.getSearchActors(name, page, apiKey)
+            var count = 1
+            val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
+            while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
+                apiKey = KinopoiskApi.getNewKey(apiKey)
+                res = kinopoiskApi.getSearchActors(name, page, apiKey)
+                count++
+            }
+            if (res.isSuccessful) {
+                res.body()!!.items
+            } else {
+                null
+            }
+        } catch(t: Throwable) {
+            null
+        }
+    }
 }

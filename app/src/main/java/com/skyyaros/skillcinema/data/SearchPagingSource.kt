@@ -18,7 +18,16 @@ class SearchPagingSource(
         val page = params.key ?: FIRST_PAGE
         if (page == 1)
             delay(300)
-        val res = kinopoiskRepository.getSearchFilms(searchQuery, page)
+        val res = if (searchQuery.nameActor == null)
+            kinopoiskRepository.getSearchFilms(searchQuery, page)
+        else {
+            kinopoiskRepository.getSearchActors(searchQuery.nameActor, page)?.map {
+                FilmPreview(
+                    it.kinopoiskId, null, it.posterUrl, it.nameRu, it.nameEn,
+                    null, null, null, null, null, null
+                )
+            }
+        }
         return if (res != null)
             LoadResult.Page(data = res, prevKey = null, nextKey = if (res.isEmpty()) null else page + 1)
         else

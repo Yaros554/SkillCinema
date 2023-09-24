@@ -18,11 +18,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <CheckBox
-                android:id="@+id/checkBox"
-                android:layout_width="wrap_content"
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchMode"
+                style="@style/MySwitchStyle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/search_set_year_text_all" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:lottie_rawRes="@raw/year"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/searchTextFrom"

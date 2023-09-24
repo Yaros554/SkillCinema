@@ -20,6 +20,7 @@ import com.skyyaros.skillcinema.entity.SearchQuery
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 import com.skyyaros.skillcinema.ui.filmography.FilmPreviewTwoAdapter
+import com.skyyaros.skillcinema.ui.photography.MyLoadStateAdapterTwo
 
 class SearchFragment: Fragment() {
     private var _bind: SearchFragmentBinding? = null
@@ -48,15 +49,25 @@ class SearchFragment: Fragment() {
         activityCallbacks!!.hideUpBar()
         val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.small_margin).toInt(), false)
         val adapter = FilmPreviewTwoAdapter(requireContext()) { id ->
-            val action = SearchFragmentDirections.actionSearchFragmentToDetailFilmFragment(id)
+            val action = if (activityCallbacks!!.getSearchQuery().nameActor == null)
+                SearchFragmentDirections.actionSearchFragmentToDetailFilmFragment(id)
+            else
+                SearchFragmentDirections.actionSearchFragmentToActorDetailFragment(id)
             findNavController().navigate(action)
         }
-        bind.recyclerView.adapter = adapter
+        bind.recyclerView.adapter = adapter.withLoadStateFooter(
+            MyLoadStateAdapterTwo {
+                adapter.retry()
+            }
+        )
         if (bind.recyclerView.itemDecorationCount == 0) {
             bind.recyclerView.addItemDecoration(itemMargin)
         }
-        if (bind.searchView.text.isNullOrEmpty() && activityCallbacks!!.getSearchQuery().keyword != null) {
-            bind.searchView.setText(activityCallbacks!!.getSearchQuery().keyword!!)
+        if (bind.searchView.text.isNullOrEmpty()) {
+            if (activityCallbacks!!.getSearchQuery().keyword != null)
+                bind.searchView.setText(activityCallbacks!!.getSearchQuery().keyword!!)
+            else if (activityCallbacks!!.getSearchQuery().nameActor != null)
+                bind.searchView.setText(activityCallbacks!!.getSearchQuery().nameActor!!)
         }
         bind.searchSettings.setOnClickListener {
             val action = SearchFragmentDirections.actionSearchFragmentToSetSearchFragment()
@@ -73,21 +84,38 @@ class SearchFragment: Fragment() {
                     if (adapter.itemCount > 0)
                         bind.textView.visibility = View.GONE
                     else {
+                        val temp = activityCallbacks!!.getSearchQuery().nameActor
+                        if (temp != null && temp.isBlank())
+                            bind.textView.text = getString(R.string.search_text_actors)
+                        else
+                            bind.textView.text = getString(R.string.search_text_no_result)
                         bind.textView.visibility = View.VISIBLE
                     }
+                }
+                if (it.source.refresh is LoadState.Loading) {
+                    bind.progressBar.visibility = View.VISIBLE
+                } else {
+                    bind.progressBar.visibility = View.GONE
                 }
             }
         }
         bind.searchView.addTextChangedListener(
             { _, _, _, _ -> },
             { text, _, _, _ ->
-                val finalText = if (!text.isNullOrBlank()) text.toString().trim() else null
                 val oldQuery = activityCallbacks!!.getSearchQuery()
+                val isFilmSearch = oldQuery.nameActor == null
+                val finalText = if (isFilmSearch) {
+                    if (!text.isNullOrBlank()) text.toString().trim() else null
+                } else {
+                    text?.toString()?.trim() ?: ""
+                }
                 val newQuery = SearchQuery(
                     oldQuery.countries, oldQuery.genres,
                     oldQuery.order, oldQuery.type,
                     oldQuery.ratingFrom, oldQuery.ratingTo,
-                    oldQuery.yearFrom, oldQuery.yearTo, finalText
+                    oldQuery.yearFrom, oldQuery.yearTo,
+                    if (isFilmSearch) finalText else oldQuery.keyword,
+                    if (!isFilmSearch) finalText else oldQuery.nameActor
                 )
                 activityCallbacks!!.setSearchQuery(newQuery)
                 viewModel.createNewQuery(activityCallbacks!!.getSearchQuery())

@@ -18,7 +18,7 @@ class SearchViewModel(private val kinopoiskRepository: KinopoiskRepository, init
     @OptIn(ExperimentalCoroutinesApi::class)
     val pagingDataFlow = searchQueryFlow.asStateFlow().flatMapLatest {
         Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = if (it.nameActor == null) 20 else 50),
             pagingSourceFactory = {
                 SearchPagingSource(kinopoiskRepository, it)
             }

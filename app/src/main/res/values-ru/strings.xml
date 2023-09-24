@@ -47,7 +47,9 @@
     <string name="dialog_fullscreen_button">Хорошо</string>
 
     <string name="search_text_no_result">К сожалению, по вашему запросу ничего не найдено</string>
+    <string name="search_text_actors">Введите имя интересующего актера</string>
     <string name="search_edit_text_title">Фильмы, актеры, режиссеры</string>
+    <string name="search_set_switch">Режим поиска актера</string>
     <string name="search_set_button_ok">Применить</string>
     <string name="search_set_title">Настройки поиска</string>
     <string name="search_set_text_rating">Рейтнг</string>

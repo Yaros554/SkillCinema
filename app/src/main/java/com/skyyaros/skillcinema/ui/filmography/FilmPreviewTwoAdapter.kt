@@ -10,7 +10,7 @@ import com.skyyaros.skillcinema.entity.FilmPreview
 
 class FilmPreviewTwoAdapter(
     private val context: Context,
-    private val onClick: (Long)->Unit
+    private val onClick: (FilmPreview)->Unit
 ): PagingDataAdapter<FilmPreview, FilmPreviewTwoHolder>(DiffUtilCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmPreviewTwoHolder {
         val binding = FilmPreviewTwoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -19,8 +19,7 @@ class FilmPreviewTwoAdapter(
             val position = filmPreviewTwoHolder.bindingAdapterPosition
             val item = getItem(position)
             if (item != null) {
-                val id = item.kinopoiskId ?: item.filmId
-                onClick(id!!)
+                onClick(item)
             }
         }
         return filmPreviewTwoHolder

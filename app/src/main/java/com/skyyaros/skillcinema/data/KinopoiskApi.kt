@@ -91,7 +91,8 @@ interface KinopoiskApi {
         private val keys = listOf(
             "d3bbd027-4688-4e96-ad5d-f087a9ed84e8",
             "d6e4602b-caca-4926-9973-72d549051524",
-            "5fbdaf0f-8e4d-4d4d-9874-0ff9230f5048"
+            "5fbdaf0f-8e4d-4d4d-9874-0ff9230f5048",
+            "de7490c0-9bc0-4d6a-9020-fa9dcb7bf835"
         )
         private var keyIndex = 0
         private const val BASE_URL = "https://kinopoiskapiunofficial.tech/"

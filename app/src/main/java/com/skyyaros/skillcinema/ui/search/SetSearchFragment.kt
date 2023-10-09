@@ -127,13 +127,24 @@ class SetSearchFragment: Fragment(), BackPressedListener {
             val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchYearFragment(viewModel.yearFrom, viewModel.yearTo)
             findNavController().navigate(action)
         }
+        bind.textSee.setOnClickListener {
+            viewModel.showViewedFilms = !viewModel.showViewedFilms
+            if (viewModel.showViewedFilms) {
+                bind.textSee.text = getString(R.string.search_set_text_show_viewed_films)
+                bind.imageSee.setImageDrawable(resources.getDrawable(R.drawable.see_black_white))
+            } else {
+                bind.textSee.text = getString(R.string.search_set_text_hide_viewed_films)
+                bind.imageSee.setImageDrawable(resources.getDrawable(R.drawable.unsee_black_white))
+            }
+        }
         bind.button.setOnClickListener {
             val newQuery = if (viewModel.nameActor == null) {
                 SearchQuery(
                     viewModel.country, viewModel.genre,
                     viewModel.order, viewModel.type,
                     viewModel.ratingFrom, viewModel.ratingTo,
-                    viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
+                    viewModel.yearFrom, viewModel.yearTo,
+                    oldQuery.keyword, viewModel.nameActor, viewModel.showViewedFilms
                 )
             } else {
                 if (oldQuery.nameActor == null)
@@ -164,7 +175,8 @@ class SetSearchFragment: Fragment(), BackPressedListener {
                             viewModel.country, viewModel.genre,
                             viewModel.order, viewModel.type,
                             viewModel.ratingFrom, viewModel.ratingTo,
-                            viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
+                            viewModel.yearFrom, viewModel.yearTo,
+                            oldQuery.keyword, viewModel.nameActor, viewModel.showViewedFilms
                         )
                     } else {
                         if (oldQuery.nameActor == null)
@@ -257,7 +269,8 @@ class SetSearchFragment: Fragment(), BackPressedListener {
                         null, oldQuery.genres,
                         oldQuery.order, oldQuery.type,
                         oldQuery.ratingFrom, oldQuery.ratingTo,
-                        oldQuery.yearFrom, oldQuery.yearTo, oldQuery.keyword
+                        oldQuery.yearFrom, oldQuery.yearTo,
+                        oldQuery.keyword, oldQuery.nameActor, oldQuery.showViewedFilms
                     )
                 )
                 oldQuery = activityCallbacks!!.getSearchQuery()
@@ -277,7 +290,8 @@ class SetSearchFragment: Fragment(), BackPressedListener {
                         oldQuery.countries, null,
                         oldQuery.order, oldQuery.type,
                         oldQuery.ratingFrom, oldQuery.ratingTo,
-                        oldQuery.yearFrom, oldQuery.yearTo, oldQuery.keyword
+                        oldQuery.yearFrom, oldQuery.yearTo,
+                        oldQuery.keyword, oldQuery.nameActor, oldQuery.showViewedFilms
                     )
                 )
                 oldQuery = activityCallbacks!!.getSearchQuery()
@@ -308,6 +322,13 @@ class SetSearchFragment: Fragment(), BackPressedListener {
             bind.chipDate.isChecked = false
             bind.chipPopularity.isChecked = false
             bind.chipRating.isChecked = true
+        }
+        if (viewModel.showViewedFilms) {
+            bind.textSee.text = getString(R.string.search_set_text_show_viewed_films)
+            bind.imageSee.setImageDrawable(resources.getDrawable(R.drawable.see_black_white))
+        } else {
+            bind.textSee.text = getString(R.string.search_set_text_hide_viewed_films)
+            bind.imageSee.setImageDrawable(resources.getDrawable(R.drawable.unsee_black_white))
         }
         if (viewModel.nameActor == null) {
             hideShowUi(View.VISIBLE)
@@ -358,7 +379,8 @@ class SetSearchFragment: Fragment(), BackPressedListener {
                 viewModel.country, viewModel.genre,
                 viewModel.order, viewModel.type,
                 viewModel.ratingFrom, viewModel.ratingTo,
-                viewModel.yearFrom, viewModel.yearTo, oldQuery.keyword
+                viewModel.yearFrom, viewModel.yearTo,
+                oldQuery.keyword, viewModel.nameActor, viewModel.showViewedFilms
             )
         } else {
             if (oldQuery.nameActor == null)

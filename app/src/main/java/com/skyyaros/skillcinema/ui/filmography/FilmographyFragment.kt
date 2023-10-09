@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.FilmographyFragmentBinding
+import com.skyyaros.skillcinema.entity.FilmPreview
 import com.skyyaros.skillcinema.entity.FilmPreviewHalf
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import java.util.*
@@ -34,8 +35,8 @@ class FilmographyFragment: Fragment() {
             }
         }
     }
-    val onClick: (Long) -> Unit = {
-        val action = FilmographyFragmentDirections.actionFilmographyFragmentToDetailFilmFragment(it)
+    val onClick: (FilmPreview) -> Unit = {
+        val action = FilmographyFragmentDirections.actionFilmographyFragmentToDetailFilmFragment(it.kinopoiskId?: it.filmId!!)
         findNavController().navigate(action)
     }
 

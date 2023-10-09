@@ -31,36 +31,36 @@
 
         <ImageView
             android:id="@+id/imageLike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             tools:srcCompat="@drawable/unlike"/>
 
         <ImageView
             android:id="@+id/imageFuture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             tools:srcCompat="@drawable/unfuture"/>
 
         <ImageView
             android:id="@+id/imageSee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             tools:srcCompat="@drawable/unsee"/>
 
         <ImageView
             android:id="@+id/imageShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:src="@drawable/share"/>
 
         <ImageView
             android:id="@+id/imageDop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:src="@drawable/dop"/>
 
     </LinearLayout>

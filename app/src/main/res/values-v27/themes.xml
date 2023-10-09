@@ -23,6 +23,7 @@
         <item name="tabStyle">@style/Widget.App.TabLayout</item>
         <item name="android:textViewStyle">@style/CustomTextView</item>
         <item name="chipStyle">@style/Widget.App.Chip</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 </resources>

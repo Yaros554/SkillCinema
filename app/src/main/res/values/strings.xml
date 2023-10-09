@@ -70,6 +70,8 @@
     <string name="search_set_text_not_viewed">Not viewed</string>
     <string name="search_set_text_viewed">Viewed</string>
     <string name="search_set_text_matter">Does not matter</string>
+    <string name="search_set_text_show_viewed_films">Show viewed films</string>
+    <string name="search_set_text_hide_viewed_films">Hide viewed films</string>
     <string name="search_set_toast">The list of countries and genres could not be loaded. Please try again later</string>
     <string name="search_set_title_country">Country</string>
     <string name="search_set_edit_text_country">Input country</string>
@@ -87,4 +89,29 @@
     <string name="search_dialog_back_buttonOk">Okay</string>
     <string name="search_dialog_back_buttonCancel">Cancel</string>
     <string name="search_dialog_back_buttonNo">No</string>
+    
+    <string name="profile_item_text">Favourites</string>
+    <string name="profile_item_text2">Want to see</string>
+    <string name="profile_text_collection">Collections</string>
+    <string name="profile_text_create_collection">Create user collection</string>
+    <string name="profile_text_history">You were interested</string>
+    <string name="profile_text_history_see">Viewed</string>
+    <string name="profile_toast_empty">Empty list</string>
+    <string name="profile_toast_over_cat">There cannot be more than 100 categories</string>
+    <string name="profile_image_clean_history">Clean history</string>
+
+    <string name="bottom_sheet_add_collection">Add in collection</string>
+    <string name="dialog_add_category">New user category</string>
+    <string name="dialog_add_category_button">Add</string>
+    <string name="dialog_add_category_editText">Come up with a name for the new category</string>
+    <string name="dialog_add_category_empty_name">Empty name</string>
+    <string name="dialog_add_category_no_number">Category name cannot start with a number</string>
+    <string name="dialog_add_category_no_long">The category name cannot be longer than 50 characters</string>
+    <string name="dialog_add_category_uniq">The category name must be unique</string>
+    <string name="dialog_add_film_category">The maximum number of films in a category cannot be more than 1000</string>
+    <string name="dialog_delete_category_title">Delete category</string>
+    <string name="dialog_delete_history_title">Delete history</string>
+    <string name="dialog_delete_category_text">Are you sure you want to delete the selected category?</string>
+    <string name="dialog_delete_see_text">Are you sure you want to delete your browsing history?</string>
+    <string name="dialog_delete_search_text">Are you sure you want to delete your searching history?</string>
 </resources>

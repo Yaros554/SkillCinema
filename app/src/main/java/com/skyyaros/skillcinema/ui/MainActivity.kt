@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,14 +16,17 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.ActivityMainBinding
+import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.SearchQuery
 import com.skyyaros.skillcinema.ui.hello.HelloFragment
 import com.skyyaros.skillcinema.ui.search.SetSearchFragment
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
@@ -29,7 +34,13 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels {
+        object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return MainViewModel(App.component.getDatabaseRepository()) as T
+            }
+        }
+    }
     private var myCoroutine: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -219,11 +230,87 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
         viewModel.cleanYear()
     }
 
+    override fun emitNewCat(newCat: String) {
+        viewModel.emitNewCat(newCat)
+    }
+
+    override fun getNewCatFlow(): SharedFlow<String> {
+        return viewModel.resAddNewCat
+    }
+
+    override fun cleanNewCat() {
+        viewModel.cleanNewCat()
+    }
+
+    override fun emitBottomSh() {
+        viewModel.emitBottomSh()
+    }
+
+    override fun cleanBottomSh() {
+        viewModel.cleanBottomSh()
+    }
+
+    override fun getBottomShFlow(): SharedFlow<Boolean> {
+        return viewModel.resBottomSh
+    }
+
+    override fun emitDeleteCat(category: String) {
+        viewModel.emitDeleteCat(category)
+    }
+
+    override fun cleanDeleteCat() {
+        viewModel.cleanDeleteCat()
+    }
+
+    override fun getDeleteCatFlow(): SharedFlow<String> {
+        return viewModel.resDeleteCat
+    }
+
     override fun getSearchQuery(): SearchQuery {
         return viewModel.searchQuery
     }
 
     override fun setSearchQuery(searchQuery: SearchQuery) {
         viewModel.searchQuery = searchQuery
+    }
+
+    override fun getActorFilmWithCatFlow(): StateFlow<List<FilmActorTable>> {
+        return viewModel.filmActorWithCatFlow
+    }
+
+    override fun getTempFilmActorList(): List<FilmActorTable>? {
+        return viewModel.tempFilmActorList
+    }
+
+    override fun getSearchHistoryFlow(): StateFlow<List<FilmActorTable>> {
+        return viewModel.searchHistoryFlow
+    }
+
+    override fun getSeeHistoryFlow(): StateFlow<List<FilmActorTable>> {
+        return viewModel.seeHistoryFlow
+    }
+
+    override fun setTempFilmActorList(newList: List<FilmActorTable>?) {
+        viewModel.tempFilmActorList = newList
+    }
+
+    override fun updateFilmCat(id: Long, newCategory: List<FilmActorTable>) {
+        viewModel.updateFilmCat(id, newCategory)
+    }
+
+    override fun insertFilmOrCat(filmOrCat: FilmActorTable) {
+        viewModel.insertFilmOrCat(filmOrCat)
+    }
+
+    override fun insertHistoryItem(filmActorTable: FilmActorTable) {
+        viewModel.insertHistoryItem(filmActorTable)
+    }
+
+    override fun deleteFilm(filmId: Long, category: String) {
+        viewModel.deleteFilm(filmId, category)
+    }
+
+    override fun deleteCategory(category: String) {
+        viewModel.deleteCategory(category)
     }
 }

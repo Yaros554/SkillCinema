@@ -71,6 +71,9 @@
         <action
             android:id="@+id/action_detailFilmFragment_to_fullscreenDialogInfo"
             app:destination="@id/fullscreenDialogInfo" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_dialogAddUserCat"
+            app:destination="@id/dialogAddUserCat" />
     </fragment>
     <fragment
         android:id="@+id/acterListFragment"
@@ -264,4 +267,9 @@
             android:name="yearTo"
             app:argType="integer" />
     </fragment>
+    <dialog
+        android:id="@+id/dialogAddUserCat"
+        android:name="com.skyyaros.skillcinema.ui.DialogAddUserCat"
+        android:label="DialogAddUserCat"
+        tools:layout="@layout/add_user_category"/>
 </navigation>

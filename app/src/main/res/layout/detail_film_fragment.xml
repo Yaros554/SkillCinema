@@ -42,36 +42,36 @@
 
                 <ImageView
                     android:id="@+id/imageLike"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     tools:srcCompat="@drawable/unlike"/>
 
                 <ImageView
                     android:id="@+id/imageFuture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     tools:srcCompat="@drawable/unfuture"/>
 
                 <ImageView
                     android:id="@+id/imageSee"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     tools:srcCompat="@drawable/unsee"/>
 
                 <ImageView
                     android:id="@+id/imageShare"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/share"/>
 
                 <ImageView
                     android:id="@+id/imageDop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/dop"/>
 
             </LinearLayout>
@@ -108,7 +108,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:textSize="12sp"
                     android:textColor="@color/skill_grey"
                     android:gravity="center"
                     tools:text="6.4 Китобой" />
@@ -119,7 +118,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:textSize="12sp"
                     android:textColor="@color/skill_grey"
                     android:gravity="center"
                     tools:text="2020, драма, приключения" />
@@ -130,7 +128,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:textSize="12sp"
                     android:textColor="@color/skill_grey"
                     android:gravity="center"
                     tools:text="Россия, 1 ч 33 мин, 16+" />
@@ -141,7 +138,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:textSize="12sp"
                     android:textColor="@color/skill_grey"
                     android:gravity="center"
                     tools:text="Бюджет: 1000000000R, кассовые сборы: 5000000000R" />

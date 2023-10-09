@@ -2,6 +2,7 @@ package com.skyyaros.skillcinema.ui.detailfilm
 
 import android.animation.LayoutTransition
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -18,6 +20,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.DetailFilmFragmentBinding
@@ -28,7 +32,9 @@ import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAdapter
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAllAdapter
 import com.skyyaros.skillcinema.ui.video.VideoActivity
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import java.util.*
 
 class DetailFilmFragment: Fragment() {
@@ -43,6 +49,12 @@ class DetailFilmFragment: Fragment() {
             }
         }
     }
+    private var imageFutureSelect = false
+    private var imageFutureJob: Job? = null
+    private var imageLikeSelect = false
+    private var imageLikeJob: Job? = null
+    private var imageSeeSelect = false
+    private var imageSeeJob: Job? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -79,7 +91,7 @@ class DetailFilmFragment: Fragment() {
 
                         val item = stateDetailFilm.data.detailFilm
                         setupPoster(item)
-                        setupOptions()
+                        setupOptions(item)
                         setupFilmInfo(item)
                         setupMoney(stateDetailFilm.data.moneys)
                         if (item.shortDescription != null)
@@ -155,10 +167,158 @@ class DetailFilmFragment: Fragment() {
         }
     }
 
-    private fun setupOptions() {
-        bind.imageLike.setImageResource(R.drawable.unlike)
-        bind.imageFuture.setImageResource(R.drawable.unfuture)
-        bind.imageSee.setImageResource(R.drawable.unsee)
+    private fun setupOptions(item: DetailFilm) {
+        bind.imageFuture.setOnClickListener {
+            if (activityCallbacks!!.getActorFilmWithCatFlow().value.filter { it.category == "2" }.size - 1 >= 1000 && !imageFutureSelect) {
+                Toast.makeText(requireContext(), getString(R.string.dialog_add_film_category), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            imageFutureSelect = !imageFutureSelect
+            imageFutureSelect.also {
+                if (it)
+                    bind.imageFuture.setImageResource(R.drawable.future)
+                else
+                    bind.imageFuture.setImageResource(R.drawable.unfuture)
+                imageFutureJob?.cancel()
+                imageFutureJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                    delay(500)
+                    if (it) {
+                        val filmActorTable = FilmActorTable(
+                            "2", item.kinopoiskId, false, item.posterUrl,
+                            item.nameRu, item.nameEn, item.nameOriginal, item.genres, item.ratingKinopoisk
+                        )
+                        activityCallbacks!!.insertFilmOrCat(filmActorTable)
+                    } else {
+                        activityCallbacks!!.deleteFilm(item.kinopoiskId, "2")
+                    }
+                }
+            }
+        }
+        bind.imageLike.setOnClickListener {
+            if (activityCallbacks!!.getActorFilmWithCatFlow().value.filter { it.category == "3" }.size - 1 >= 1000 && !imageLikeSelect) {
+                Toast.makeText(requireContext(), getString(R.string.dialog_add_film_category), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            imageLikeSelect = !imageLikeSelect
+            imageLikeSelect.also {
+                if (it)
+                    bind.imageLike.setImageResource(R.drawable.like)
+                else
+                    bind.imageLike.setImageResource(R.drawable.unlike)
+                imageLikeJob?.cancel()
+                imageLikeJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                    delay(500)
+                    if (it) {
+                        val filmActorTable = FilmActorTable(
+                            "3", item.kinopoiskId, false, item.posterUrl,
+                            item.nameRu, item.nameEn, item.nameOriginal, item.genres, item.ratingKinopoisk
+                        )
+                        activityCallbacks!!.insertFilmOrCat(filmActorTable)
+                    } else {
+                        activityCallbacks!!.deleteFilm(item.kinopoiskId, "3")
+                    }
+                }
+            }
+        }
+        bind.imageSee.setOnClickListener {
+            if (activityCallbacks!!.getSeeHistoryFlow().value.size >= 1000 && !imageSeeSelect) {
+                Toast.makeText(requireContext(), getString(R.string.dialog_add_film_category), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            imageSeeSelect = !imageSeeSelect
+            imageSeeSelect.also {
+                if (it)
+                    bind.imageSee.setImageResource(R.drawable.see)
+                else
+                    bind.imageSee.setImageResource(R.drawable.unsee)
+                imageSeeJob?.cancel()
+                imageSeeJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                    delay(500)
+                    if (it) {
+                        val filmActorTable = FilmActorTable(
+                            "0", item.kinopoiskId, false, item.posterUrl,
+                            item.nameRu, item.nameEn, item.nameOriginal, item.genres, item.ratingKinopoisk
+                        )
+                        activityCallbacks!!.insertFilmOrCat(filmActorTable)
+                    } else {
+                        activityCallbacks!!.deleteFilm(item.kinopoiskId, "0")
+                    }
+                }
+            }
+        }
+        bind.imageDop.setOnClickListener {
+            val filmPreview = FilmPreview(
+                item.kinopoiskId, null, item.posterUrl,
+                item.nameRu, item.nameEn, item.nameOriginal,
+                item.genres, item.ratingKinopoisk, null, null, item.year
+            )
+            val listFilmActor = activityCallbacks!!.getActorFilmWithCatFlow().value
+            val bottomSheetFragment = BottomSheetFragment.create(filmPreview, listFilmActor)
+            bottomSheetFragment.show(parentFragmentManager, BottomSheetFragment.TAG)
+        }
+        bind.imageShare.setOnClickListener {
+            if (item.webUrl.isNotBlank()) {
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, item.webUrl)
+                    type = "text/plain"
+                }
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityCallbacks!!.getBottomShFlow().collect {
+                while ((findNavController().currentDestination?.label ?: "") != "DetailFilmFragment")
+                    delay(1)
+                val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToDialogAddUserCat()
+                findNavController().navigate(action)
+                activityCallbacks!!.cleanBottomSh()
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityCallbacks!!.getNewCatFlow().collect {
+                val filmPreview = FilmPreview(
+                    item.kinopoiskId, null, item.posterUrl,
+                    item.nameRu, item.nameEn, item.nameOriginal,
+                    item.genres, item.ratingKinopoisk, null, null, item.year
+                )
+                val bottomSheetFragment = BottomSheetFragment.create(filmPreview, emptyList(), it)
+                bottomSheetFragment.show(parentFragmentManager, BottomSheetFragment.TAG)
+                activityCallbacks!!.cleanNewCat()
+                delay(300)
+                activityCallbacks!!.showUpBar("")
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityCallbacks!!.getActorFilmWithCatFlow().collect { data ->
+                imageFutureSelect = if (data.find { it.kinopoiskId == item.kinopoiskId && it.category == "2" } != null) {
+                    bind.imageFuture.setImageResource(R.drawable.future)
+                    true
+                } else {
+                    bind.imageFuture.setImageResource(R.drawable.unfuture)
+                    false
+                }
+                imageLikeSelect = if (data.find { it.kinopoiskId == item.kinopoiskId && it.category == "3" } != null) {
+                    bind.imageLike.setImageResource(R.drawable.like)
+                    true
+                } else {
+                    bind.imageLike.setImageResource(R.drawable.unlike)
+                    false
+                }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityCallbacks!!.getSeeHistoryFlow().collect { data ->
+                imageSeeSelect = if (data.find { it.kinopoiskId == item.kinopoiskId } != null) {
+                    bind.imageSee.setImageResource(R.drawable.see)
+                    true
+                } else {
+                    bind.imageSee.setImageResource(R.drawable.unsee)
+                    false
+                }
+            }
+        }
     }
 
     private fun setupFilmInfo(item: DetailFilm) {

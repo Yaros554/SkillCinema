@@ -9,5 +9,236 @@
         android:id="@+id/personFragment"
         android:name="com.skyyaros.skillcinema.ui.person.PersonFragment"
         android:label="PersonFragment"
-        tools:layout="@layout/person_fragment"/>
+        tools:layout="@layout/person_fragment">
+        <action
+            android:id="@+id/action_personFragment_to_listpageFragment"
+            app:destination="@id/listpageFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_dialogAddUserCat"
+            app:destination="@id/dialogAddUserCat" />
+        <action
+            android:id="@+id/action_personFragment_to_deleteCategoryDialog"
+            app:destination="@id/deleteCategoryDialog" />
+        <action
+            android:id="@+id/action_personFragment_to_detailFilmFragment"
+            app:destination="@id/detailFilmFragment" />
+        <action
+            android:id="@+id/action_personFragment_to_actorDetailFragment"
+            app:destination="@id/actorDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listpageFragment"
+        android:name="com.skyyaros.skillcinema.ui.listpage.ListpageFragment"
+        android:label="ListpageFragment"
+        tools:layout="@layout/listpage_fragment">
+        <argument
+            android:name="listPreload"
+            app:argType="com.skyyaros.skillcinema.entity.FilmPreview[]"
+            app:nullable="true" />
+        <argument
+            android:name="mode"
+            app:argType="integer" />
+        <argument
+            android:name="countryId"
+            app:argType="long" />
+        <argument
+            android:name="countryName"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="genreId"
+            app:argType="long" />
+        <argument
+            android:name="genreName"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_listpageFragment_to_detailFilmFragment"
+            app:destination="@id/detailFilmFragment" />
+        <argument
+            android:name="listHalf"
+            app:argType="com.skyyaros.skillcinema.entity.FilmPreviewHalf[]"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_listpageFragment_to_actorDetailFragment"
+            app:destination="@id/actorDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFilmFragment"
+        android:name="com.skyyaros.skillcinema.ui.detailfilm.DetailFilmFragment"
+        android:label="DetailFilmFragment"
+        tools:layout="@layout/detail_film_fragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_detailFilmFragment"
+            app:destination="@+id/detailFilmFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_listpageFragment"
+            app:destination="@id/listpageFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_acterListFragment"
+            app:destination="@id/acterListFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_actorDetailFragment"
+            app:destination="@id/actorDetailFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_photographyFragment"
+            app:destination="@id/photographyFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_seriesFragment"
+            app:destination="@id/seriesFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_fullPhotoVPFragment"
+            app:destination="@id/fullPhotoVPFragment" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_fullscreenDialogInfo"
+            app:destination="@id/fullscreenDialogInfo" />
+        <action
+            android:id="@+id/action_detailFilmFragment_to_dialogAddUserCat"
+            app:destination="@id/dialogAddUserCat" />
+    </fragment>
+    <fragment
+        android:id="@+id/acterListFragment"
+        android:name="com.skyyaros.skillcinema.ui.detailfilm.ActerListFragment"
+        android:label="ActerListFragment"
+        tools:layout="@layout/acter_list_fragment" >
+
+        <argument
+            android:name="listPreload"
+            app:argType="com.skyyaros.skillcinema.entity.ActorPreview[]" />
+        <argument
+            android:name="role"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_acterListFragment_to_actorDetailFragment"
+            app:destination="@id/actorDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/actorDetailFragment"
+        android:name="com.skyyaros.skillcinema.ui.detailactor.ActorDetailFragment"
+        android:label="ActorDetailFragment"
+        tools:layout="@layout/actor_detail_fragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_detailFilmFragment"
+            app:destination="@id/detailFilmFragment" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_listpageFragment"
+            app:destination="@id/listpageFragment" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_filmographyFragment"
+            app:destination="@id/filmographyFragment" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_fullPhotoFragment"
+            app:destination="@id/fullPhotoFragment" />
+        <action
+            android:id="@+id/action_actorDetailFragment_to_fullscreenDialogInfo"
+            app:destination="@id/fullscreenDialogInfo" />
+    </fragment>
+    <fragment
+        android:id="@+id/filmographyFragment"
+        android:name="com.skyyaros.skillcinema.ui.filmography.FilmographyFragment"
+        android:label="FilmographyFragment"
+        tools:layout="@layout/filmography_fragment">
+        <argument
+            android:name="listHalf"
+            app:argType="com.skyyaros.skillcinema.entity.FilmPreviewHalf[]" />
+        <argument
+            android:name="nameActor"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_filmographyFragment_to_detailFilmFragment"
+            app:destination="@id/detailFilmFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photographyFragment"
+        android:name="com.skyyaros.skillcinema.ui.photography.PhotographyFragment"
+        android:label="PhotographyFragment"
+        tools:layout="@layout/photography_fragment">
+        <argument
+            android:name="data"
+            app:argType="com.skyyaros.skillcinema.entity.ImageResponse[]" />
+        <argument
+            android:name="id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_photographyFragment_to_fullPhotoVPFragment"
+            app:destination="@id/fullPhotoVPFragment" />
+        <action
+            android:id="@+id/action_photographyFragment_to_fullscreenDialogInfo"
+            app:destination="@id/fullscreenDialogInfo" />
+    </fragment>
+    <fragment
+        android:id="@+id/seriesFragment"
+        android:name="com.skyyaros.skillcinema.ui.series.SeriesFragment"
+        android:label="SeriesFragment"
+        tools:layout="@layout/series_fragment">
+        <argument
+            android:name="data"
+            app:argType="com.skyyaros.skillcinema.entity.Season[]" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullPhotoFragment"
+        android:name="com.skyyaros.skillcinema.ui.fullphoto.FullPhotoFragment"
+        android:label="FullPhotoFragment"
+        tools:layout="@layout/full_photo_fr_and_vp">
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullPhotoVPFragment"
+        android:name="com.skyyaros.skillcinema.ui.fullphoto.FullPhotoVPFragment"
+        android:label="FullPhotoVPFragment"
+        tools:layout="@layout/full_photo_vp_fragment">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="urls"
+            app:argType="com.skyyaros.skillcinema.entity.ImageItem[]" />
+        <argument
+            android:name="curUrl"
+            app:argType="string" />
+        <argument
+            android:name="id"
+            app:argType="long" />
+    </fragment>
+    <dialog
+        android:id="@+id/fullscreenDialogInfo"
+        android:name="com.skyyaros.skillcinema.ui.FullscreenDialogInfo"
+        android:label="FullscreenDialogInfo"
+        tools:layout="@layout/dialog_info" >
+
+        <argument
+            android:name="mode"
+            app:argType="integer" />
+        <argument
+            android:name="isChecked"
+            app:argType="boolean" />
+    </dialog>
+    <dialog
+        android:id="@+id/dialogAddUserCat"
+        android:name="com.skyyaros.skillcinema.ui.DialogAddUserCat"
+        android:label="DialogAddUserCat"
+        tools:layout="@layout/add_user_category"/>
+    <dialog
+        android:id="@+id/deleteCategoryDialog"
+        android:name="com.skyyaros.skillcinema.ui.person.DeleteCategoryDialog"
+        android:label="DeleteCategoryDialog"
+        tools:layout="@layout/delete_category">
+        <argument
+            android:name="category"
+            app:argType="string" />
+    </dialog>
 </navigation>

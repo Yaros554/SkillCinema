@@ -16,6 +16,7 @@ import androidx.paging.LoadState
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.SearchFragmentBinding
+import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.SearchQuery
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
@@ -29,7 +30,11 @@ class SearchFragment: Fragment() {
     private val viewModel: SearchViewModel by viewModels {
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return SearchViewModel(App.component.getKinopoiskRepository(), activityCallbacks!!.getSearchQuery()) as T
+                return SearchViewModel(
+                    App.component.getKinopoiskRepository(),
+                    activityCallbacks!!.getSearchQuery(),
+                    activityCallbacks!!.getSeeHistoryFlow().value
+                ) as T
             }
         }
     }
@@ -48,11 +53,25 @@ class SearchFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activityCallbacks!!.hideUpBar()
         val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.small_margin).toInt(), false)
-        val adapter = FilmPreviewTwoAdapter(requireContext()) { id ->
-            val action = if (activityCallbacks!!.getSearchQuery().nameActor == null)
+        val adapter = FilmPreviewTwoAdapter(requireContext()) { filmPreview ->
+            val id = filmPreview.kinopoiskId?:filmPreview.filmId!!
+            val action = if (activityCallbacks!!.getSearchQuery().nameActor == null) {
+                val filmTable = FilmActorTable(
+                    "1", id, false, filmPreview.imageUrl,
+                    filmPreview.nameRu, filmPreview.nameEn, filmPreview.nameOriginal,
+                    filmPreview.genres, filmPreview.rating ?: filmPreview.ratingKinopoisk
+                )
+                activityCallbacks!!.insertHistoryItem(filmTable)
                 SearchFragmentDirections.actionSearchFragmentToDetailFilmFragment(id)
-            else
+            }
+            else {
+                val actorTable = FilmActorTable(
+                    "1", id, true, filmPreview.imageUrl,
+                    filmPreview.nameRu, filmPreview.nameEn, null, null, null
+                )
+                activityCallbacks!!.insertHistoryItem(actorTable)
                 SearchFragmentDirections.actionSearchFragmentToActorDetailFragment(id)
+            }
             findNavController().navigate(action)
         }
         bind.recyclerView.adapter = adapter.withLoadStateFooter(
@@ -115,10 +134,14 @@ class SearchFragment: Fragment() {
                     oldQuery.ratingFrom, oldQuery.ratingTo,
                     oldQuery.yearFrom, oldQuery.yearTo,
                     if (isFilmSearch) finalText else oldQuery.keyword,
-                    if (!isFilmSearch) finalText else oldQuery.nameActor
+                    if (!isFilmSearch) finalText else oldQuery.nameActor,
+                    oldQuery.showViewedFilms
                 )
                 activityCallbacks!!.setSearchQuery(newQuery)
-                viewModel.createNewQuery(activityCallbacks!!.getSearchQuery())
+                viewModel.createNewQuery(
+                    activityCallbacks!!.getSearchQuery(),
+                    activityCallbacks!!.getSeeHistoryFlow().value
+                )
             },
             { }
         )

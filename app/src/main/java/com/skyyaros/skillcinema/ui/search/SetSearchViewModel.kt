@@ -14,6 +14,7 @@ class SetSearchViewModel(oldQuery: SearchQuery, private val kinopoiskRepository:
     var ratingTo = oldQuery.ratingTo
     var order = oldQuery.order
     var nameActor = oldQuery.nameActor
+    var showViewedFilms = oldQuery.showViewedFilms
     val countries get() = kinopoiskRepository.listCountries
     val genres get() = kinopoiskRepository.listGenres
 }

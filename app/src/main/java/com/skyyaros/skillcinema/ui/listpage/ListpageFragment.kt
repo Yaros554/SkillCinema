@@ -20,6 +20,7 @@ import com.skyyaros.skillcinema.databinding.ListpageFragmentBinding
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAdapter
+import com.skyyaros.skillcinema.ui.person.HistoryAdapter
 
 class ListpageFragment: Fragment() {
     private var _bind: ListpageFragmentBinding? = null
@@ -58,12 +59,40 @@ class ListpageFragment: Fragment() {
             6 -> getString(R.string.home_text_serials)
             7 -> getString(R.string.detail_text_similar)
             8 -> getString(R.string.detail_text_best)
+            9 -> args.countryName!!
+            10 -> getString(R.string.profile_text_history)
+            11 -> getString(R.string.profile_text_history_see)
             else -> "${args.genreName}, ${args.countryName}"
         }
         activityCallbacks!!.showUpBar(label)
-        if (args.mode == 1) {
+        if (args.mode == 1 || args.mode == 9) {
             val adapter = FilmPreviewAdapter(args.listPreload!!.toList(), requireContext(), onClickFilm)
             bind.recyclerView.adapter = adapter
+        } else if (args.mode == 10) {
+            val adapter = HistoryAdapter {
+                val action = if (it.isActor!!)
+                    ListpageFragmentDirections.actionListpageFragmentToActorDetailFragment(it.kinopoiskId)
+                else
+                    ListpageFragmentDirections.actionListpageFragmentToDetailFilmFragment(it.kinopoiskId)
+                findNavController().navigate(action)
+            }
+            bind.recyclerView.adapter = adapter
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                activityCallbacks!!.getSearchHistoryFlow().collect { history ->
+                    adapter.submitList(history.sortedByDescending { it.dateCreate })
+                }
+            }
+        } else if (args.mode == 11) {
+            val adapter = HistoryAdapter {
+                val action = ListpageFragmentDirections.actionListpageFragmentToDetailFilmFragment(it.kinopoiskId)
+                findNavController().navigate(action)
+            }
+            bind.recyclerView.adapter = adapter
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                activityCallbacks!!.getSeeHistoryFlow().collect { history ->
+                    adapter.submitList(history.sortedByDescending { it.dateCreate })
+                }
+            }
         } else {
             val adapter = ListpageAdapter(requireContext(), onClickFilm)
             bind.recyclerView.adapter = adapter.withLoadStateFooter(MyLoadStateAdapter {

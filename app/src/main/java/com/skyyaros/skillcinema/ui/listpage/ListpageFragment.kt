@@ -108,7 +108,10 @@ class ListpageFragment: Fragment() {
             val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.big_margin).toInt(), false)
             bind.recyclerView.addItemDecoration(itemMargin)
         }
-        val recyclerViewSize = Resources.getSystem().displayMetrics.widthPixels
+        var recyclerViewSize = Resources.getSystem().displayMetrics.widthPixels
+        val density = resources.displayMetrics.density
+        if (requireContext().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+            recyclerViewSize -= (72*density).toInt()
         val groupSize = if (requireContext().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
             requireContext().resources.getDimension(R.dimen.port_film_margin).toInt()
         else

@@ -16,6 +16,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigationrail.NavigationRailView
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.ActivityMainBinding
@@ -51,17 +53,38 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
         setSupportActionBar(binding.toolbar)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        binding.bottomNav.setupWithNavController(navController)
-        binding.bottomNav.setOnItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.home -> {
-                    navController.popBackStack(R.id.homeFragment, inclusive = false)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            (binding.bottomNav as NavigationRailView).setupWithNavController(navController)
+            (binding.bottomNav as NavigationRailView).setOnItemReselectedListener { item ->
+                when (item.itemId) {
+                    R.id.home -> {
+                        navController.popBackStack(R.id.homeFragment, inclusive = false)
+                    }
+
+                    R.id.search -> {
+                        navController.popBackStack(R.id.searchFragment, inclusive = false)
+                    }
+
+                    else -> {
+                        navController.popBackStack(R.id.personFragment, inclusive = false)
+                    }
                 }
-                R.id.search -> {
-                    navController.popBackStack(R.id.searchFragment, inclusive = false)
-                }
-                else -> {
-                    navController.popBackStack(R.id.personFragment, inclusive = false)
+            }
+        } else {
+            (binding.bottomNav as BottomNavigationView).setupWithNavController(navController)
+            (binding.bottomNav as BottomNavigationView).setOnItemReselectedListener { item ->
+                when (item.itemId) {
+                    R.id.home -> {
+                        navController.popBackStack(R.id.homeFragment, inclusive = false)
+                    }
+
+                    R.id.search -> {
+                        navController.popBackStack(R.id.searchFragment, inclusive = false)
+                    }
+
+                    else -> {
+                        navController.popBackStack(R.id.personFragment, inclusive = false)
+                    }
                 }
             }
         }

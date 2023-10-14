@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="8dp">
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchMode"
+        style="@style/MySwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search_set_year_text_all"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="40dp"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:lottie_rawRes="@raw/year"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button"
+        app:layout_constraintTop_toBottomOf="@id/switchMode"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/searchTextFrom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/search_set_year_text_from"
+        android:textColor="@color/skill_grey2"
+        android:gravity="start"
+        app:layout_constraintStart_toStartOf="@id/frameLayoutFrom"
+        app:layout_constraintEnd_toEndOf="@id/frameLayoutFrom"
+        app:layout_constraintTop_toBottomOf="@id/switchMode"
+        app:layout_constraintBottom_toTopOf="@id/frameLayoutFrom"/>
+
+    <FrameLayout
+        android:id="@+id/frameLayoutFrom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ramka"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/frameLayoutTo"
+        app:layout_constraintTop_toBottomOf="@id/searchTextFrom"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/yearFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="start|top"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="1998-2009" />
+
+        <ImageView
+            android:id="@+id/image_forward_from"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/strelka_right"
+            android:layout_gravity="end|top"
+            android:layout_marginEnd="8dp"/>
+
+        <ImageView
+            android:id="@+id/image_back_from"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/strelka_left"
+            android:layout_gravity="end|top"
+            android:layout_marginEnd="42dp"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerFrom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="34dp" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/searchTextTo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/search_set_year_text_to"
+        android:textColor="@color/skill_grey2"
+        android:gravity="start"
+        app:layout_constraintStart_toStartOf="@id/frameLayoutTo"
+        app:layout_constraintEnd_toEndOf="@id/frameLayoutTo"
+        app:layout_constraintTop_toBottomOf="@id/switchMode"
+        app:layout_constraintBottom_toTopOf="@id/frameLayoutTo"/>
+
+    <FrameLayout
+        android:id="@+id/frameLayoutTo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ramka"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toEndOf="@id/frameLayoutFrom"
+        app:layout_constraintEnd_toStartOf="@id/button"
+        app:layout_constraintTop_toBottomOf="@id/searchTextTo"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/yearTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="start|top"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="1998-2009" />
+
+        <ImageView
+            android:id="@+id/image_forward_to"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/strelka_right"
+            android:layout_gravity="end|top" />
+
+        <ImageView
+            android:id="@+id/image_back_to"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/strelka_left"
+            android:layout_gravity="end|top"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerTo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="34dp" />
+
+    </FrameLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle"
+        android:padding="0dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="OK"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switchMode"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

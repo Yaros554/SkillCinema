@@ -43,7 +43,10 @@ class ActerListFragment: Fragment() {
         val adapter = ActerPreviewAdapter(args.listPreload.toList(), requireContext(), onClick)
         bind.recyclerView.adapter = adapter
         bind.recyclerView.addItemDecoration(itemMargin)
-        val recyclerViewSize = Resources.getSystem().displayMetrics.widthPixels
+        val density = requireContext().resources.displayMetrics.density
+        var recyclerViewSize = Resources.getSystem().displayMetrics.widthPixels
+        if (requireContext().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+            recyclerViewSize -= (72*density).toInt()
         val groupSize = if (requireContext().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
             requireContext().resources.getDimension(R.dimen.port_actor_margin).toInt()
         else

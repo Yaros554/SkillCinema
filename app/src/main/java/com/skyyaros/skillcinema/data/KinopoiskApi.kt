@@ -1,6 +1,7 @@
 package com.skyyaros.skillcinema.data
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import com.skyyaros.skillcinema.entity.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -88,7 +89,8 @@ interface KinopoiskApi {
 
     companion object RetrofitProvider {
         private val mutex = Mutex()
-        private val keys = listOf(
+        @VisibleForTesting
+        val keys = listOf(
             "d3bbd027-4688-4e96-ad5d-f087a9ed84e8",
             "d6e4602b-caca-4926-9973-72d549051524",
             "5fbdaf0f-8e4d-4d4d-9874-0ff9230f5048",
@@ -110,7 +112,6 @@ interface KinopoiskApi {
         suspend fun getNewKey(oldKey: Map<String, String>): Map<String, String> {
             return mutex.withLock {
                 if (oldKey["X-API-KEY"] == keys[keyIndex]) {
-                    Log.d("ChangeKey", "Change key")
                     keyIndex = (keyIndex + 1) % keys.size
                 }
                 mapOf("X-API-KEY" to keys[keyIndex])

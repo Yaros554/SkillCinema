@@ -1,10 +1,10 @@
 package com.skyyaros.skillcinema.ui.search
 
 import androidx.lifecycle.ViewModel
-import com.skyyaros.skillcinema.data.KinopoiskRepository
+import com.skyyaros.skillcinema.data.KinopoiskRepositoryDefault
 import com.skyyaros.skillcinema.entity.SearchQuery
 
-class SetSearchViewModel(oldQuery: SearchQuery, private val kinopoiskRepository: KinopoiskRepository): ViewModel() {
+class SetSearchViewModel(oldQuery: SearchQuery, private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault): ViewModel() {
     var type = oldQuery.type
     var country = oldQuery.countries
     var genre = oldQuery.genres
@@ -15,6 +15,6 @@ class SetSearchViewModel(oldQuery: SearchQuery, private val kinopoiskRepository:
     var order = oldQuery.order
     var nameActor = oldQuery.nameActor
     var showViewedFilms = oldQuery.showViewedFilms
-    val countries get() = kinopoiskRepository.listCountries
-    val genres get() = kinopoiskRepository.listGenres
+    val countries get() = kinopoiskRepositoryDefault.listCountries
+    val genres get() = kinopoiskRepositoryDefault.listGenres
 }

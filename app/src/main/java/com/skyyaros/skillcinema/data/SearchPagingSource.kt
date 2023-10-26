@@ -7,7 +7,7 @@ import com.skyyaros.skillcinema.entity.SearchQuery
 import kotlinx.coroutines.delay
 
 class SearchPagingSource(
-    private val kinopoiskRepository: KinopoiskRepository,
+    private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault,
     private val searchQuery: SearchQuery
 ): PagingSource<Int, FilmPreview>() {
     override fun getRefreshKey(state: PagingState<Int, FilmPreview>): Int {
@@ -19,9 +19,9 @@ class SearchPagingSource(
         if (page == 1)
             delay(300)
         val res = if (searchQuery.nameActor == null)
-            kinopoiskRepository.getSearchFilms(searchQuery, page)
+            kinopoiskRepositoryDefault.getSearchFilms(searchQuery, page)
         else {
-            kinopoiskRepository.getSearchActors(searchQuery.nameActor, page)?.map {
+            kinopoiskRepositoryDefault.getSearchActors(searchQuery.nameActor, page)?.map {
                 FilmPreview(
                     it.kinopoiskId, null, it.posterUrl, it.nameRu, it.nameEn,
                     null, null, null, null, null, null

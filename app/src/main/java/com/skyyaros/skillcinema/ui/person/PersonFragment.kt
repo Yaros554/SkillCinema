@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.skyyaros.skillcinema.R
+import com.skyyaros.skillcinema.data.DefaultCats
 import com.skyyaros.skillcinema.databinding.PersonFragmentBinding
 import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.FilmPreview
@@ -32,9 +33,9 @@ class PersonFragment: Fragment() {
                     it.rating, null, null, null
                 )
             }.toTypedArray()
-            val category = if (listFilmActorTable[0].category == "2")
+            val category = if (listFilmActorTable[0].category == DefaultCats.WantSee.code)
                 getString(R.string.profile_item_text2)
-            else if (listFilmActorTable[0].category == "3")
+            else if (listFilmActorTable[0].category == DefaultCats.Love.code)
                 getString(R.string.profile_item_text)
             else
                 listFilmActorTable[0].category

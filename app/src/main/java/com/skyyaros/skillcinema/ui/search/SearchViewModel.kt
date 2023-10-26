@@ -6,7 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.skyyaros.skillcinema.data.KinopoiskRepository
+import com.skyyaros.skillcinema.data.KinopoiskRepositoryDefault
 import com.skyyaros.skillcinema.data.SearchPagingSource
 import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.SearchQuery
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
 class SearchViewModel(
-    private val kinopoiskRepository: KinopoiskRepository,
+    private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault,
     initSearchQuery: SearchQuery,
     _filterList: List<FilmActorTable>
 ): ViewModel() {
@@ -28,7 +28,7 @@ class SearchViewModel(
         Pager(
             config = PagingConfig(pageSize = if (it.nameActor == null) 20 else 50),
             pagingSourceFactory = {
-                SearchPagingSource(kinopoiskRepository, it)
+                SearchPagingSource(kinopoiskRepositoryDefault, it)
             }
         ).flow.map { pagingData ->
             pagingData.filter { filmPreview ->

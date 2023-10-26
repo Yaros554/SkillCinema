@@ -11,6 +11,10 @@ private val Context.dataStore by preferencesDataStore(
 )
 
 class App: Application() {
+    val kinopoiskRepository
+        get() = ServiceLocator.provideKinopoiskRepository()
+    val storeRepository
+        get() = ServiceLocator.provideStoreRepository()
     companion object {
         lateinit var component: DaggerComponent
     }

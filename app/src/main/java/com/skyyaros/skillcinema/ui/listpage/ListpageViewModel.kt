@@ -8,13 +8,13 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.skyyaros.skillcinema.data.FilmPagingSource
 import com.skyyaros.skillcinema.data.FilmPagingSourceTwo
-import com.skyyaros.skillcinema.data.KinopoiskRepository
+import com.skyyaros.skillcinema.data.KinopoiskRepositoryDefault
 import com.skyyaros.skillcinema.entity.FilmPreview
 import com.skyyaros.skillcinema.entity.FilmPreviewHalf
 import kotlinx.coroutines.flow.Flow
 
 class ListpageViewModel(
-    private val kinopoiskRepository: KinopoiskRepository,
+    private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault,
     private val mode: Int,
     private val countryId: Long? = null,
     private val genreId: Long? = null,
@@ -25,9 +25,9 @@ class ListpageViewModel(
         config = PagingConfig(pageSize = if (mode == 8 || mode == 7) 10 else 20),
         pagingSourceFactory = {
             if (mode == 8 || mode == 7)
-                FilmPagingSourceTwo(kinopoiskRepository, listFilmPreviewHalf!!)
+                FilmPagingSourceTwo(kinopoiskRepositoryDefault, listFilmPreviewHalf!!)
             else
-                FilmPagingSource(kinopoiskRepository, mode, countryId, genreId, listFilmPreview!!)
+                FilmPagingSource(kinopoiskRepositoryDefault, mode, countryId, genreId, listFilmPreview!!)
         }
     ).flow.cachedIn(viewModelScope)
 }

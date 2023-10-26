@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.skyyaros.skillcinema.entity.FilmPreview
 
 class FilmPagingSource(
-    private val kinopoiskRepository: KinopoiskRepository,
+    private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault,
     private val mode: Int,
     private val countryId: Long? = null,
     private val genreId: Long? = null,
@@ -21,7 +21,7 @@ class FilmPagingSource(
             return LoadResult.Page(data = listFilmPreview, prevKey = null, nextKey = page + 1)
         }
         if (mode == 2 || mode == 4) {
-            val res = kinopoiskRepository.getTopForHome(if (mode == 2) "TOP_100_POPULAR_FILMS" else "TOP_250_BEST_FILMS", page)
+            val res = kinopoiskRepositoryDefault.getTopForHome(if (mode == 2) "TOP_100_POPULAR_FILMS" else "TOP_250_BEST_FILMS", page)
             return if (res != null) {
                 LoadResult.Page(data = res, prevKey = null, nextKey = if (res.isEmpty()) null else page + 1)
             } else {
@@ -29,9 +29,9 @@ class FilmPagingSource(
             }
         } else {
             val res = if (mode == 6) {
-                kinopoiskRepository.getFiltersOrSeriesForHome(null, null, page)
+                kinopoiskRepositoryDefault.getFiltersOrSeriesForHome(null, null, page)
             } else {
-                kinopoiskRepository.getFiltersOrSeriesForHome(countryId!!, genreId!!, page)
+                kinopoiskRepositoryDefault.getFiltersOrSeriesForHome(countryId!!, genreId!!, page)
             }
             return if (res != null) {
                 LoadResult.Page(data = res, prevKey = null, nextKey = if (res.isEmpty()) null else page + 1)

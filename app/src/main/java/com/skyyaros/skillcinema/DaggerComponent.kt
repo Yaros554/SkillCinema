@@ -6,8 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import com.skyyaros.skillcinema.data.AppDatabase
 import com.skyyaros.skillcinema.data.DatabaseRepository
 import com.skyyaros.skillcinema.data.KinopoiskApi
-import com.skyyaros.skillcinema.data.KinopoiskRepository
-import com.skyyaros.skillcinema.data.StoreRepository
+import com.skyyaros.skillcinema.data.KinopoiskRepositoryDefault
+import com.skyyaros.skillcinema.data.StoreRepositoryDefault
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -18,8 +18,8 @@ import javax.inject.Singleton
     modules = [DaggerModule::class],
 )
 interface DaggerComponent {
-    fun getStoreRepository(): StoreRepository
-    fun getKinopoiskRepository(): KinopoiskRepository
+    fun getStoreRepository(): StoreRepositoryDefault
+    fun getKinopoiskRepository(): KinopoiskRepositoryDefault
     fun getDatabaseRepository(): DatabaseRepository
 }
 
@@ -27,7 +27,7 @@ interface DaggerComponent {
 class DaggerModule(private val dataStore: DataStore<Preferences>, private val context: Context) {
     @Provides
     @Singleton
-    fun storeRepository(): StoreRepository = StoreRepository(dataStore)
+    fun storeRepository(): StoreRepositoryDefault = StoreRepositoryDefault(dataStore)
 
     @Provides
     @Singleton
@@ -35,7 +35,7 @@ class DaggerModule(private val dataStore: DataStore<Preferences>, private val co
 
     @Provides
     @Singleton
-    fun kinopoiskRepository(kinopoiskApi: KinopoiskApi): KinopoiskRepository = KinopoiskRepository(kinopoiskApi)
+    fun kinopoiskRepository(kinopoiskApi: KinopoiskApi): KinopoiskRepositoryDefault = KinopoiskRepositoryDefault(kinopoiskApi)
 
     @Provides
     @Singleton

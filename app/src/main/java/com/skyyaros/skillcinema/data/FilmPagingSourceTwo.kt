@@ -6,7 +6,7 @@ import com.skyyaros.skillcinema.entity.FilmPreview
 import com.skyyaros.skillcinema.entity.FilmPreviewHalf
 
 class FilmPagingSourceTwo(
-    private val kinopoiskRepository: KinopoiskRepository,
+    private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault,
     private val listFilmPreviewHalf: List<FilmPreviewHalf>
     ): PagingSource<Int, FilmPreview>() {
     override fun getRefreshKey(state: PagingState<Int, FilmPreview>): Int {
@@ -15,7 +15,7 @@ class FilmPagingSourceTwo(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, FilmPreview> {
         val page = params.key ?: FIRST_PAGE
-        val res = kinopoiskRepository.getFilmPreviewPage(listFilmPreviewHalf, page)
+        val res = kinopoiskRepositoryDefault.getFilmPreviewPage(listFilmPreviewHalf, page)
         return LoadResult.Page(data = res, prevKey = null, nextKey = if (res.isEmpty()) null else page + 1)
     }
 

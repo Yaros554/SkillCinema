@@ -1,6 +1,5 @@
 package com.skyyaros.skillcinema.data
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.skyyaros.skillcinema.entity.ImageItem
@@ -8,7 +7,7 @@ import kotlinx.coroutines.delay
 import kotlin.math.min
 
 class PhotoPagingSource(
-    private val kinopoiskRepository: KinopoiskRepository,
+    private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault,
     private val id: Long,
     private val type: String,
     private val listPhotoPreview: List<ImageItem>,
@@ -28,7 +27,7 @@ class PhotoPagingSource(
                 prevKey = if (page > 1) page - 1 else null,
                 nextKey = page + 1)
         }
-        val res = kinopoiskRepository.getImagesForFilmPaging(id, page, type)
+        val res = kinopoiskRepositoryDefault.getImagesForFilmPaging(id, page, type)
         return if (res != null) {
             LoadResult.Page(
                 data = res.items,

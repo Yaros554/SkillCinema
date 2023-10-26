@@ -10,14 +10,21 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FilmActorDao {
-    @Query("SELECT * FROM filmActorTable WHERE category != :catSee AND category != :catSearch")
-    fun getFilmActorWithCat(catSee: String = "0", catSearch: String = "1"): Flow<List<FilmActorTable>>
+    @Query("SELECT * FROM filmActorTable WHERE category != :catHistorySee AND category != :catHistorySearch")
+    fun getFilmActorWithCat(
+        catHistorySee: String = DefaultCats.HistorySee.code,
+        catHistorySearch: String = DefaultCats.HistorySearch.code
+    ): Flow<List<FilmActorTable>>
 
     @Query("SELECT * FROM filmActorTable WHERE category == :catHistory")
     fun getHistory(catHistory: String): Flow<List<FilmActorTable>>
 
-    @Query("DELETE FROM filmActorTable WHERE kinopoiskId == :id AND category != :catSee AND category != :catSearch")
-    suspend fun deleteAllFilmCat(id: Long, catSee: String = "0", catSearch: String = "1")
+    @Query("DELETE FROM filmActorTable WHERE kinopoiskId == :id AND category != :catHistorySee AND category != :catHistorySearch")
+    suspend fun deleteAllFilmCat(
+        id: Long,
+        catHistorySee: String = DefaultCats.HistorySee.code,
+        catHistorySearch: String = DefaultCats.HistorySearch.code
+    )
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllFilmCat(listFilmCat: List<FilmActorTable>)

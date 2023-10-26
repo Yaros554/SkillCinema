@@ -3,6 +3,7 @@ package com.skyyaros.skillcinema.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skyyaros.skillcinema.data.DatabaseRepository
+import com.skyyaros.skillcinema.data.DefaultCats
 import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.SearchQuery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,11 +40,11 @@ class MainViewModel(private val databaseRepository: DatabaseRepository): ViewMod
     )
     val filmActorWithCatFlow = databaseRepository.getFilmActorWithCat().map { listFilmActor ->
         (listFilmActor + FilmActorTable(
-            "2", -1, null,
+            DefaultCats.WantSee.code, -1, null,
             null, null, null,
             null, null, null
         ) + FilmActorTable(
-            "3", -1, null,
+            DefaultCats.Love.code, -1, null,
             null, null, null,
             null, null, null
         )).sortedBy { it.category }

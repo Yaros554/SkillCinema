@@ -2,26 +2,25 @@ package com.skyyaros.skillcinema.ui.detailfilm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.skyyaros.skillcinema.data.KinopoiskRepository
-import com.skyyaros.skillcinema.data.StoreRepository
+import com.skyyaros.skillcinema.data.KinopoiskRepositoryDefault
+import com.skyyaros.skillcinema.data.StoreRepositoryDefault
 import com.skyyaros.skillcinema.entity.ImageItem
 import com.skyyaros.skillcinema.entity.VideoItem
-import com.skyyaros.skillcinema.ui.home.StateHomeFilms
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class DetailFilmViewModel(private val storeRepository: StoreRepository, private val kinopoiskRepository: KinopoiskRepository, private val id: Long): ViewModel() {
+class DetailFilmViewModel(private val storeRepositoryDefault: StoreRepositoryDefault, private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault, private val id: Long): ViewModel() {
     private val _detailFilmFlow = MutableStateFlow<StateDetailFilm>(StateDetailFilm.Loading)
     val detailFilmFlow = _detailFilmFlow.asStateFlow()
-    val statusPhotoDialogFlow = storeRepository.getDialogStatusFlow(1).stateIn(
+    val statusPhotoDialogFlow = storeRepositoryDefault.getDialogStatusFlow(1).stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
         0
     )
-    val statusVideoDialogFlow = storeRepository.getDialogStatusFlow(2).stateIn(
+    val statusVideoDialogFlow = storeRepositoryDefault.getDialogStatusFlow(2).stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
         0
@@ -35,7 +34,7 @@ class DetailFilmViewModel(private val storeRepository: StoreRepository, private 
 
     init {
         viewModelScope.launch {
-            val result = kinopoiskRepository.getFullDetailFilm(id)
+            val result = kinopoiskRepositoryDefault.getFullDetailFilm(id)
             if (result != null) {
                 _detailFilmFlow.emit(StateDetailFilm.Success(result))
             } else {
@@ -47,7 +46,7 @@ class DetailFilmViewModel(private val storeRepository: StoreRepository, private 
     fun reloadFilm() {
         viewModelScope.launch {
             _detailFilmFlow.emit(StateDetailFilm.Loading)
-            val result = kinopoiskRepository.getFullDetailFilm(id)
+            val result = kinopoiskRepositoryDefault.getFullDetailFilm(id)
             if (result != null) {
                 _detailFilmFlow.emit(StateDetailFilm.Success(result))
             } else {
@@ -58,7 +57,7 @@ class DetailFilmViewModel(private val storeRepository: StoreRepository, private 
 
     fun setDialogStatus(mode: Int, status: Int) {
         viewModelScope.launch {
-            storeRepository.setDialogStatus(mode, status)
+            storeRepositoryDefault.setDialogStatus(mode, status)
         }
     }
 }

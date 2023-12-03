@@ -15,6 +15,8 @@ class App: Application() {
         get() = ServiceLocator.provideKinopoiskRepository()
     val storeRepository
         get() = ServiceLocator.provideStoreRepository()
+    val activityCallbacks
+        get() = ServiceLocator.provideActivityCallbacks()
     companion object {
         lateinit var component: DaggerComponent
     }

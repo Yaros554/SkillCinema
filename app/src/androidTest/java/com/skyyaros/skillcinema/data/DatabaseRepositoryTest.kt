@@ -9,9 +9,11 @@ import com.skyyaros.skillcinema.entity.Genre
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -29,22 +31,22 @@ class DatabaseRepositoryTest {
         FilmActorTable(
             "Cat 1", 1L, false, "test url",
             "Имя", "Name", "Name Original",
-            listOf(Genre("Боевик"), Genre("Комедия")), "9.5"
+            listOf(Genre("Боевик"), Genre("Комедия")), "9.5", 1L
         ),
         FilmActorTable(
             "Cat 2", 1L, false, "test url",
             "Имя", "Name", "Name Original",
-            listOf(Genre("Боевик"), Genre("Комедия")), "9.5"
+            listOf(Genre("Боевик"), Genre("Комедия")), "9.5", 2L
         ),
         FilmActorTable(
             "Cat 3", 1L, false, "test url",
             "Имя", "Name", "Name Original",
-            listOf(Genre("Боевик"), Genre("Комедия")), "9.5"
+            listOf(Genre("Боевик"), Genre("Комедия")), "9.5", 3L
         ),
         FilmActorTable(
             "Cat 4", 1L, false, "test url",
             "Имя", "Name", "Name Original",
-            listOf(Genre("Боевик"), Genre("Комедия")), "9.5"
+            listOf(Genre("Боевик"), Genre("Комедия")), "9.5", 4L
         )
     )
 
@@ -63,69 +65,19 @@ class DatabaseRepositoryTest {
     }
 
     @Test
-    fun updateFilmCat_newCat() {
-        var filmsInCats: List<FilmActorTable>? = null
-        var job: Job? = null
-        var timer: Job? = null
-        var count = 0
-        runBlocking {
-            database.filmActorDao().insertAllFilmCat(filmActorList.subList(0, 2))
-            databaseRepository.updateFilmCat(1L, filmActorList.subList(2, 4))
-            job = launch {
-                database.filmActorDao().getFilmActorWithCat()
-                    .stateIn(this, SharingStarted.WhileSubscribed(1000), emptyList())
-                    .collect {
-                        if (it.isEmpty() && count == 0)
-                            count++
-                        else {
-                            filmsInCats = it
-                            timer?.cancel()
-                            job!!.cancel()
-                        }
-                    }
-            }
-            timer = launch { startTimer(job) }
-        }
-        assertThat(filmsInCats != null, `is`(true))
-        assertThat(filmsInCats!!.size, `is`(2))
-        assertThat(filmsInCats!![0], `is`(filmActorList[2]))
-        assertThat(filmsInCats!![1], `is`(filmActorList[3]))
+    fun updateFilmCat_newCat() = runTest {
+        database.filmActorDao().insertAllFilmCat(filmActorList.subList(0, 2))
+        databaseRepository.updateFilmCat(1L, filmActorList.subList(2, 4))
+        val filmsInCats = database.filmActorDao().getFilmActorWithCat().first().sortedBy { it.dateCreate }
+        assertThat(filmsInCats.size, `is`(2))
+        assertThat(filmsInCats, `is`(filmActorList.subList(2, 4).sortedBy { it.dateCreate }))
     }
 
     @Test
-    fun updateFilmCat_noCat() {
-        var filmsInCats: List<FilmActorTable>? = null
-        var job: Job? = null
-        var timer: Job? = null
-        var count = 0
-        runBlocking {
-            database.filmActorDao().insertAllFilmCat(filmActorList)
-            databaseRepository.updateFilmCat(1L, emptyList())
-            job = launch {
-                database.filmActorDao().getFilmActorWithCat()
-                    .stateIn(this, SharingStarted.WhileSubscribed(1000), filmActorList)
-                    .collect {
-                        if (it == filmActorList && count == 0)
-                            count++
-                        else {
-                            filmsInCats = it
-                            timer?.cancel()
-                            job!!.cancel()
-                        }
-                    }
-            }
-            timer = launch { startTimer(job) }
-        }
-        assertThat(filmsInCats != null, `is`(true))
-        assertThat(filmsInCats!!.isEmpty(), `is`(true))
-    }
-
-    private suspend fun startTimer(job: Job?) {
-        var time = 5000
-        while (time > 0) {
-            time--
-            delay(1)
-        }
-        job?.cancel()
+    fun updateFilmCat_noCat() = runTest {
+        database.filmActorDao().insertAllFilmCat(filmActorList)
+        databaseRepository.updateFilmCat(1L, emptyList())
+        val filmsInCats = database.filmActorDao().getFilmActorWithCat().first()
+        assertThat(filmsInCats.isEmpty(), `is`(true))
     }
 }

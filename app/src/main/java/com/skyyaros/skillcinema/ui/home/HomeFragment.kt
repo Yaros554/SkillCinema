@@ -22,6 +22,7 @@ import com.skyyaros.skillcinema.entity.FilmPreview
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
+import com.skyyaros.skillcinema.ui.MyCountingIdlingResource
 
 class HomeFragment: Fragment() {
     private var _bind: HomeFragmentBinding? = null
@@ -45,10 +46,13 @@ class HomeFragment: Fragment() {
         val action = HomeFragmentDirections.actionHomeFragmentToDetailFilmFragment(it)
         findNavController().navigate(action)
     }
+    init {
+        MyCountingIdlingResource.increment()
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        activityCallbacks = context as ActivityCallbacks
+        activityCallbacks = (context.applicationContext as App).activityCallbacks ?: (context as ActivityCallbacks)
         _itemMargin = AdaptiveSpacingItemDecoration(context.resources.getDimension(R.dimen.small_margin).toInt(), false)
         _leftMargin = LeftSpaceDecorator(context.resources.getDimension(R.dimen.big_margin).toInt())
     }
@@ -153,6 +157,7 @@ class HomeFragment: Fragment() {
                             -1, null,
                             null
                         )
+                        MyCountingIdlingResource.decrement()
                     }
                     is StateHomeFilms.Error -> {
                         activityCallbacks!!.hideDownBar()
@@ -163,6 +168,7 @@ class HomeFragment: Fragment() {
                         bind.textError.visibility = View.VISIBLE
                         bind.scrollView.visibility = View.GONE
                         bind.swipe.isRefreshing = false
+                        MyCountingIdlingResource.decrement()
                     }
                 }
             }

@@ -12,6 +12,7 @@ import com.skyyaros.skillcinema.entity.ImageResponse
 import com.skyyaros.skillcinema.entity.SearchActor
 import com.skyyaros.skillcinema.entity.SearchQuery
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
@@ -19,11 +20,12 @@ class FakeKinopoiskRepository: KinopoiskRepository {
     var isError = false
     var needUpdate = false
     override suspend fun getFilmsForHome(): FilmsPreviewWithData? {
+        delay(3000)
         return if (isError)
             null
         else {
             val input = InstrumentationRegistry.getInstrumentation().targetContext.openFileInput(
-                if (needUpdate) "TestDataHomeFragment2.txt" else "TestDataHomeFragment.txt"
+                if (needUpdate) "TestDataHFAndroid2.txt" else "TestDataHFAndroid.txt"
             )
             val myGson = withContext(Dispatchers.IO) {
                 val bytes = ByteArray(input.available())

@@ -20,6 +20,16 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        buildConfigField("String[]", "API_KEYS",
+                        "{" +
+                        "\"${properties.getProperty('api.key1')}\"," +
+                        "\"${properties.getProperty('api.key2')}\"," +
+                        "\"${properties.getProperty('api.key3')}\"," +
+                        "\"${properties.getProperty('api.key4')}\"" +
+                        "}"
+        )
     }
 
     buildTypes {

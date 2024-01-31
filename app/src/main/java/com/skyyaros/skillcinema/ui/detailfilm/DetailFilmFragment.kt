@@ -103,7 +103,10 @@ class DetailFilmFragment: Fragment() {
                         val leftMargin = LeftSpaceDecorator(requireContext().resources.getDimension(R.dimen.big_margin).toInt())
                         setupActorList(stateDetailFilm.data.actors, itemMargin, leftMargin)
                         setupImages(stateDetailFilm.data.images, itemMargin, leftMargin)
-                        setupVideo(stateDetailFilm.data.videos, itemMargin, leftMargin)
+                        setupVideo(
+                            stateDetailFilm.data.videos,
+                            stateDetailFilm.data.detailFilm.posterUrl,
+                            itemMargin, leftMargin)
                         setupSimilarFilm(stateDetailFilm.data.similarHalf, stateDetailFilm.data.similar10, itemMargin, leftMargin)
                         setupSerials(stateDetailFilm.data.series, item)
                     }
@@ -570,10 +573,10 @@ class DetailFilmFragment: Fragment() {
         }
     }
 
-    private fun setupVideo(items: List<VideoItem>?, itemMargin: AdaptiveSpacingItemDecoration, leftMargin: LeftSpaceDecorator) {
-        val filterItems = items?.filter { it.site == "YOUTUBE" }
+    private fun setupVideo(items: List<VideoItem>?, posterUrl: String, itemMargin: AdaptiveSpacingItemDecoration, leftMargin: LeftSpaceDecorator) {
+        val filterItems = items?.filter { it.site == "YOUTUBE" || it.site == "KINOPOISK_WIDGET" }
         if (!filterItems.isNullOrEmpty()) {
-            val listVideoPreviewAdapter = VideoPreviewAdapter(filterItems , viewLifecycleOwner.lifecycle) { curUrl ->
+            val listVideoPreviewAdapter = VideoPreviewAdapter(filterItems , posterUrl) { curUrl ->
                 viewModel.curVideoUrlSave = curUrl
                 viewModel.listVideoItemsSave = filterItems
                 val status = viewModel.statusVideoDialogFlow.value

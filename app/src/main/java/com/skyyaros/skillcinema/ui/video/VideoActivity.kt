@@ -43,7 +43,7 @@ class VideoActivity : AppCompatActivity() {
         val curItem = intent.getStringExtra(CUR_ITEM)
         val adapter = VideoItemAdapter(items, this)
         binding.viewPager.adapter = adapter
-        val index = items.indexOfFirst { it.url.substringAfterLast('/') == curItem }
+        val index = items.indexOfFirst { it.url == curItem }
         binding.viewPager.setCurrentItem(index, false)
 
         binding.imageBack.setOnClickListener {

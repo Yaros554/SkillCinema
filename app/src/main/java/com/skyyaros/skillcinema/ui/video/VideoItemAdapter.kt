@@ -10,6 +10,9 @@ class VideoItemAdapter(private val items: List<VideoItem>, parentActivity: Video
     }
 
     override fun createFragment(position: Int): Fragment {
-        return VideoItemFragment.create(items[position].url.substringAfterLast('/'))
+        return if (items[position].site == "YOUTUBE")
+            VideoItemFragment.create(items[position].url.substringAfterLast('/'))
+        else
+            VideoItemFragmentKnpsk.create(items[position].url)
     }
 }

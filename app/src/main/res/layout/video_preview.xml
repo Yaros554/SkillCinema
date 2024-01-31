@@ -11,34 +11,25 @@
         android:layout_gravity="center"
         app:cardCornerRadius="8dp" >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
-            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-                android:id="@+id/videoPlayer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:autoPlay="false"/>
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
 
-            <View
-                android:id="@+id/blockPlayer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+            <ImageView
+                android:id="@+id/service"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:focusable="true"
-                android:clickable="true"
-                android:background="@null"
-                app:layout_constraintTop_toTopOf="@id/videoPlayer"
-                app:layout_constraintBottom_toBottomOf="@id/videoPlayer"
-                app:layout_constraintStart_toStartOf="@id/videoPlayer"
-                app:layout_constraintEnd_toEndOf="@id/videoPlayer"/>
+                android:scaleType="centerCrop"
+                tools:srcCompat="@drawable/kinopoisk" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
     </androidx.cardview.widget.CardView>
 
 </FrameLayout>

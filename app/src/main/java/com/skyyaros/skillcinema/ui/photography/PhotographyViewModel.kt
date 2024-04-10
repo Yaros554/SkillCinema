@@ -18,14 +18,9 @@ import kotlinx.coroutines.launch
 
 class PhotographyViewModel(
     listImageResponse: List<ImageResponse>, id: Long,
-    kinopoiskRepositoryDefault: KinopoiskRepositoryDefault, private val storeRepositoryDefault: StoreRepositoryDefault
+    kinopoiskRepositoryDefault: KinopoiskRepositoryDefault
 ): ViewModel() {
     val pagedPhotos = mutableMapOf<String, Flow<PagingData<ImageItem>>>()
-    val statusPhotoDialogFlow = storeRepositoryDefault.getDialogStatusFlow(1).stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        0
-    )
     var title = ""
     var urls: List<ImageItem> = emptyList()
     var curUrl = ""
@@ -35,12 +30,6 @@ class PhotographyViewModel(
                 config = PagingConfig(pageSize = 20),
                 pagingSourceFactory = { PhotoPagingSource(kinopoiskRepositoryDefault, id, it.imageType!!, it.items) }
             ).flow.cachedIn(viewModelScope)
-        }
-    }
-
-    fun setDialogStatus(status: Int) {
-        viewModelScope.launch {
-            storeRepositoryDefault.setDialogStatus(1, status)
         }
     }
 }

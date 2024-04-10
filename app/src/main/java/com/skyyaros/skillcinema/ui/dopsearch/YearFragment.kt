@@ -27,7 +27,7 @@ class YearFragment: Fragment() {
             bind.root.getViewById(chipId) as Chip
         }
         val pageYears = requireArguments().getIntArray(argsArrayBundle)!!.toList()
-        val mode = requireArguments().getInt(argsIntBundle, 1)
+        val mode = SearchYearMode.values()[requireArguments().getInt(argsIntBundle, 1)]
         for (i in 0..11) {
             listChips[i].text = pageYears[i].toString()
             listChips[i].setOnClickListener {
@@ -45,7 +45,7 @@ class YearFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val mode = requireArguments().getInt(argsIntBundle, 1)
+        val mode = SearchYearMode.values()[requireArguments().getInt(argsIntBundle, 1)]
         val index = (parentFragment as SearchYearFragment).getCurrentIndex(mode)
         for (i in 0..11) {
             listChips[i].isChecked = i == index

@@ -12,19 +12,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class DetailFilmViewModel(private val storeRepositoryDefault: StoreRepositoryDefault, private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault, private val id: Long): ViewModel() {
+class DetailFilmViewModel(private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault, private val id: Long): ViewModel() {
     private val _detailFilmFlow = MutableStateFlow<StateDetailFilm>(StateDetailFilm.Loading)
     val detailFilmFlow = _detailFilmFlow.asStateFlow()
-    val statusPhotoDialogFlow = storeRepositoryDefault.getDialogStatusFlow(1).stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        0
-    )
-    val statusVideoDialogFlow = storeRepositoryDefault.getDialogStatusFlow(2).stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        0
-    )
     var isCollapsing = true
     var animationActive = false
     var curVideoUrlSave: String? = null
@@ -52,12 +42,6 @@ class DetailFilmViewModel(private val storeRepositoryDefault: StoreRepositoryDef
             } else {
                 _detailFilmFlow.emit(StateDetailFilm.Error("Ошибка загрузки!"))
             }
-        }
-    }
-
-    fun setDialogStatus(mode: Int, status: Int) {
-        viewModelScope.launch {
-            storeRepositoryDefault.setDialogStatus(mode, status)
         }
     }
 }

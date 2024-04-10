@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_homeFragment_to_detailFilmFragment"
             app:destination="@id/detailFilmFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_setAppFragment"
+            app:destination="@id/setAppFragment" />
     </fragment>
     <fragment
         android:id="@+id/helloFragment"
@@ -220,6 +223,15 @@
             android:name="id"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/setAppFragment"
+        android:name="com.skyyaros.skillcinema.ui.setapp.SetAppFragment"
+        android:label="SetAppFragment"
+        tools:layout="@layout/set_app_fragment">
+        <action
+            android:id="@+id/action_setAppFragment_to_backDialog"
+            app:destination="@id/backDialog" />
+    </fragment>
     <dialog
         android:id="@+id/fullscreenDialogInfo"
         android:name="com.skyyaros.skillcinema.ui.FullscreenDialogInfo"
@@ -229,13 +241,15 @@
         <argument
             android:name="mode"
             app:argType="integer" />
-        <argument
-            android:name="isChecked"
-            app:argType="boolean" />
     </dialog>
     <dialog
         android:id="@+id/dialogAddUserCat"
         android:name="com.skyyaros.skillcinema.ui.DialogAddUserCat"
         android:label="DialogAddUserCat"
         tools:layout="@layout/add_user_category"/>
+    <dialog
+        android:id="@+id/backDialog"
+        android:name="com.skyyaros.skillcinema.ui.BackDialog"
+        android:label="BackDialog"
+        tools:layout="@layout/back_dialog"/>
 </navigation>

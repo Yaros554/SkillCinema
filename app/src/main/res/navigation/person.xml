@@ -223,9 +223,6 @@
         <argument
             android:name="mode"
             app:argType="integer" />
-        <argument
-            android:name="isChecked"
-            app:argType="boolean" />
     </dialog>
     <dialog
         android:id="@+id/dialogAddUserCat"

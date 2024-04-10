@@ -12,16 +12,10 @@ import kotlinx.coroutines.launch
 
 class ActorDetailViewModel(
     private val kinopoiskRepositoryDefault: KinopoiskRepositoryDefault,
-    private val storeRepositoryDefault: StoreRepositoryDefault,
     private val id: Long
 ): ViewModel() {
     private val _detailActorFlow = MutableStateFlow<StateDetailActor>(StateDetailActor.Loading)
     val detailActorFlow = _detailActorFlow.asStateFlow()
-    val statusPhotoDialogFlow = storeRepositoryDefault.getDialogStatusFlow(1).stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        0
-    )
     var isCollapsing = true
     var animationActive = false
     var name = ""
@@ -47,12 +41,6 @@ class ActorDetailViewModel(
             } else {
                 _detailActorFlow.emit(StateDetailActor.Error("Ошибка загрузки!"))
             }
-        }
-    }
-
-    fun setDialogStatus(status: Int) {
-        viewModelScope.launch {
-            storeRepositoryDefault.setDialogStatus(1, status)
         }
     }
 }

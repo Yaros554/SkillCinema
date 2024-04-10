@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.DeleteCategoryBinding
@@ -16,6 +17,7 @@ class DeleteCategoryDialog: DialogFragment() {
     private lateinit var bind: DeleteCategoryBinding
     private var activityCallbacks: ActivityCallbacks? = null
     private val args: DeleteCategoryDialogArgs by navArgs()
+    private val sharedViewModel: DeleteCategoryDialogViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,7 +43,7 @@ class DeleteCategoryDialog: DialogFragment() {
                 }
             }
             bind.buttonOk.setOnClickListener {
-                activityCallbacks!!.emitDeleteCat(args.category)
+                sharedViewModel.emitDeleteCat(args.category)
                 dismiss()
             }
             bind.buttonNo.setOnClickListener {

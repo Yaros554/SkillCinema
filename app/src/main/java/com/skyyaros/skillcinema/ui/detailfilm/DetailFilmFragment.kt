@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -20,14 +21,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import com.bumptech.glide.Glide
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.DetailFilmFragmentBinding
 import com.skyyaros.skillcinema.entity.*
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import com.skyyaros.skillcinema.ui.DialogAddUserCatViewModel
+import com.skyyaros.skillcinema.ui.FullscreenDialogInfoMode
+import com.skyyaros.skillcinema.ui.FullscreenDialogInfoViewModel
 import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAdapter
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAllAdapter
@@ -35,6 +37,7 @@ import com.skyyaros.skillcinema.ui.video.VideoActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import java.util.*
 
 class DetailFilmFragment: Fragment() {
@@ -45,10 +48,13 @@ class DetailFilmFragment: Fragment() {
     private val viewModel: DetailFilmViewModel by viewModels {
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return DetailFilmViewModel(App.component.getStoreRepository(), App.component.getKinopoiskRepository(), args.id) as T
+                return DetailFilmViewModel(App.component.getKinopoiskRepository(), args.id) as T
             }
         }
     }
+    private val fullscreenDialogInfoViewModel: FullscreenDialogInfoViewModel by activityViewModels()
+    private val dialogAddUserCatViewModel: DialogAddUserCatViewModel by activityViewModels()
+    private val bottomSheetSharedViewModel: BottomSheetSharedViewModel by activityViewModels()
     private var imageFutureSelect = false
     private var imageFutureJob: Job? = null
     private var imageLikeSelect = false
@@ -271,16 +277,16 @@ class DetailFilmFragment: Fragment() {
             }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getBottomShFlow().collect {
+            bottomSheetSharedViewModel.resBottomSh.collect {
                 while ((findNavController().currentDestination?.label ?: "") != "DetailFilmFragment")
                     delay(1)
                 val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToDialogAddUserCat()
                 findNavController().navigate(action)
-                activityCallbacks!!.cleanBottomSh()
+                bottomSheetSharedViewModel.cleanBottomSh()
             }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getNewCatFlow().collect {
+            dialogAddUserCatViewModel.resAddNewCat.collect {
                 val filmPreview = FilmPreview(
                     item.kinopoiskId, null, item.posterUrl,
                     item.nameRu, item.nameEn, item.nameOriginal,
@@ -288,7 +294,7 @@ class DetailFilmFragment: Fragment() {
                 )
                 val bottomSheetFragment = BottomSheetFragment.create(filmPreview, emptyList(), it)
                 bottomSheetFragment.show(parentFragmentManager, BottomSheetFragment.TAG)
-                activityCallbacks!!.cleanNewCat()
+                dialogAddUserCatViewModel.cleanNewCat()
                 delay(300)
                 activityCallbacks!!.showUpBar("")
             }
@@ -522,11 +528,10 @@ class DetailFilmFragment: Fragment() {
             val listPhotoPreviewAdapter = PhotoPreviewAdapter(trimList, requireContext()) {
                 viewModel.listPhotoItemsSave = trimList
                 viewModel.curPhotoUrlSave = it
-                val status = viewModel.statusPhotoDialogFlow.value
-                if (status != 2) {
+                val isShow = activityCallbacks!!.getDialogStatusFlow(FullscreenDialogInfoMode.PHOTO).value
+                if (isShow) {
                     val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullscreenDialogInfo(
-                        1,
-                        status == 0
+                        FullscreenDialogInfoMode.PHOTO.ordinal
                     )
                     findNavController().navigate(action)
                 } else {
@@ -554,8 +559,9 @@ class DetailFilmFragment: Fragment() {
                 bind.textCountPhotos.visibility = View.GONE
             }
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                activityCallbacks!!.getResultStreamFV(1).collect { isChecked ->
-                    viewModel.setDialogStatus(1, if (isChecked) 2 else 1)
+                fullscreenDialogInfoViewModel.resultF.collect { isChecked ->
+                    fullscreenDialogInfoViewModel.clearResultFV(FullscreenDialogInfoMode.PHOTO)
+                    activityCallbacks!!.setDialogStatus(FullscreenDialogInfoMode.PHOTO, !isChecked)
                     val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullPhotoVPFragment(
                         "NO CATEGORY",
                         viewModel.listPhotoItemsSave!!.toTypedArray(),
@@ -574,41 +580,51 @@ class DetailFilmFragment: Fragment() {
     }
 
     private fun setupVideo(items: List<VideoItem>?, posterUrl: String, itemMargin: AdaptiveSpacingItemDecoration, leftMargin: LeftSpaceDecorator) {
-        val filterItems = items?.filter { it.site == "YOUTUBE" || it.site == "KINOPOISK_WIDGET" }
-        if (!filterItems.isNullOrEmpty()) {
-            val listVideoPreviewAdapter = VideoPreviewAdapter(filterItems , posterUrl) { curUrl ->
-                viewModel.curVideoUrlSave = curUrl
-                viewModel.listVideoItemsSave = filterItems
-                val status = viewModel.statusVideoDialogFlow.value
-                if (status != 2) {
-                    val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullscreenDialogInfo(
-                            2,
-                            status == 0
-                        )
-                    findNavController().navigate(action)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityCallbacks!!.getAppSettingsFlow().map { it?.videoSource ?: VideoSource.ANY }.collect { videoSource ->
+                val filterItems = items?.filter {
+                    when (videoSource) {
+                        VideoSource.ANY -> it.site == "YOUTUBE" || it.site == "KINOPOISK_WIDGET"
+                        VideoSource.YOUTUBE -> it.site == "YOUTUBE"
+                        else -> it.site == "KINOPOISK_WIDGET"
+                    }
+                }
+                if (!filterItems.isNullOrEmpty()) {
+                    val listVideoPreviewAdapter = VideoPreviewAdapter(filterItems , posterUrl) { curUrl ->
+                        viewModel.curVideoUrlSave = curUrl
+                        viewModel.listVideoItemsSave = filterItems
+                        val isShow = activityCallbacks!!.getDialogStatusFlow(FullscreenDialogInfoMode.VIDEO).value
+                        if (isShow) {
+                            val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullscreenDialogInfo(
+                                FullscreenDialogInfoMode.VIDEO.ordinal
+                            )
+                            findNavController().navigate(action)
+                        } else {
+                            val intent = VideoActivity.newIntent(requireContext(), viewModel.listVideoItemsSave!!, viewModel.curVideoUrlSave!!)
+                            startActivity(intent)
+                        }
+                    }
+                    bind.listVideos.adapter = listVideoPreviewAdapter
+                    if (bind.listVideos.itemDecorationCount == 0) {
+                        bind.listVideos.addItemDecoration(itemMargin)
+                        bind.listVideos.addItemDecoration(leftMargin)
+                    }
+                    bind.textCountVideos.text = filterItems.size.toString()
                 } else {
-                    val intent = VideoActivity.newIntent(requireContext(), viewModel.listVideoItemsSave!!, viewModel.curVideoUrlSave!!)
-                    startActivity(intent)
+                    bind.layoutVideo.visibility = View.GONE
+                    bind.listVideos.visibility = View.GONE
                 }
             }
-            bind.listVideos.adapter = listVideoPreviewAdapter
-            if (bind.listVideos.itemDecorationCount == 0) {
-                bind.listVideos.addItemDecoration(itemMargin)
-                bind.listVideos.addItemDecoration(leftMargin)
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            fullscreenDialogInfoViewModel.resultV.collect { isChecked ->
+                fullscreenDialogInfoViewModel.clearResultFV(FullscreenDialogInfoMode.VIDEO)
+                activityCallbacks!!.setDialogStatus(FullscreenDialogInfoMode.VIDEO, !isChecked)
+                val intent = VideoActivity.newIntent(requireContext(), viewModel.listVideoItemsSave!!, viewModel.curVideoUrlSave!!)
+                while ((findNavController().currentDestination?.label ?: "") != "DetailFilmFragment")
+                    delay(1)
+                startActivity(intent)
             }
-            bind.textCountVideos.text = filterItems.size.toString()
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                activityCallbacks!!.getResultStreamFV(2).collect { isChecked ->
-                    viewModel.setDialogStatus(2, if (isChecked) 2 else 1)
-                    val intent = VideoActivity.newIntent(requireContext(), viewModel.listVideoItemsSave!!, viewModel.curVideoUrlSave!!)
-                    while ((findNavController().currentDestination?.label ?: "") != "DetailFilmFragment")
-                        delay(1)
-                    startActivity(intent)
-                }
-            }
-        } else {
-            bind.layoutVideo.visibility = View.GONE
-            bind.listVideos.visibility = View.GONE
         }
     }
 

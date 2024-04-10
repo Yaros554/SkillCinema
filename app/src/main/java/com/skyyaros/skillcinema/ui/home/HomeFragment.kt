@@ -31,10 +31,7 @@ class HomeFragment: Fragment() {
     private val viewModel: HomeViewModel by viewModels {
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return HomeViewModel(
-                    (requireContext().applicationContext as App).storeRepository,
-                    (requireContext().applicationContext as App).kinopoiskRepository
-                ) as T
+                return HomeViewModel((requireContext().applicationContext as App).kinopoiskRepository) as T
             }
         }
     }
@@ -66,10 +63,10 @@ class HomeFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activityCallbacks!!.hideUpBar()
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.statusStartFlow.collect { statusStart ->
+            activityCallbacks!!.getStartStatusFlow().collect { statusStart ->
                 if (statusStart) {
                     activityCallbacks!!.hideDownBar()
-                    viewModel.setStartStatus(false)
+                    activityCallbacks!!.setStartStatus(false)
                     val action = HomeFragmentDirections.actionHomeFragmentToHelloFragment()
                     findNavController().navigate(action)
                 }
@@ -178,6 +175,10 @@ class HomeFragment: Fragment() {
         }
         bind.swipe.setOnRefreshListener {
             viewModel.updateFilms()
+        }
+        bind.settings.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeFragmentToSetAppFragment()
+            findNavController().navigate(action)
         }
     }
 

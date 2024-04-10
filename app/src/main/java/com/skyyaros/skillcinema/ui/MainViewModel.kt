@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skyyaros.skillcinema.data.DatabaseRepository
 import com.skyyaros.skillcinema.data.DefaultCats
+import com.skyyaros.skillcinema.data.StoreRepository
+import com.skyyaros.skillcinema.entity.AppSettings
 import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.SearchQuery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,24 +17,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val databaseRepository: DatabaseRepository): ViewModel() {
+class MainViewModel(private val databaseRepository: DatabaseRepository, private val storeRepository: StoreRepository): ViewModel() {
     var isFullPhotoFragment = false
-    private val _resultsF = MutableSharedFlow<Boolean>()
-    val resultF = _resultsF.asSharedFlow()
-    private val _resultsV = MutableSharedFlow<Boolean>()
-    val resultV = _resultsV.asSharedFlow()
-    private val _resBackDialog = MutableSharedFlow<Int>()
-    val resBackDialog = _resBackDialog.asSharedFlow()
-    private val _resGenreCountry = MutableSharedFlow<Long>(1)
-    val resGenreCountry = _resGenreCountry.asSharedFlow()
-    private val _resYear = MutableSharedFlow<Int>(1)
-    val resYear = _resYear.asSharedFlow()
-    private val _resAddNewCat = MutableSharedFlow<String>(1)
-    val resAddNewCat = _resAddNewCat.asSharedFlow()
-    private val _resBottomSh = MutableSharedFlow<Boolean>(1)
-    val resBottomSh = _resBottomSh.asSharedFlow()
-    private val _resDeleteCat = MutableSharedFlow<String>(1)
-    val resDeleteCat = _resDeleteCat.asSharedFlow()
     var searchQuery = SearchQuery(
         null, null, "NUM_VOTE", "ALL",
         0, 10, 1000, 3000,
@@ -64,76 +50,26 @@ class MainViewModel(private val databaseRepository: DatabaseRepository): ViewMod
         SharingStarted.Eagerly,
         emptyList()
     )
-
-    fun emitResultFV(mode: Int, isChecked: Boolean) {
-        viewModelScope.launch {
-            if (mode == 1)
-                _resultsF.emit(isChecked)
-            else
-                _resultsV.emit(isChecked)
-        }
-    }
-
-    fun emitResBackDialog(userSelect: Int) {
-        viewModelScope.launch {
-            _resBackDialog.emit(userSelect)
-        }
-    }
-
-    fun emitGenreCountry(id: Long) {
-        viewModelScope.launch {
-            _resGenreCountry.emit(id)
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun cleanGenreCountry() {
-        _resGenreCountry.resetReplayCache()
-    }
-
-    fun emitYear(years: Int) {
-        viewModelScope.launch {
-            _resYear.emit(years)
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun cleanYear() {
-        _resYear.resetReplayCache()
-    }
-
-    fun emitNewCat(newCat: String) {
-        viewModelScope.launch {
-            _resAddNewCat.emit(newCat)
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun cleanNewCat() {
-        _resAddNewCat.resetReplayCache()
-    }
-
-    fun emitBottomSh() {
-        viewModelScope.launch {
-            _resBottomSh.emit(true)
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun cleanBottomSh() {
-        _resBottomSh.resetReplayCache()
-    }
-
-    fun emitDeleteCat(category: String) {
-        viewModelScope.launch {
-            _resDeleteCat.emit(category)
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun cleanDeleteCat() {
-        _resDeleteCat.resetReplayCache()
-    }
+    val statusStartFlow = storeRepository.getStartStatus().stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        false
+    )
+    val statusPhotoDialogFlow = storeRepository.getDialogStatusFlow(FullscreenDialogInfoMode.PHOTO).stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        true
+    )
+    val statusVideoDialogFlow = storeRepository.getDialogStatusFlow(FullscreenDialogInfoMode.VIDEO).stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        true
+    )
+    val appSettingsFlow = storeRepository.getAppSettingsFlow().stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        null
+    )
 
     fun updateFilmCat(id: Long, newCategory: List<FilmActorTable>) {
         viewModelScope.launch {
@@ -176,6 +112,24 @@ class MainViewModel(private val databaseRepository: DatabaseRepository): ViewMod
     fun deleteCategory(category: String) {
         viewModelScope.launch {
             databaseRepository.deleteCategory(category)
+        }
+    }
+
+    fun setStartStatus(startStatus: Boolean) {
+        viewModelScope.launch {
+            storeRepository.setStartStatus(startStatus)
+        }
+    }
+
+    fun setDialogStatus(mode: FullscreenDialogInfoMode, isShow: Boolean) {
+        viewModelScope.launch {
+            storeRepository.setDialogStatus(mode, isShow)
+        }
+    }
+
+    fun saveSettings(settings: AppSettings) {
+        viewModelScope.launch {
+            storeRepository.setAppSettings(settings)
         }
     }
 }

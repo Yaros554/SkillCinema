@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.SearchYearFragmentBinding
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import com.skyyaros.skillcinema.ui.SearchSettingsViewModel
 
 class SearchYearFragment: Fragment() {
     private var _bind: SearchYearFragmentBinding? = null
@@ -28,16 +30,17 @@ class SearchYearFragment: Fragment() {
             }
         }
     }
-    private val pageChangeCallbackFrom = MyOnPageChangeCallback(1)
-    private val pageChangeCallbackTo = MyOnPageChangeCallback(2)
-    val getCurrentIndex: (Int)->Int = { mode ->
-        if (mode == 1)
+    private val sharedViewModel: SearchSettingsViewModel by activityViewModels()
+    private val pageChangeCallbackFrom = MyOnPageChangeCallback(SearchYearMode.YEAR_FROM)
+    private val pageChangeCallbackTo = MyOnPageChangeCallback(SearchYearMode.YEAR_TO)
+    val getCurrentIndex: (SearchYearMode)->Int = { mode ->
+        if (mode == SearchYearMode.YEAR_FROM)
             viewModel.currentIndexFrom
         else
             viewModel.currentIndexTo
     }
-    val setCurrentIndex: (Int, Int)->Unit = { index, mode ->
-        if (mode == 1)
+    val setCurrentIndex: (Int, SearchYearMode)->Unit = { index, mode ->
+        if (mode == SearchYearMode.YEAR_FROM)
             viewModel.currentIndexFrom = index
         else
             viewModel.currentIndexTo = index
@@ -56,11 +59,11 @@ class SearchYearFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activityCallbacks!!.showUpBar(getString(R.string.search_set_year_title))
-        val adapterFrom = YearAdapter(viewModel.years,1, this)
+        val adapterFrom = YearAdapter(viewModel.years,SearchYearMode.YEAR_FROM.ordinal, this)
         bind.viewPagerFrom.adapter = adapterFrom
         bind.viewPagerFrom.setCurrentItem(viewModel.currentPageFrom, false)
         bind.viewPagerFrom.registerOnPageChangeCallback(pageChangeCallbackFrom)
-        val adapterTo = YearAdapter(viewModel.years,2, this)
+        val adapterTo = YearAdapter(viewModel.years,SearchYearMode.YEAR_TO.ordinal, this)
         bind.viewPagerTo.adapter = adapterTo
         bind.viewPagerTo.setCurrentItem(viewModel.currentPageTo, false)
         bind.viewPagerTo.registerOnPageChangeCallback(pageChangeCallbackTo)
@@ -144,13 +147,23 @@ class SearchYearFragment: Fragment() {
         }
         bind.button.setOnClickListener {
             if (bind.switchMode.isChecked) {
-                activityCallbacks!!.emitYear(1000 * 10000 + 3000)
+                sharedViewModel.emitSearchSettings(
+                    SearchSettings(
+                       yearFrom = 1000,
+                       yearTo = 3000,
+                       type = TypeSettings.YEAR
+                ))
                 requireActivity().onBackPressed()
             } else {
                 if (viewModel.currentYearTo < viewModel.currentYearFrom) {
                     Toast.makeText(requireContext(), getString(R.string.search_set_year_toast), Toast.LENGTH_LONG).show()
                 } else {
-                    activityCallbacks!!.emitYear(viewModel.currentYearFrom * 10000 + viewModel.currentYearTo)
+                    sharedViewModel.emitSearchSettings(
+                        SearchSettings(
+                            yearFrom = viewModel.currentYearFrom,
+                            yearTo = viewModel.currentYearTo,
+                            type = TypeSettings.YEAR
+                        ))
                     requireActivity().onBackPressed()
                 }
             }
@@ -169,10 +182,10 @@ class SearchYearFragment: Fragment() {
         super.onDetach()
     }
 
-    private inner class MyOnPageChangeCallback(private val mode: Int): ViewPager2.OnPageChangeCallback() {
+    private inner class MyOnPageChangeCallback(private val mode: SearchYearMode): ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            if (mode == 1) {
+            if (mode == SearchYearMode.YEAR_FROM) {
                 viewModel.currentPageFrom = position
                 bind.yearFrom.text = "${viewModel.years[viewModel.currentPageFrom][0]}-${viewModel.years[viewModel.currentPageFrom][11]}"
                 if (viewModel.currentPageFrom == 0) {
@@ -205,4 +218,8 @@ class SearchYearFragment: Fragment() {
             }
         }
     }
+}
+
+enum class SearchYearMode {
+    YEAR_FROM, YEAR_TO
 }

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="56dp">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/source_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/skill_grey2"
+        android:text="@string/set_app_source_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_all"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/set_app_source_all"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.LeftCorner"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/source_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/chip_youtube" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_youtube"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/set_app_source_youtube"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.NoCorner"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/source_text"
+        app:layout_constraintStart_toEndOf="@id/chip_all"
+        app:layout_constraintEnd_toStartOf="@id/chip_kinopoisk"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_kinopoisk"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/set_app_source_kinopoisk"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RightCorner"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/source_text"
+        app:layout_constraintStart_toEndOf="@id/chip_youtube"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/theme_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/skill_grey2"
+        android:text="@string/set_app_theme_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chip_all" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_auto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/set_app_theme_auto"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.LeftCorner"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/theme_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/chip_light" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_light"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/set_app_theme_light"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.NoCorner"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/theme_text"
+        app:layout_constraintStart_toEndOf="@id/chip_auto"
+        app:layout_constraintEnd_toStartOf="@id/chip_dark"/>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_dark"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/set_app_theme_dark"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RightCorner"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/theme_text"
+        app:layout_constraintStart_toEndOf="@id/chip_light"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchAnim"
+        style="@style/MySwitchStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/set_app_switch_anim"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chip_auto" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        app:cornerRadius="8dp"
+        android:text="@string/search_set_button_ok"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,19 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.SetSearchFragmentBinding
 import com.skyyaros.skillcinema.entity.SearchQuery
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import com.skyyaros.skillcinema.ui.BackDialogResult
+import com.skyyaros.skillcinema.ui.BackDialogViewModel
 import com.skyyaros.skillcinema.ui.BackPressedListener
+import com.skyyaros.skillcinema.ui.SearchSettingsViewModel
+import com.skyyaros.skillcinema.ui.dopsearch.SearchGenreCountryMode
+import com.skyyaros.skillcinema.ui.dopsearch.TypeSettings
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 
@@ -36,6 +40,8 @@ class SetSearchFragment: Fragment(), BackPressedListener {
             }
         }
     }
+    private val backDialogViewModel: BackDialogViewModel by activityViewModels()
+    private val searchSettingsViewModel: SearchSettingsViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -109,7 +115,10 @@ class SetSearchFragment: Fragment(), BackPressedListener {
         }
         bind.frameCountry.setOnClickListener {
             if (viewModel.countries != null) {
-                val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchGenreCountryFragment(2, viewModel.country?:-1L)
+                val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchGenreCountryFragment(
+                    SearchGenreCountryMode.COUNTRY.ordinal,
+                    viewModel.country?:-1L
+                )
                 findNavController().navigate(action)
             } else {
                 Toast.makeText(requireContext(), getString(R.string.search_set_toast), Toast.LENGTH_LONG).show()
@@ -117,7 +126,10 @@ class SetSearchFragment: Fragment(), BackPressedListener {
         }
         bind.frameGenre.setOnClickListener {
             if (viewModel.genres != null) {
-                val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchGenreCountryFragment(1, viewModel.genre?:-1L)
+                val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchGenreCountryFragment(
+                    SearchGenreCountryMode.GENRE.ordinal,
+                    viewModel.genre?:-1L
+                )
                 findNavController().navigate(action)
             } else {
                 Toast.makeText(requireContext(), getString(R.string.search_set_toast), Toast.LENGTH_LONG).show()
@@ -168,8 +180,9 @@ class SetSearchFragment: Fragment(), BackPressedListener {
         super.onStart()
         initCurrentSet()
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getResStreamBackDialog().collect {
-                if (it == 1) {
+            backDialogViewModel.resBackDialog.collect {
+                backDialogViewModel.cleanResBackDialog()
+                if (it == BackDialogResult.OK) {
                     val newQuery = if (viewModel.nameActor == null) {
                         SearchQuery(
                             viewModel.country, viewModel.genre,
@@ -189,7 +202,7 @@ class SetSearchFragment: Fragment(), BackPressedListener {
                     while ((findNavController().currentDestination?.label ?: "") != "SetSearchFragment")
                         delay(1)
                     findNavController().navigate(action)
-                } else if (it == 0) {
+                } else if (it == BackDialogResult.NO) {
                     fragmentWillKill = true
                     backPressedListener = null
                     requireActivity().onBackPressed()
@@ -200,36 +213,36 @@ class SetSearchFragment: Fragment(), BackPressedListener {
             }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getGenreCountryFlow().collect {
-                if (it == -9L) {
-                    viewModel.genre = null
-                    bind.genre.text = getString(R.string.search_set_text_all)
-                } else if (it == -8L) {
-                    viewModel.country = null
-                    bind.country.text = getString(R.string.search_set_text_all)
-                } else {
-                    val mode = it % 10
-                    val id = it / 10
-                    if (mode == 1L) {
-                        viewModel.genre = id
-                        bind.genre.text = viewModel.genres!!.find { genre-> genre.id == id }!!.genre
-                    } else {
-                        viewModel.country = id
-                        bind.country.text = viewModel.countries!!.find { country -> country.id == id }!!.country
+            searchSettingsViewModel.SearchSettingsFlow.collect {
+                searchSettingsViewModel.cleanSearchSettings()
+                when (it.type) {
+                    TypeSettings.COUNTRY -> {
+                        if (it.countryId == -1L) {
+                            viewModel.country = null
+                            bind.country.text = getString(R.string.search_set_text_all)
+                        } else {
+                            viewModel.country = it.countryId
+                            bind.country.text = viewModel.countries!!.find { country -> country.id == it.countryId }!!.country
+                        }
+                    }
+                    TypeSettings.GENRE -> {
+                        if (it.genreId == -1L) {
+                            viewModel.genre = null
+                            bind.genre.text = getString(R.string.search_set_text_all)
+                        } else {
+                            viewModel.genre = it.genreId
+                            bind.genre.text = viewModel.genres!!.find { genre-> genre.id == it.genreId }!!.genre
+                        }
+                    }
+                    else -> {
+                        viewModel.yearFrom = it.yearFrom
+                        viewModel.yearTo = it.yearTo
+                        if (viewModel.yearFrom == 1000 && viewModel.yearTo == 3000)
+                            bind.year.text = getString(R.string.search_set_text_rating_value1)
+                        else
+                            bind.year.text = getString(R.string.search_set_text_year_value, viewModel.yearFrom, viewModel.yearTo)
                     }
                 }
-                activityCallbacks!!.cleanGenreCountry()
-            }
-        }
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getYearFlow().collect {
-                viewModel.yearFrom = it / 10000
-                viewModel.yearTo = it % 10000
-                if (viewModel.yearFrom == 1000 && viewModel.yearTo == 3000)
-                    bind.year.text = getString(R.string.search_set_text_rating_value1)
-                else
-                    bind.year.text = getString(R.string.search_set_text_year_value, viewModel.yearFrom, viewModel.yearTo)
-                activityCallbacks!!.cleanYear()
             }
         }
     }

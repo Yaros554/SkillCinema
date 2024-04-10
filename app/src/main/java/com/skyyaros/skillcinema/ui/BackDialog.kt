@@ -1,4 +1,4 @@
-package com.skyyaros.skillcinema.ui.search
+package com.skyyaros.skillcinema.ui
 
 import android.app.Dialog
 import android.content.Context
@@ -8,13 +8,14 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.skyyaros.skillcinema.databinding.BackDialogBinding
-import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import java.lang.IllegalStateException
 
 class BackDialog: DialogFragment() {
     private var activityCallbacks: ActivityCallbacks? = null
     private lateinit var bind: BackDialogBinding
+    private val sharedViewModel: BackDialogViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -26,15 +27,15 @@ class BackDialog: DialogFragment() {
             val builder = AlertDialog.Builder(it)
             bind = BackDialogBinding.inflate(requireActivity().layoutInflater)
             bind.buttonCancel.setOnClickListener {
-                activityCallbacks!!.emitResBackDialog(2)
+                sharedViewModel.emitResBackDialog(BackDialogResult.CANCEL)
                 dismiss()
             }
             bind.buttonOk.setOnClickListener {
-                activityCallbacks!!.emitResBackDialog(1)
+                sharedViewModel.emitResBackDialog(BackDialogResult.OK)
                 dismiss()
             }
             bind.buttonNo.setOnClickListener {
-                activityCallbacks!!.emitResBackDialog(0)
+                sharedViewModel.emitResBackDialog(BackDialogResult.NO)
                 dismiss()
             }
             builder.setView(bind.root)
@@ -45,7 +46,7 @@ class BackDialog: DialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        activityCallbacks!!.emitResBackDialog(2)
+        sharedViewModel.emitResBackDialog(BackDialogResult.CANCEL)
         super.onCancel(dialog)
     }
 
@@ -53,4 +54,8 @@ class BackDialog: DialogFragment() {
         activityCallbacks = null
         super.onDetach()
     }
+}
+
+enum class BackDialogResult {
+    OK, NO, CANCEL
 }

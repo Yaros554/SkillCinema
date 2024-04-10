@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +25,8 @@ import com.skyyaros.skillcinema.databinding.ActorDetailFragmentBinding
 import com.skyyaros.skillcinema.entity.DetailActor
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import com.skyyaros.skillcinema.ui.FullscreenDialogInfoMode
+import com.skyyaros.skillcinema.ui.FullscreenDialogInfoViewModel
 import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAdapter
 import com.skyyaros.skillcinema.ui.home.FilmPreviewAllAdapter
@@ -40,12 +43,12 @@ class ActorDetailFragment: Fragment() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return ActorDetailViewModel(
                     App.component.getKinopoiskRepository(),
-                    App.component.getStoreRepository(),
                     args.id
                 ) as T
             }
         }
     }
+    private val sharedViewModel: FullscreenDialogInfoViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -109,11 +112,10 @@ class ActorDetailFragment: Fragment() {
                 item.nameEn ?: item.nameRu ?: ""
             viewModel.name = name
             viewModel.posterUrl = item.posterUrl
-            val status = viewModel.statusPhotoDialogFlow.value
-            if (status != 2) {
+            val isShow = activityCallbacks!!.getDialogStatusFlow(FullscreenDialogInfoMode.PHOTO).value
+            if (isShow) {
                 val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullscreenDialogInfo(
-                        1,
-                        status == 0
+                        FullscreenDialogInfoMode.PHOTO.ordinal
                     )
                 findNavController().navigate(action)
             } else {
@@ -172,8 +174,9 @@ class ActorDetailFragment: Fragment() {
             bind.priz.text = getString(R.string.detail_text_priz, item.hasAwards)
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getResultStreamFV(1).collect { isChecked ->
-                viewModel.setDialogStatus(if (isChecked) 2 else 1)
+            sharedViewModel.resultF.collect { isChecked ->
+                sharedViewModel.clearResultFV(FullscreenDialogInfoMode.PHOTO)
+                activityCallbacks!!.setDialogStatus(FullscreenDialogInfoMode.PHOTO, !isChecked)
                 val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullPhotoFragment(viewModel.name, viewModel.posterUrl)
                 while ((findNavController().currentDestination?.label ?: "") != "ActorDetailFragment")
                     delay(1)

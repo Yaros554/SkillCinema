@@ -21,10 +21,12 @@ import com.google.android.material.navigationrail.NavigationRailView
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.ActivityMainBinding
+import com.skyyaros.skillcinema.entity.AppSettings
 import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.SearchQuery
 import com.skyyaros.skillcinema.ui.hello.HelloFragment
 import com.skyyaros.skillcinema.ui.search.SetSearchFragment
+import com.skyyaros.skillcinema.ui.setapp.SetAppFragment
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
@@ -39,7 +41,10 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
     private val viewModel: MainViewModel by viewModels {
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MainViewModel(App.component.getDatabaseRepository()) as T
+                return MainViewModel(
+                    App.component.getDatabaseRepository(),
+                    App.component.getStoreRepository()
+                ) as T
             }
         }
     }
@@ -133,6 +138,10 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
             val did = SetSearchFragment.backPressedListener!!.onBackPressed()
             if (!did)
                 super.onBackPressed()
+        } else if (SetAppFragment.backPressedListener != null) {
+            val did = SetAppFragment.backPressedListener!!.onBackPressed()
+            if (!did)
+                super.onBackPressed()
         } else
             super.onBackPressed()
     }
@@ -210,85 +219,6 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
         }
     }
 
-    override fun emitResultFV(mode: Int, isChecked: Boolean) {
-        viewModel.emitResultFV(mode, isChecked)
-    }
-
-    override fun getResultStreamFV(mode: Int): SharedFlow<Boolean> {
-        return if (mode == 1)
-            viewModel.resultF
-        else
-            viewModel.resultV
-    }
-
-    override fun emitResBackDialog(userSelect: Int) {
-        viewModel.emitResBackDialog(userSelect)
-    }
-
-    override fun getResStreamBackDialog(): SharedFlow<Int> {
-        return viewModel.resBackDialog
-    }
-
-    override fun emitGenreCountry(id: Long) {
-        viewModel.emitGenreCountry(id)
-    }
-
-    override fun getGenreCountryFlow(): SharedFlow<Long> {
-        return viewModel.resGenreCountry
-    }
-
-    override fun cleanGenreCountry() {
-        viewModel.cleanGenreCountry()
-    }
-
-    override fun emitYear(years: Int) {
-        viewModel.emitYear(years)
-    }
-
-    override fun getYearFlow(): SharedFlow<Int> {
-        return viewModel.resYear
-    }
-
-    override fun cleanYear() {
-        viewModel.cleanYear()
-    }
-
-    override fun emitNewCat(newCat: String) {
-        viewModel.emitNewCat(newCat)
-    }
-
-    override fun getNewCatFlow(): SharedFlow<String> {
-        return viewModel.resAddNewCat
-    }
-
-    override fun cleanNewCat() {
-        viewModel.cleanNewCat()
-    }
-
-    override fun emitBottomSh() {
-        viewModel.emitBottomSh()
-    }
-
-    override fun cleanBottomSh() {
-        viewModel.cleanBottomSh()
-    }
-
-    override fun getBottomShFlow(): SharedFlow<Boolean> {
-        return viewModel.resBottomSh
-    }
-
-    override fun emitDeleteCat(category: String) {
-        viewModel.emitDeleteCat(category)
-    }
-
-    override fun cleanDeleteCat() {
-        viewModel.cleanDeleteCat()
-    }
-
-    override fun getDeleteCatFlow(): SharedFlow<String> {
-        return viewModel.resDeleteCat
-    }
-
     override fun getSearchQuery(): SearchQuery {
         return viewModel.searchQuery
     }
@@ -335,5 +265,29 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
 
     override fun deleteCategory(category: String) {
         viewModel.deleteCategory(category)
+    }
+
+    override fun getStartStatusFlow(): StateFlow<Boolean> {
+        return viewModel.statusStartFlow
+    }
+
+    override fun setStartStatus(startStatus: Boolean) {
+        viewModel.setStartStatus(startStatus)
+    }
+
+    override fun getDialogStatusFlow(mode: FullscreenDialogInfoMode): StateFlow<Boolean> {
+        return if (mode == FullscreenDialogInfoMode.PHOTO) viewModel.statusPhotoDialogFlow else viewModel.statusVideoDialogFlow
+    }
+
+    override fun setDialogStatus(mode: FullscreenDialogInfoMode, isShow: Boolean) {
+        viewModel.setDialogStatus(mode, isShow)
+    }
+
+    override fun getAppSettingsFlow(): StateFlow<AppSettings?> {
+        return viewModel.appSettingsFlow
+    }
+
+    override fun saveSettings(newSettings: AppSettings) {
+        viewModel.saveSettings(newSettings)
     }
 }

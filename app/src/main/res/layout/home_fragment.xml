@@ -16,6 +16,16 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"/>
 
+    <ImageView
+        android:id="@+id/settings"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/settings_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/name_label"
+        app:layout_constraintBottom_toBottomOf="@id/name_label"
+        android:layout_marginEnd="16dp" />
+
     <com.skyyaros.skillcinema.ui.OnlyVerticalSwipeRefreshLayout
         android:id="@+id/swipe"
         android:layout_width="match_parent"

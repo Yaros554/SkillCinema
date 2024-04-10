@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
@@ -17,6 +18,7 @@ import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.FilmPreview
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
+import com.skyyaros.skillcinema.ui.DialogAddUserCatViewModel
 import com.skyyaros.skillcinema.ui.LeftSpaceDecorator
 import kotlin.math.min
 
@@ -24,6 +26,8 @@ class PersonFragment: Fragment() {
     private var _bind: PersonFragmentBinding? = null
     private val bind get() = _bind!!
     private var activityCallbacks: ActivityCallbacks? = null
+    private val dialogAddUserCatViewModel: DialogAddUserCatViewModel by activityViewModels()
+    private val deleteCategoryDialogViewModel: DeleteCategoryDialogViewModel by activityViewModels()
     private val onClick: (List<FilmActorTable>)->Unit = { listFilmActorTable ->
         if (listFilmActorTable.size > 1) {
             val films = listFilmActorTable.filter { it.kinopoiskId != -1L }.map {
@@ -186,7 +190,7 @@ class PersonFragment: Fragment() {
             }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getNewCatFlow().collect {
+            dialogAddUserCatViewModel.resAddNewCat.collect {
                 if (it.isNotEmpty()) {
                     val newCategory = FilmActorTable(
                         it, -1, null, null,
@@ -194,13 +198,13 @@ class PersonFragment: Fragment() {
                     )
                     activityCallbacks!!.insertFilmOrCat(newCategory)
                 }
-                activityCallbacks!!.cleanNewCat()
+                dialogAddUserCatViewModel.cleanNewCat()
             }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getDeleteCatFlow().collect {
+            deleteCategoryDialogViewModel.resDeleteCat.collect {
                 activityCallbacks!!.deleteCategory(it)
-                activityCallbacks!!.cleanDeleteCat()
+                deleteCategoryDialogViewModel.cleanDeleteCat()
             }
         }
     }

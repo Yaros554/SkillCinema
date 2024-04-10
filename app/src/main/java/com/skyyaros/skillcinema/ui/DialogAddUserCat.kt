@@ -9,12 +9,14 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.AddUserCategoryBinding
 
 class DialogAddUserCat: DialogFragment() {
     private lateinit var bind: AddUserCategoryBinding
     private var activityCallbacks: ActivityCallbacks? = null
+    private val sharedViewModel: DialogAddUserCatViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,13 +45,13 @@ class DialogAddUserCat: DialogFragment() {
                         || tempString.lowercase() == "любимые" || tempString.lowercase() == "хочу посмотреть") {
                         Toast.makeText(requireContext(), getString(R.string.dialog_add_category_uniq), Toast.LENGTH_SHORT).show()
                     } else {
-                        activityCallbacks!!.emitNewCat(tempString)
+                        sharedViewModel.emitNewCat(tempString)
                         dismiss()
                     }
                 }
             }
             bind.imageClose.setOnClickListener {
-                activityCallbacks!!.emitNewCat("")
+                sharedViewModel.emitNewCat("")
                 dismiss()
             }
             builder.setView(bind.root)
@@ -60,7 +62,7 @@ class DialogAddUserCat: DialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        activityCallbacks!!.emitNewCat("")
+        sharedViewModel.emitNewCat("")
         super.onCancel(dialog)
     }
 

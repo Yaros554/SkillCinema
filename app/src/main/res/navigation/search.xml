@@ -202,9 +202,6 @@
         <argument
             android:name="mode"
             app:argType="integer" />
-        <argument
-            android:name="isChecked"
-            app:argType="boolean" />
     </dialog>
     <fragment
         android:id="@+id/searchFragment"
@@ -243,7 +240,7 @@
     </fragment>
     <dialog
         android:id="@+id/backDialog"
-        android:name="com.skyyaros.skillcinema.ui.search.BackDialog"
+        android:name="com.skyyaros.skillcinema.ui.BackDialog"
         android:label="BackDialog"
         tools:layout="@layout/back_dialog"/>
     <fragment

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,9 @@ import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.PhotographyFragmentBinding
 import com.skyyaros.skillcinema.entity.ImageItem
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import com.skyyaros.skillcinema.ui.FullscreenDialogInfo
+import com.skyyaros.skillcinema.ui.FullscreenDialogInfoMode
+import com.skyyaros.skillcinema.ui.FullscreenDialogInfoViewModel
 import kotlinx.coroutines.delay
 import java.util.*
 
@@ -31,21 +35,20 @@ class PhotographyFragment: Fragment() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return PhotographyViewModel(
                     args.data.toList(), args.id,
-                    App.component.getKinopoiskRepository(),
-                    App.component.getStoreRepository()
+                    App.component.getKinopoiskRepository()
                 ) as T
             }
         }
     }
+    private val sharedViewModel: FullscreenDialogInfoViewModel by activityViewModels()
     val goToPhotos: (String, List<ImageItem>, String)->Unit = { title, urls, curUrl ->
         viewModel.title = title
         viewModel.urls = urls
         viewModel.curUrl = curUrl
-        val status = viewModel.statusPhotoDialogFlow.value
-        if (status != 2) {
+        val isShow = activityCallbacks!!.getDialogStatusFlow(FullscreenDialogInfoMode.PHOTO).value
+        if (isShow) {
             val action = PhotographyFragmentDirections.actionPhotographyFragmentToFullscreenDialogInfo(
-                    1,
-                    status == 0
+                    FullscreenDialogInfoMode.PHOTO.ordinal
                 )
             findNavController().navigate(action)
         } else {
@@ -109,8 +112,9 @@ class PhotographyFragment: Fragment() {
             tab.requestLayout()
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityCallbacks!!.getResultStreamFV(1).collect { isChecked ->
-                viewModel.setDialogStatus(if (isChecked) 2 else 1)
+            sharedViewModel.resultF.collect { isChecked ->
+                sharedViewModel.clearResultFV(FullscreenDialogInfoMode.PHOTO)
+                activityCallbacks!!.setDialogStatus(FullscreenDialogInfoMode.PHOTO, !isChecked)
                 val action = PhotographyFragmentDirections.actionPhotographyFragmentToFullPhotoVPFragment(
                     viewModel.title,
                     viewModel.urls.toTypedArray(),

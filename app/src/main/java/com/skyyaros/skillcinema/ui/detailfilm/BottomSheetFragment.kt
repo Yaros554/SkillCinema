@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
@@ -31,6 +32,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     private val bind get() = _bind!!
     private var activityCallbacks: ActivityCallbacks? = null
     private val viewModel: BottomSheetViewModel by viewModels()
+    private val sharedViewModel: BottomSheetSharedViewModel by activityViewModels()
     private lateinit var filmPreview: FilmPreview
     private var job: Job? = null
     private var needUpdate = true
@@ -183,7 +185,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             )
         } else {
             activityCallbacks!!.setTempFilmActorList(viewModel.tempFilmActorTable)
-            activityCallbacks!!.emitBottomSh()
+            sharedViewModel.emitBottomSh()
         }
         _bind = null
         super.onDestroyView()

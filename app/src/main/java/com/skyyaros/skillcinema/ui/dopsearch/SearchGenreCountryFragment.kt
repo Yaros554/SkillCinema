@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +20,7 @@ import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.SearchGenreCountryFragmentBinding
 import com.skyyaros.skillcinema.entity.SearchQuery
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import com.skyyaros.skillcinema.ui.SearchSettingsViewModel
 import kotlinx.coroutines.flow.collect
 
 class SearchGenreCountryFragment: Fragment() {
@@ -33,6 +35,7 @@ class SearchGenreCountryFragment: Fragment() {
             }
         }
     }
+    private val sharedViewModel: SearchSettingsViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -54,7 +57,12 @@ class SearchGenreCountryFragment: Fragment() {
         )
         bind.editText.hint = getString(if (args.mode == 1) R.string.search_set_edit_text_genre else R.string.search_set_edit_text_country)
         val adapter = GenreCountryAdapter(args.id, requireContext()) {
-            activityCallbacks!!.emitGenreCountry(it * 10 + args.mode)
+            val mode = SearchGenreCountryMode.values()[args.mode]
+            val newSetting = if (mode == SearchGenreCountryMode.COUNTRY)
+                SearchSettings(countryId = it, type = TypeSettings.COUNTRY)
+            else
+                SearchSettings(genreId = it, type = TypeSettings.GENRE)
+            sharedViewModel.emitSearchSettings(newSetting)
             requireActivity().onBackPressed()
         }
         bind.recyclerView.adapter = adapter
@@ -101,4 +109,8 @@ class SearchGenreCountryFragment: Fragment() {
         activityCallbacks = null
         super.onDetach()
     }
+}
+
+enum class SearchGenreCountryMode {
+    COUNTRY, GENRE
 }

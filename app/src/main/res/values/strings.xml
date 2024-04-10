@@ -114,4 +114,15 @@
     <string name="dialog_delete_category_text">Are you sure you want to delete the selected category?</string>
     <string name="dialog_delete_see_text">Are you sure you want to delete your browsing history?</string>
     <string name="dialog_delete_search_text">Are you sure you want to delete your searching history?</string>
+
+    <string name="set_app_source_text">Thrillers source</string>
+    <string name="set_app_source_all">Any</string>
+    <string name="set_app_source_youtube">Youtube</string>
+    <string name="set_app_source_kinopoisk">Kinopoisk</string>
+    <string name="set_app_theme_text">App theme</string>
+    <string name="set_app_theme_auto">Auto</string>
+    <string name="set_app_theme_light">Light</string>
+    <string name="set_app_theme_dark">Dark</string>
+    <string name="set_app_switch_anim">Animation active</string>
+    <string name="set_app_title">Settings</string>
 </resources>

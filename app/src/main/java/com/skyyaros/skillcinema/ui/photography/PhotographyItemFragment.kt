@@ -2,27 +2,34 @@ package com.skyyaros.skillcinema.ui.photography
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLayoutChangeListener
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.RecyclerView
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.PhotographyItemFragmentBinding
 import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 
 class PhotographyItemFragment: Fragment() {
     private var _bind: PhotographyItemFragmentBinding? = null
-    private val bind get() = _bind!!
-    private lateinit var adapter: PhotoPreviewTwoAdapter
+    val bind get() = _bind!!
+    lateinit var adapter: PhotoPreviewTwoAdapter
     private val goToPhotos: (String)->Unit = { curUrl ->
-        (parentFragment as PhotographyFragment).goToPhotos(
-            requireArguments().getString(argsBundle, ""),
-            adapter.snapshot().items,
-            curUrl
-        )
+        (parentFragment as PhotographyFragment).goToPhotos(requireArguments().getString(argsBundle, ""), curUrl)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -32,10 +39,19 @@ class PhotographyItemFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModel = (parentFragment as PhotographyFragment).viewModel
+        val myParentFr = parentFragment as PhotographyFragment
+        val arg = requireArguments().getString(argsBundle, "")
+        if (myParentFr.viewModel.needUpdate[arg]!!) {
+            myParentFr.viewModel.updatePagingData(requireArguments().getString(argsBundle, ""))
+        }
         val orientation = requireContext().resources.configuration.orientation
-        val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.small_margin).toInt(), false, if (orientation == Configuration.ORIENTATION_PORTRAIT) 1 else 0)
-        adapter = PhotoPreviewTwoAdapter(requireContext(), orientation, goToPhotos)
+        val itemMargin = AdaptiveSpacingItemDecoration(
+            requireContext().resources.getDimension(R.dimen.small_margin).toInt(),
+            false,
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) 1 else 0
+        )
+        val currentUrl = myParentFr.activityCallbacks!!.getUrlPosAnim(myParentFr.args.stack)
+        adapter = PhotoPreviewTwoAdapter(requireContext(), orientation, myParentFr, currentUrl, goToPhotos)
         bind.recycler.adapter = adapter.withLoadStateFooter(MyLoadStateAdapterTwo { adapter.retry() })
         val gridLayoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false).apply {
             spanSizeLookup = object: SpanSizeLookup() {
@@ -49,8 +65,20 @@ class PhotographyItemFragment: Fragment() {
             bind.recycler.addItemDecoration(itemMargin)
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.pagedPhotos[requireArguments().getString(argsBundle, "")]!!.collect {
+            myParentFr.viewModel.pagedPhotos[requireArguments().getString(argsBundle, "")]!!.collectLatest {
                 adapter.submitData(it)
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            adapter.loadStateFlow.distinctUntilChangedBy { it.refresh }.filter { it.refresh is LoadState.NotLoading }.collect {
+                if (myParentFr.viewModel.needUpdate[arg]!!) {
+                    val curUrl = myParentFr.activityCallbacks!!.getUrlPosAnim(myParentFr.args.stack)
+                    val pos = adapter.snapshot().items.indexOfFirst { it.imageUrl == curUrl }
+                    bind.recycler.scrollToPosition(pos)
+                    delay(500)
+                    myParentFr.viewModel.enablePreload(arg)
+                    myParentFr.viewModel.needUpdate[arg] = false
+                }
             }
         }
     }

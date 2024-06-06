@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.skyyaros.skillcinema.R
@@ -44,9 +45,22 @@ class PersonFragment: Fragment() {
             else
                 listFilmActorTable[0].category
             val action = PersonFragmentDirections.actionPersonFragmentToListpageFragment(
-                films, 9, -1, category, -1, null, null
+                films, 9, -1, category, -1, null, null, "Profile"
             )
-            findNavController().navigate(action)
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         } else {
             Toast.makeText(requireContext(), getString(R.string.profile_toast_empty), Toast.LENGTH_LONG).show()
         }
@@ -79,8 +93,21 @@ class PersonFragment: Fragment() {
         }
 
         val adapterHistorySee = HistoryAdapter {
-            val action = PersonFragmentDirections.actionPersonFragmentToDetailFilmFragment(it.kinopoiskId)
-            findNavController().navigate(action)
+            val action = PersonFragmentDirections.actionPersonFragmentToDetailFilmFragment(it.kinopoiskId, "Profile")
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         }
         val cleanHistorySeeAdapter = CleanHistoryAdapter("0", onDelete)
         bind.recyclerHistorySee.adapter = ConcatAdapter(adapterHistorySee, cleanHistorySeeAdapter)
@@ -93,10 +120,23 @@ class PersonFragment: Fragment() {
 
         val adapterHistory = HistoryAdapter {
             val action = if (it.isActor!!)
-                PersonFragmentDirections.actionPersonFragmentToActorDetailFragment(it.kinopoiskId)
+                PersonFragmentDirections.actionPersonFragmentToActorDetailFragment(it.kinopoiskId, "Profile")
             else
-                PersonFragmentDirections.actionPersonFragmentToDetailFilmFragment(it.kinopoiskId)
-            findNavController().navigate(action)
+                PersonFragmentDirections.actionPersonFragmentToDetailFilmFragment(it.kinopoiskId, "Profile")
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         }
         val cleanHistoryAdapter = CleanHistoryAdapter("1", onDelete)
         bind.recyclerHistory.adapter = ConcatAdapter(adapterHistory, cleanHistoryAdapter)
@@ -118,17 +158,43 @@ class PersonFragment: Fragment() {
         bind.textHistorySee.setOnClickListener {
             if (activityCallbacks!!.getSeeHistoryFlow().value.size > 20) {
                 val action = PersonFragmentDirections.actionPersonFragmentToListpageFragment(
-                    emptyArray(), 11, -1L, null, -1L, null, emptyArray()
+                    emptyArray(), 11, -1L, null, -1L, null, emptyArray(), "Profile"
                 )
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
         }
         bind.textHistory.setOnClickListener {
             if (activityCallbacks!!.getSearchHistoryFlow().value.size > 20) {
                 val action = PersonFragmentDirections.actionPersonFragmentToListpageFragment(
-                    emptyArray(), 10, -1L, null, -1L, null, emptyArray()
+                    emptyArray(), 10, -1L, null, -1L, null, emptyArray(), "Profile"
                 )
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
         }
 

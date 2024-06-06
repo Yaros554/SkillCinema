@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.skyyaros.skillcinema.databinding.FullPhotoFrAndVpBinding
 import com.skyyaros.skillcinema.entity.ImageItem
@@ -11,11 +12,12 @@ import com.skyyaros.skillcinema.entity.ImageItem
 class FullPhotoAdapterNoPaging(
     private val items: List<ImageItem>,
     private val context: Context,
+    private val fragment: Fragment,
     private val onClick: ()->Unit
 ): RecyclerView.Adapter<FullPhotoHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FullPhotoHolder {
         val binding = FullPhotoFrAndVpBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val myHolder = FullPhotoHolder(binding, context)
+        val myHolder = FullPhotoHolder(binding, context, fragment)
         binding.imageView.setOnClickListener { onClick() }
         binding.imageView.setOnTouchListener { view, event ->
             var result = true

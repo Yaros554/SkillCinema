@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayoutMediator
@@ -36,8 +37,21 @@ class FilmographyFragment: Fragment() {
         }
     }
     val onClick: (FilmPreview) -> Unit = {
-        val action = FilmographyFragmentDirections.actionFilmographyFragmentToDetailFilmFragment(it.kinopoiskId?: it.filmId!!)
-        findNavController().navigate(action)
+        val action = FilmographyFragmentDirections.actionFilmographyFragmentToDetailFilmFragment(it.kinopoiskId?: it.filmId!!, args.stack)
+        val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+        if (animActive) {
+            findNavController().navigate(
+                action,
+                NavOptions.Builder()
+                    .setEnterAnim(R.anim.slide_in_right)
+                    .setExitAnim(R.anim.slide_out_left)
+                    .setPopEnterAnim(android.R.anim.slide_in_left)
+                    .setPopExitAnim(android.R.anim.slide_out_right)
+                    .build()
+            )
+        } else {
+            findNavController().navigate(action)
+        }
     }
 
     override fun onAttach(context: Context) {

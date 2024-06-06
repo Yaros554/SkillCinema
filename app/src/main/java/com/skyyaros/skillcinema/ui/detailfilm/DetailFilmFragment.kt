@@ -8,25 +8,31 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLayoutChangeListener
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.core.app.SharedElementCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.DetailFilmFragmentBinding
 import com.skyyaros.skillcinema.entity.*
-import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
+import com.skyyaros.skillcinema.ui.AdaptiveSpacingItemDecoration
 import com.skyyaros.skillcinema.ui.DialogAddUserCatViewModel
 import com.skyyaros.skillcinema.ui.FullscreenDialogInfoMode
 import com.skyyaros.skillcinema.ui.FullscreenDialogInfoViewModel
@@ -36,7 +42,6 @@ import com.skyyaros.skillcinema.ui.home.FilmPreviewAllAdapter
 import com.skyyaros.skillcinema.ui.video.VideoActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import java.util.*
 
@@ -69,6 +74,25 @@ class DetailFilmFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _bind = DetailFilmFragmentBinding.inflate(inflater, container, false)
+        setExitSharedElementCallback(object: SharedElementCallback() {
+            override fun onMapSharedElements(names: MutableList<String>?, sharedElements: MutableMap<String, View>?) {
+                super.onMapSharedElements(names, sharedElements)
+                val pos = viewModel.listPhotoItemsSave?.indexOfFirst {
+                    it.imageUrl == activityCallbacks!!.getUrlPosAnim(args.stack)
+                } ?: -1
+                if (pos == -1)
+                    return
+                val viewHolder = bind.listPhotos.findViewHolderForAdapterPosition(pos) as? PhotoPreviewHolder
+                if (viewHolder != null && sharedElements != null && !names.isNullOrEmpty())
+                    sharedElements[names[0]] = viewHolder.binding.photo
+            }
+        })
+        if (viewModel.needPostpone) {
+            viewModel.needPostpone = false
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive)
+                postponeEnterTransition()
+        }
         return bind.root
     }
 
@@ -105,6 +129,7 @@ class DetailFilmFragment: Fragment() {
                         else
                             bind.shortDescription.visibility = View.GONE
                         setupFilmDescription(item)
+                        setupSerials(stateDetailFilm.data.series, item)
                         val itemMargin = AdaptiveSpacingItemDecoration(requireContext().resources.getDimension(R.dimen.small_margin).toInt(), false)
                         val leftMargin = LeftSpaceDecorator(requireContext().resources.getDimension(R.dimen.big_margin).toInt())
                         setupActorList(stateDetailFilm.data.actors, itemMargin, leftMargin)
@@ -114,7 +139,6 @@ class DetailFilmFragment: Fragment() {
                             stateDetailFilm.data.detailFilm.posterUrl,
                             itemMargin, leftMargin)
                         setupSimilarFilm(stateDetailFilm.data.similarHalf, stateDetailFilm.data.similar10, itemMargin, leftMargin)
-                        setupSerials(stateDetailFilm.data.series, item)
                     }
                     is StateDetailFilm.Error -> {
                         bind.scrollView.visibility = View.GONE
@@ -463,12 +487,38 @@ class DetailFilmFragment: Fragment() {
     private fun setupActorList(item: List<ActorPreview>?, itemMargin: AdaptiveSpacingItemDecoration, leftMargin: LeftSpaceDecorator) {
         if (item != null) {
             val onClick: (Long)->Unit = {id ->
-                val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToActorDetailFragment(id)
-                findNavController().navigate(action)
+                val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToActorDetailFragment(id, args.stack)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             val onClickListActors: (List<ActorPreview>, String)-> Unit = { data, label ->
-                val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToActerListFragment(data.toTypedArray(), label)
-                findNavController().navigate(action)
+                val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToActerListFragment(data.toTypedArray(), label, args.stack)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             val listActors = item.filter { it.professionKey == "ACTOR" && (!it.nameRu.isNullOrBlank() || !it.nameEn.isNullOrBlank()) }
             val listProducers = item.filter { it.professionKey != "ACTOR" && (!it.nameRu.isNullOrBlank() || !it.nameEn.isNullOrBlank()) }
@@ -525,9 +575,11 @@ class DetailFilmFragment: Fragment() {
                 count += it.total
             }
             val trimList = if (imageList.size > 20) imageList.subList(0, 20).toList() else imageList.toList()
-            val listPhotoPreviewAdapter = PhotoPreviewAdapter(trimList, requireContext()) {
+            val listPhotoPreviewAdapter = PhotoPreviewAdapter(
+                trimList, requireContext(), this, activityCallbacks!!, args.stack
+            ) { url ->
                 viewModel.listPhotoItemsSave = trimList
-                viewModel.curPhotoUrlSave = it
+                activityCallbacks!!.setUrlPosAnim(args.stack, url)
                 val isShow = activityCallbacks!!.getDialogStatusFlow(FullscreenDialogInfoMode.PHOTO).value
                 if (isShow) {
                     val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullscreenDialogInfo(
@@ -535,13 +587,20 @@ class DetailFilmFragment: Fragment() {
                     )
                     findNavController().navigate(action)
                 } else {
+                    viewModel.needPostpone = true
+                    viewModel.needScroll = true
                     val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullPhotoVPFragment(
-                        "NO CATEGORY",
-                        viewModel.listPhotoItemsSave!!.toTypedArray(),
-                        viewModel.curPhotoUrlSave!!,
-                        -1L
+                        "NO CATEGORY", viewModel.listPhotoItemsSave!!.toTypedArray(), -1L, args.stack
                     )
-                    findNavController().navigate(action)
+                    val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                    if (animActive) {
+                        val pos = viewModel.listPhotoItemsSave!!.indexOfFirst { it.imageUrl == url }
+                        val imageView = (bind.listPhotos.findViewHolderForAdapterPosition(pos) as PhotoPreviewHolder).binding.photo
+                        val extras = FragmentNavigatorExtras(imageView to imageView.transitionName)
+                        findNavController().navigate(action, extras)
+                    } else {
+                        findNavController().navigate(action)
+                    }
                 }
             }
             bind.listPhotos.adapter = listPhotoPreviewAdapter
@@ -549,11 +608,43 @@ class DetailFilmFragment: Fragment() {
                 bind.listPhotos.addItemDecoration(itemMargin)
                 bind.listPhotos.addItemDecoration(leftMargin)
             }
+            bind.listPhotos.addOnLayoutChangeListener(object: OnLayoutChangeListener {
+                override fun onLayoutChange(
+                    v: View?, left: Int, top: Int, right: Int, bottom: Int,
+                    oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
+                ) {
+                    bind.listPhotos.removeOnLayoutChangeListener(this)
+                    if (viewModel.needScroll) {
+                        viewModel.needScroll = false
+                        val layoutManager: RecyclerView.LayoutManager = bind.listPhotos.layoutManager!!
+                        val pos = trimList.indexOfFirst { it.imageUrl == activityCallbacks!!.getUrlPosAnim(args.stack) }
+                        val viewAtPosition = layoutManager.findViewByPosition(pos)
+                        if (viewAtPosition == null || layoutManager
+                            .isViewPartiallyVisible(viewAtPosition, false, true)
+                        ) {
+                            bind.listPhotos.post { layoutManager.scrollToPosition(pos) }
+                        }
+                    }
+                }
+            })
             if (imageList.size > 20) {
                 bind.textCountPhotos.text = count.toString()
                 bind.textCountPhotos.setOnClickListener {
-                    val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToPhotographyFragment(item.toTypedArray(), args.id)
-                    findNavController().navigate(action)
+                    val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToPhotographyFragment(item.toTypedArray(), args.id, args.stack)
+                    val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                    if (animActive) {
+                        findNavController().navigate(
+                            action,
+                            NavOptions.Builder()
+                                .setEnterAnim(R.anim.slide_in_right)
+                                .setExitAnim(R.anim.slide_out_left)
+                                .setPopEnterAnim(android.R.anim.slide_in_left)
+                                .setPopExitAnim(android.R.anim.slide_out_right)
+                                .build()
+                        )
+                    } else {
+                        findNavController().navigate(action)
+                    }
                 }
             } else {
                 bind.textCountPhotos.visibility = View.GONE
@@ -562,15 +653,24 @@ class DetailFilmFragment: Fragment() {
                 fullscreenDialogInfoViewModel.resultF.collect { isChecked ->
                     fullscreenDialogInfoViewModel.clearResultFV(FullscreenDialogInfoMode.PHOTO)
                     activityCallbacks!!.setDialogStatus(FullscreenDialogInfoMode.PHOTO, !isChecked)
+                    viewModel.needPostpone = true
+                    viewModel.needScroll = true
                     val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToFullPhotoVPFragment(
-                        "NO CATEGORY",
-                        viewModel.listPhotoItemsSave!!.toTypedArray(),
-                        viewModel.curPhotoUrlSave!!,
-                        -1L
+                        "NO CATEGORY", viewModel.listPhotoItemsSave!!.toTypedArray(), -1L, args.stack
                     )
                     while ((findNavController().currentDestination?.label ?: "") != "DetailFilmFragment")
                         delay(1)
-                    findNavController().navigate(action)
+                    val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                    if (animActive) {
+                        val pos = viewModel.listPhotoItemsSave!!.indexOfFirst {
+                            it.imageUrl == activityCallbacks!!.getUrlPosAnim(args.stack)
+                        }
+                        val imageView = (bind.listPhotos.findViewHolderForAdapterPosition(pos) as PhotoPreviewHolder).binding.photo
+                        val extras = FragmentNavigatorExtras(imageView to imageView.transitionName)
+                        findNavController().navigate(action, extras)
+                    } else {
+                        findNavController().navigate(action)
+                    }
                 }
             }
         } else {
@@ -631,8 +731,21 @@ class DetailFilmFragment: Fragment() {
     private fun setupSimilarFilm(itemsHalf: List<FilmPreviewHalf>?, items10: List<FilmPreview>?, itemMargin: AdaptiveSpacingItemDecoration, leftMargin: LeftSpaceDecorator) {
         if (itemsHalf != null && itemsHalf.isNotEmpty()) {
             val onClick: (Long)->Unit = {
-                val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToDetailFilmFragment(it)
-                findNavController().navigate(action)
+                val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToDetailFilmFragment(it, args.stack)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             val onClickList: ()->Unit = {
                 val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToListpageFragment(
@@ -640,9 +753,23 @@ class DetailFilmFragment: Fragment() {
                     7,
                     -1, null,
                     -1, null,
-                    itemsHalf.toTypedArray()
+                    itemsHalf.toTypedArray(),
+                    args.stack
                 )
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             val adapter = FilmPreviewAdapter(items10!!, requireContext(), onClick)
             if (itemsHalf.size > 10) {
@@ -715,7 +842,20 @@ class DetailFilmFragment: Fragment() {
                         ""
                 }
                 val action = DetailFilmFragmentDirections.actionDetailFilmFragmentToSeriesFragment(item.toTypedArray(), name)
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
         } else {
             bind.layoutSeries.visibility = View.GONE

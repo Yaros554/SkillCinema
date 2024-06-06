@@ -70,6 +70,11 @@ class MainViewModel(private val databaseRepository: DatabaseRepository, private 
         SharingStarted.Eagerly,
         null
     )
+    val url_pos_anim = mutableMapOf(
+        Pair("Home", ""),
+        Pair("Search", ""),
+        Pair("Profile", "")
+    )
 
     fun updateFilmCat(id: Long, newCategory: List<FilmActorTable>) {
         viewModelScope.launch {

@@ -3,6 +3,7 @@ package com.skyyaros.skillcinema.ui.fullphoto
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,11 @@ class FullPhotoFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _bind = FullPhotoFrAndVpBinding.inflate(inflater, container, false)
+        val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+        if (animActive) {
+            val transition = TransitionInflater.from(context).inflateTransition(R.transition.image_shared_element)
+            sharedElementEnterTransition = transition
+        }
         return bind.root
     }
 
@@ -35,6 +41,7 @@ class FullPhotoFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activityCallbacks!!.showUpBar(args.name)
         activityCallbacks!!.goToFullScreenMode(true)
+        bind.imageView.transitionName = getString(R.string.transition_name)
         val nightModeFlags: Int = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val placeholderId = if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
             resources.getDrawable(R.drawable.empty_night)

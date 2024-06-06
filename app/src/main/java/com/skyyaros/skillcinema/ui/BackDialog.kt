@@ -9,6 +9,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.BackDialogBinding
 import java.lang.IllegalStateException
 
@@ -20,6 +21,13 @@ class BackDialog: DialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activityCallbacks = context as ActivityCallbacks
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+        if (animActive)
+            dialog?.window?.attributes?.windowAnimations = R.style.MyDialogAnimation
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -15,6 +15,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
@@ -104,6 +106,7 @@ class ActorDetailFragment: Fragment() {
         } else {
             resources.getDrawable(R.drawable.empty)
         }
+        bind.photo.transitionName = getString(R.string.transition_name)
         Glide.with(bind.photo.context).load(item.posterUrl).placeholder(placeholderId).into(bind.photo)
         bind.photo.setOnClickListener {
             val name = if (Locale.getDefault().language == "ru")
@@ -120,7 +123,13 @@ class ActorDetailFragment: Fragment() {
                 findNavController().navigate(action)
             } else {
                 val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullPhotoFragment(viewModel.name, viewModel.posterUrl)
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    val extras = FragmentNavigatorExtras(bind.photo to getString(R.string.transition_name))
+                    findNavController().navigate(action, extras)
+                } else {
+                    findNavController().navigate(action)
+                }
             }
         }
         bind.name.text = if (Locale.getDefault().language == "ru") {
@@ -180,7 +189,13 @@ class ActorDetailFragment: Fragment() {
                 val action = ActorDetailFragmentDirections.actionActorDetailFragmentToFullPhotoFragment(viewModel.name, viewModel.posterUrl)
                 while ((findNavController().currentDestination?.label ?: "") != "ActorDetailFragment")
                     delay(1)
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    val extras = FragmentNavigatorExtras(bind.photo to getString(R.string.transition_name))
+                    findNavController().navigate(action, extras)
+                } else {
+                    findNavController().navigate(action)
+                }
             }
         }
     }
@@ -263,13 +278,40 @@ class ActorDetailFragment: Fragment() {
                     8,
                     -1, null,
                     -1, null,
-                    item.listBestFilmPreviewHalf!!.toTypedArray()
+                    item.listBestFilmPreviewHalf!!.toTypedArray(),
+                    args.stack
                 )
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             val adapter = FilmPreviewAdapter(item.best10Films!!, requireContext()) {
-                val action = ActorDetailFragmentDirections.actionActorDetailFragmentToDetailFilmFragment(it)
-                findNavController().navigate(action)
+                val action = ActorDetailFragmentDirections.actionActorDetailFragmentToDetailFilmFragment(it, args.stack)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             if (item.listBestFilmPreviewHalf!!.size > 10) {
                 val allAdapter = FilmPreviewAllAdapter { onClickList() }
@@ -312,9 +354,23 @@ class ActorDetailFragment: Fragment() {
                     if (Locale.getDefault().language == "ru")
                         item.nameRu ?: (item.nameEn ?: getString(R.string.home_text_no_name))
                     else
-                        item.nameEn ?: (item.nameRu ?: getString(R.string.home_text_no_name))
+                        item.nameEn ?: (item.nameRu ?: getString(R.string.home_text_no_name)),
+                    args.stack
                 )
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
         } else {
             bind.layoutAllFilms.visibility = View.GONE

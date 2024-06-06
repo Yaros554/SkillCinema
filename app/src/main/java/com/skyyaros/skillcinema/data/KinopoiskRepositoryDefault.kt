@@ -6,6 +6,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import retrofit2.Response
@@ -15,6 +16,35 @@ import java.util.*
 class KinopoiskRepositoryDefault(private val kinopoiskApi: KinopoiskApi) : KinopoiskRepository {
     private val cacheFilms = mutableMapOf<Long, FilmPreview>()
     private val mutex = Mutex()
+    private val permissionsPreloadPhotography = mapOf(
+        Pair("Home", mutableMapOf<String, Boolean>()),
+        Pair("Search", mutableMapOf<String, Boolean>()),
+        Pair("Profile", mutableMapOf<String, Boolean>()),
+    )
+    private val permissionsPreloadViewPager = mutableMapOf(
+        Pair("Home", true),
+        Pair("Search", true),
+        Pair("Profile", true)
+    )
+    fun addPermissionType(curStack: String, imageType: String) {
+        permissionsPreloadPhotography[curStack]!![imageType] = true
+    }
+    fun denyEnablePreload(curStack: String, imageType: String?, isEnabled: Boolean) {
+        if (imageType == null)
+            permissionsPreloadViewPager[curStack] = isEnabled
+        else
+            permissionsPreloadPhotography[curStack]!![imageType] = isEnabled
+    }
+    suspend fun getPermissionPreload(curStack: String, imageType: String?) {
+        if (imageType == null) {
+            while (!permissionsPreloadViewPager[curStack]!!)
+                delay(1)
+        }
+        else {
+            while (!permissionsPreloadPhotography[curStack]!![imageType]!!)
+                delay(1)
+        }
+    }
     var listGenres: List<GenreForFilter>? = null
         private set
     var listCountries: List<CountryForFilter>? = null
@@ -296,24 +326,7 @@ class KinopoiskRepositoryDefault(private val kinopoiskApi: KinopoiskApi) : Kinop
             "CONCEPT", "WALLPAPER", "COVER", "SCREENSHOT"
         )
         return@coroutineScope try {
-            val deferreds = types.map {
-                async {
-                    var apiKey = KinopoiskApi.getCurrentKey()
-                    var res = kinopoiskApi.getImagesInFilm(id, it, 1, apiKey)
-                    var count = 1
-                    val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
-                    while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
-                        apiKey = KinopoiskApi.getNewKey(apiKey)
-                        res = kinopoiskApi.getImagesInFilm(id, it, 1, apiKey)
-                        count++
-                    }
-                    if (res.isSuccessful) {
-                        res.body()!!
-                    } else {
-                        null
-                    }
-                }
-            }
+            val deferreds = types.map { async { getImagesForFilmPaging(id, 1, it) } }
             val prevRes = deferreds.awaitAll()
             for (i in types.indices) {
                 if (prevRes[i] != null) {
@@ -467,21 +480,53 @@ class KinopoiskRepositoryDefault(private val kinopoiskApi: KinopoiskApi) : Kinop
         return@coroutineScope deferreds.awaitAll()
     }
 
+    private data class ImageResponseWithTimestamp(
+        val imageResponse: ImageResponse,
+        var timeStamp: Long
+    )
+    private val imageCache = mutableMapOf<String, ImageResponseWithTimestamp>()
+    fun getPageFromUrl(id: Long, type: String, curUrl: String): Int {
+        val myRegex = "$id (\\d)+ $type".toRegex()
+        val keys = imageCache.keys.toList().filter { myRegex.containsMatchIn(it) }
+        for (i in keys) {
+            if (imageCache[i]!!.imageResponse.items.map { it.imageUrl }.contains(curUrl)) {
+                val realPage = i.split(' ')[1].toInt()
+                val realIndex = imageCache[i]!!.imageResponse.items.indexOfFirst {
+                    it.imageUrl == curUrl
+                } + 20 * (realPage - 1)
+                return realIndex / 18 + 1
+            }
+        }
+        return 1
+    }
+
     override suspend fun getImagesForFilmPaging(id: Long, page: Int, type: String): ImageResponse? {
         return try {
-            var apiKey = KinopoiskApi.getCurrentKey()
-            var res = kinopoiskApi.getImagesInFilm(id, type, page, apiKey)
-            var count = 1
-            val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
-            while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
-                apiKey = KinopoiskApi.getNewKey(apiKey)
-                res = kinopoiskApi.getImagesInFilm(id, type, page, apiKey)
-                count++
-            }
-            if (res.isSuccessful) {
-                res.body()!!
+            val key = "$id $page $type"
+            if (imageCache[key] != null) {
+                imageCache[key]!!.timeStamp = System.currentTimeMillis()
+                imageCache[key]!!.imageResponse
             } else {
-                null
+                var apiKey = KinopoiskApi.getCurrentKey()
+                var res = kinopoiskApi.getImagesInFilm(id, type, page, apiKey)
+                var count = 1
+                val keysDatabaseSize = KinopoiskApi.getKeyBaseSize()
+                while ((res.code() == 402 || res.code() == 429) && count < keysDatabaseSize) {
+                    apiKey = KinopoiskApi.getNewKey(apiKey)
+                    res = kinopoiskApi.getImagesInFilm(id, type, page, apiKey)
+                    count++
+                }
+                if (res.isSuccessful) {
+                    imageCache[key] = ImageResponseWithTimestamp(res.body()!!, System.currentTimeMillis())
+                    if (imageCache.size > 100) {
+                        val oldestValue = imageCache.values.toList().minBy { it.timeStamp }
+                        val oldestKey = imageCache.keys.first { imageCache[it] == oldestValue }
+                        imageCache.remove(oldestKey)
+                    }
+                    res.body()!!
+                } else {
+                    null
+                }
             }
         } catch (t: Throwable) {
             null

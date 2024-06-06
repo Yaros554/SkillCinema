@@ -24,6 +24,13 @@ class FullscreenDialogInfo: DialogFragment() {
         activityCallbacks = context as ActivityCallbacks
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+        if (animActive)
+            dialog?.window?.attributes?.windowAnimations = R.style.MyDialogAnimation
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)

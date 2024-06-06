@@ -1,5 +1,6 @@
 package com.skyyaros.skillcinema.ui.photography
 
+import android.widget.ImageView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -11,25 +12,54 @@ import com.skyyaros.skillcinema.data.PhotoPagingSource
 import com.skyyaros.skillcinema.data.StoreRepositoryDefault
 import com.skyyaros.skillcinema.entity.ImageItem
 import com.skyyaros.skillcinema.entity.ImageResponse
+import com.skyyaros.skillcinema.ui.ActivityCallbacks
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class PhotographyViewModel(
-    listImageResponse: List<ImageResponse>, id: Long,
-    kinopoiskRepositoryDefault: KinopoiskRepositoryDefault
+    listImageTypes: List<String>,
+    private val id: Long,
+    private val kinopoiskRepository: KinopoiskRepositoryDefault,
+    private val activityCallbacks: ActivityCallbacks,
+    private val curStack: String
 ): ViewModel() {
     val pagedPhotos = mutableMapOf<String, Flow<PagingData<ImageItem>>>()
+    val needUpdate = mutableMapOf<String, Boolean>()
     var title = ""
-    var urls: List<ImageItem> = emptyList()
-    var curUrl = ""
+    var needPostpone = false
+    var isFirst = true
     init {
-        listImageResponse.forEach {
-            pagedPhotos += it.imageType!! to Pager(
-                config = PagingConfig(pageSize = 20),
-                pagingSourceFactory = { PhotoPagingSource(kinopoiskRepositoryDefault, id, it.imageType!!, it.items) }
+        listImageTypes.forEach {
+            kinopoiskRepository.addPermissionType(curStack, it)
+            pagedPhotos += it to Pager(
+                config = PagingConfig(pageSize = 18),
+                pagingSourceFactory = { PhotoPagingSource(
+                    kinopoiskRepository, id, it, 1, "PhotographyFragment", curStack
+                ) }
             ).flow.cachedIn(viewModelScope)
+            needUpdate += it to false
         }
+    }
+
+    fun updatePagingData(imageType: String) {
+        pagedPhotos[imageType] = Pager(
+            config = PagingConfig(pageSize = 18),
+            pagingSourceFactory = {
+                val page = kinopoiskRepository.getPageFromUrl(id, imageType, activityCallbacks.getUrlPosAnim(curStack))
+                PhotoPagingSource(kinopoiskRepository, id, imageType, page, "PhotographyFragment", curStack)
+            }
+        ).flow.cachedIn(viewModelScope)
+    }
+
+    fun enablePreload(imageType: String) {
+        kinopoiskRepository.denyEnablePreload(curStack, imageType, true)
+    }
+
+    fun disablePreload(imageType: String) {
+        kinopoiskRepository.denyEnablePreload(curStack, imageType, false)
+        kinopoiskRepository.denyEnablePreload(curStack, null, false)
     }
 }

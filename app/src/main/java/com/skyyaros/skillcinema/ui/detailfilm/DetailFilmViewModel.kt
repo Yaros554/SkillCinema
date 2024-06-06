@@ -17,9 +17,10 @@ class DetailFilmViewModel(private val kinopoiskRepositoryDefault: KinopoiskRepos
     val detailFilmFlow = _detailFilmFlow.asStateFlow()
     var isCollapsing = true
     var animationActive = false
+    var needPostpone = false
+    var needScroll = false
     var curVideoUrlSave: String? = null
     var listVideoItemsSave: List<VideoItem>? = null
-    var curPhotoUrlSave: String? = null
     var listPhotoItemsSave: List<ImageItem>? = null
 
     init {

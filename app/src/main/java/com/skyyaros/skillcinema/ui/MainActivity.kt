@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +23,7 @@ import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
 import com.skyyaros.skillcinema.databinding.ActivityMainBinding
 import com.skyyaros.skillcinema.entity.AppSettings
+import com.skyyaros.skillcinema.entity.AppTheme
 import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.SearchQuery
 import com.skyyaros.skillcinema.ui.hello.HelloFragment
@@ -31,6 +33,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -98,6 +101,17 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         if (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
             binding.bottomNav.elevation = 1.0F
+        lifecycleScope.launchWhenStarted {
+            viewModel.appSettingsFlow.collect {
+                if (it != null) {
+                    when (it.theme) {
+                        AppTheme.AUTO -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                        AppTheme.DAY -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -289,5 +303,13 @@ class MainActivity : AppCompatActivity(), ActivityCallbacks {
 
     override fun saveSettings(newSettings: AppSettings) {
         viewModel.saveSettings(newSettings)
+    }
+
+    override fun getUrlPosAnim(curStack: String): String {
+        return viewModel.url_pos_anim[curStack]!!
+    }
+
+    override fun setUrlPosAnim(curStack: String, urlPos: String) {
+        viewModel.url_pos_anim[curStack] = urlPos
     }
 }

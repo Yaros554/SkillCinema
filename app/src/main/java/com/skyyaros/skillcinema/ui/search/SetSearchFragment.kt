@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.skyyaros.skillcinema.App
 import com.skyyaros.skillcinema.R
@@ -119,7 +120,20 @@ class SetSearchFragment: Fragment(), BackPressedListener {
                     SearchGenreCountryMode.COUNTRY.ordinal,
                     viewModel.country?:-1L
                 )
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             } else {
                 Toast.makeText(requireContext(), getString(R.string.search_set_toast), Toast.LENGTH_LONG).show()
             }
@@ -130,14 +144,40 @@ class SetSearchFragment: Fragment(), BackPressedListener {
                     SearchGenreCountryMode.GENRE.ordinal,
                     viewModel.genre?:-1L
                 )
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             } else {
                 Toast.makeText(requireContext(), getString(R.string.search_set_toast), Toast.LENGTH_LONG).show()
             }
         }
         bind.frameYear.setOnClickListener {
             val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchYearFragment(viewModel.yearFrom, viewModel.yearTo)
-            findNavController().navigate(action)
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         }
         bind.textSee.setOnClickListener {
             viewModel.showViewedFilms = !viewModel.showViewedFilms
@@ -167,7 +207,18 @@ class SetSearchFragment: Fragment(), BackPressedListener {
             if (oldQuery != newQuery) {
                 activityCallbacks!!.setSearchQuery(newQuery)
                 val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchFragment()
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(android.R.anim.slide_in_left)
+                            .setExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             } else {
                 fragmentWillKill = true
                 backPressedListener = null
@@ -201,7 +252,18 @@ class SetSearchFragment: Fragment(), BackPressedListener {
                     val action = SetSearchFragmentDirections.actionSetSearchFragmentToSearchFragment()
                     while ((findNavController().currentDestination?.label ?: "") != "SetSearchFragment")
                         delay(1)
-                    findNavController().navigate(action)
+                    val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                    if (animActive) {
+                        findNavController().navigate(
+                            action,
+                            NavOptions.Builder()
+                                .setEnterAnim(android.R.anim.slide_in_left)
+                                .setExitAnim(android.R.anim.slide_out_right)
+                                .build()
+                        )
+                    } else {
+                        findNavController().navigate(action)
+                    }
                 } else if (it == BackDialogResult.NO) {
                     fragmentWillKill = true
                     backPressedListener = null

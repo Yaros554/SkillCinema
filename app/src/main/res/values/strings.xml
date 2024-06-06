@@ -125,4 +125,6 @@
     <string name="set_app_theme_dark">Dark</string>
     <string name="set_app_switch_anim">Animation active</string>
     <string name="set_app_title">Settings</string>
+
+    <string name="transition_name">TransitionName</string>
 </resources>

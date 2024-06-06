@@ -126,4 +126,6 @@
     <string name="set_app_theme_dark">Темная</string>
     <string name="set_app_switch_anim">Включить анимацию</string>
     <string name="set_app_title">Настройки</string>
+
+    <string name="transition_name">TransitionName</string>
 </resources>

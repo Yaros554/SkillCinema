@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.skyyaros.skillcinema.R
@@ -34,8 +35,21 @@ class ActerListFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val onClick: (Long) -> Unit = { id ->
-            val action = ActerListFragmentDirections.actionActerListFragmentToActorDetailFragment(id)
-            findNavController().navigate(action)
+            val action = ActerListFragmentDirections.actionActerListFragmentToActorDetailFragment(id, args.stack)
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         }
         activityCallbacks!!.showDownBar()
         activityCallbacks!!.showUpBar(args.role)

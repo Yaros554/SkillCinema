@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.skyyaros.skillcinema.App
@@ -48,8 +49,21 @@ class ListpageFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val onClickFilm: (Long) -> Unit = {
-            val action = ListpageFragmentDirections.actionListpageFragmentToDetailFilmFragment(it)
-            findNavController().navigate(action)
+            val action = ListpageFragmentDirections.actionListpageFragmentToDetailFilmFragment(it, args.stack)
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         }
         activityCallbacks!!.showDownBar()
         val label = when (args.mode) {
@@ -71,10 +85,23 @@ class ListpageFragment: Fragment() {
         } else if (args.mode == 10) {
             val adapter = HistoryAdapter {
                 val action = if (it.isActor!!)
-                    ListpageFragmentDirections.actionListpageFragmentToActorDetailFragment(it.kinopoiskId)
+                    ListpageFragmentDirections.actionListpageFragmentToActorDetailFragment(it.kinopoiskId, args.stack)
                 else
-                    ListpageFragmentDirections.actionListpageFragmentToDetailFilmFragment(it.kinopoiskId)
-                findNavController().navigate(action)
+                    ListpageFragmentDirections.actionListpageFragmentToDetailFilmFragment(it.kinopoiskId, args.stack)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             bind.recyclerView.adapter = adapter
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -84,8 +111,21 @@ class ListpageFragment: Fragment() {
             }
         } else if (args.mode == 11) {
             val adapter = HistoryAdapter {
-                val action = ListpageFragmentDirections.actionListpageFragmentToDetailFilmFragment(it.kinopoiskId)
-                findNavController().navigate(action)
+                val action = ListpageFragmentDirections.actionListpageFragmentToDetailFilmFragment(it.kinopoiskId, args.stack)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             bind.recyclerView.adapter = adapter
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {

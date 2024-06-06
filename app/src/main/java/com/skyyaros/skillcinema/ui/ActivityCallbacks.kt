@@ -32,4 +32,6 @@ interface ActivityCallbacks {
     fun setDialogStatus(mode: FullscreenDialogInfoMode, isShow: Boolean)
     fun getAppSettingsFlow(): StateFlow<AppSettings?>
     fun saveSettings(newSettings: AppSettings)
+    fun getUrlPosAnim(curStack: String): String
+    fun setUrlPosAnim(curStack: String, urlPos: String)
 }

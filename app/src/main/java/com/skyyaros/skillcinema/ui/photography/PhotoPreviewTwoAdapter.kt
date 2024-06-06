@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +16,8 @@ import com.skyyaros.skillcinema.entity.ImageItem
 class PhotoPreviewTwoAdapter(
     private val context: Context,
     private val orientation: Int,
+    private val fragment: Fragment,
+    private val curUrl: String,
     private val onClick:(String)->Unit
 ): PagingDataAdapter<ImageItem, RecyclerView.ViewHolder>(DiffUtilCallback()) {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -29,7 +33,7 @@ class PhotoPreviewTwoAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ONE && orientation == Configuration.ORIENTATION_PORTRAIT) {
             val binding = PhotoPreviewTwoSmallBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            val myHolder = PhotoPreviewTwoSmallHolder(binding, context)
+            val myHolder = PhotoPreviewTwoSmallHolder(binding, context, fragment, curUrl)
             binding.root.setOnClickListener {
                 val position = myHolder.bindingAdapterPosition
                 val item = getItem(position)
@@ -41,7 +45,7 @@ class PhotoPreviewTwoAdapter(
         }
         else {
             val binding = PhotoPreviewTwoBigBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            val myHolder = PhotoPreviewTwoBigHolder(binding, context)
+            val myHolder = PhotoPreviewTwoBigHolder(binding, context, fragment, curUrl)
             binding.root.setOnClickListener {
                 val position = myHolder.bindingAdapterPosition
                 val item = getItem(position)

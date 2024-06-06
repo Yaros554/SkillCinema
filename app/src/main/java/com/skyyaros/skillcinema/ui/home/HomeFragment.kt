@@ -12,6 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -40,8 +42,21 @@ class HomeFragment: Fragment() {
     private var _leftMargin: LeftSpaceDecorator? = null
     private val leftMargin get() = _leftMargin!!
     private val onClickFilm: (Long) -> Unit = {
-        val action = HomeFragmentDirections.actionHomeFragmentToDetailFilmFragment(it)
-        findNavController().navigate(action)
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFilmFragment(it, "Home")
+        val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+        if (animActive) {
+            findNavController().navigate(
+                action,
+                NavOptions.Builder()
+                    .setEnterAnim(R.anim.slide_in_right)
+                    .setExitAnim(R.anim.slide_out_left)
+                    .setPopEnterAnim(android.R.anim.slide_in_left)
+                    .setPopExitAnim(android.R.anim.slide_out_right)
+                    .build()
+            )
+        } else {
+            findNavController().navigate(action)
+        }
     }
     init {
         MyCountingIdlingResource.increment()
@@ -178,7 +193,20 @@ class HomeFragment: Fragment() {
         }
         bind.settings.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToSetAppFragment()
-            findNavController().navigate(action)
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         }
     }
 
@@ -200,9 +228,23 @@ class HomeFragment: Fragment() {
                     item.toTypedArray(), mode,
                     countryId, countryName,
                     genreId, genreName,
-                    null
+                    null,
+                    "Home"
                 )
-                findNavController().navigate(action)
+                val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+                if (animActive) {
+                    findNavController().navigate(
+                        action,
+                        NavOptions.Builder()
+                            .setEnterAnim(R.anim.slide_in_right)
+                            .setExitAnim(R.anim.slide_out_left)
+                            .setPopEnterAnim(android.R.anim.slide_in_left)
+                            .setPopExitAnim(android.R.anim.slide_out_right)
+                            .build()
+                    )
+                } else {
+                    findNavController().navigate(action)
+                }
             }
             val trimList = if (item.size > 20) item.subList(0, 20) else item
             val adapter = FilmPreviewAdapter(trimList, requireContext(), onClickFilm)

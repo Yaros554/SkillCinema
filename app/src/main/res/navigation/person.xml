@@ -62,6 +62,9 @@
         <action
             android:id="@+id/action_listpageFragment_to_actorDetailFragment"
             app:destination="@id/actorDetailFragment" />
+        <argument
+            android:name="stack"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/detailFilmFragment"
@@ -98,6 +101,9 @@
         <action
             android:id="@+id/action_detailFilmFragment_to_dialogAddUserCat"
             app:destination="@id/dialogAddUserCat" />
+        <argument
+            android:name="stack"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/acterListFragment"
@@ -114,6 +120,9 @@
         <action
             android:id="@+id/action_acterListFragment_to_actorDetailFragment"
             app:destination="@id/actorDetailFragment" />
+        <argument
+            android:name="stack"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/actorDetailFragment"
@@ -138,6 +147,9 @@
         <action
             android:id="@+id/action_actorDetailFragment_to_fullscreenDialogInfo"
             app:destination="@id/fullscreenDialogInfo" />
+        <argument
+            android:name="stack"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/filmographyFragment"
@@ -153,6 +165,9 @@
         <action
             android:id="@+id/action_filmographyFragment_to_detailFilmFragment"
             app:destination="@id/detailFilmFragment" />
+        <argument
+            android:name="stack"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/photographyFragment"
@@ -171,6 +186,9 @@
         <action
             android:id="@+id/action_photographyFragment_to_fullscreenDialogInfo"
             app:destination="@id/fullscreenDialogInfo" />
+        <argument
+            android:name="stack"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/seriesFragment"
@@ -202,17 +220,18 @@
         android:label="FullPhotoVPFragment"
         tools:layout="@layout/full_photo_vp_fragment">
         <argument
-            android:name="title"
+            android:name="imageType"
             app:argType="string" />
         <argument
             android:name="urls"
-            app:argType="com.skyyaros.skillcinema.entity.ImageItem[]" />
-        <argument
-            android:name="curUrl"
-            app:argType="string" />
+            app:argType="com.skyyaros.skillcinema.entity.ImageItem[]"
+            app:nullable="true" />
         <argument
             android:name="id"
             app:argType="long" />
+        <argument
+            android:name="stack"
+            app:argType="string" />
     </fragment>
     <dialog
         android:id="@+id/fullscreenDialogInfo"

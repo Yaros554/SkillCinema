@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.skyyaros.skillcinema.App
@@ -62,7 +63,7 @@ class SearchFragment: Fragment() {
                     filmPreview.genres, filmPreview.rating ?: filmPreview.ratingKinopoisk
                 )
                 activityCallbacks!!.insertHistoryItem(filmTable)
-                SearchFragmentDirections.actionSearchFragmentToDetailFilmFragment(id)
+                SearchFragmentDirections.actionSearchFragmentToDetailFilmFragment(id, "Search")
             }
             else {
                 val actorTable = FilmActorTable(
@@ -70,9 +71,22 @@ class SearchFragment: Fragment() {
                     filmPreview.nameRu, filmPreview.nameEn, null, null, null
                 )
                 activityCallbacks!!.insertHistoryItem(actorTable)
-                SearchFragmentDirections.actionSearchFragmentToActorDetailFragment(id)
+                SearchFragmentDirections.actionSearchFragmentToActorDetailFragment(id, "Search")
             }
-            findNavController().navigate(action)
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         }
         bind.recyclerView.adapter = adapter.withLoadStateFooter(
             MyLoadStateAdapterTwo {
@@ -90,7 +104,20 @@ class SearchFragment: Fragment() {
         }
         bind.searchSettings.setOnClickListener {
             val action = SearchFragmentDirections.actionSearchFragmentToSetSearchFragment()
-            findNavController().navigate(action)
+            val animActive = activityCallbacks!!.getAppSettingsFlow().value?.animActive ?: true
+            if (animActive) {
+                findNavController().navigate(
+                    action,
+                    NavOptions.Builder()
+                        .setEnterAnim(R.anim.slide_in_right)
+                        .setExitAnim(R.anim.slide_out_left)
+                        .setPopEnterAnim(android.R.anim.slide_in_left)
+                        .setPopExitAnim(android.R.anim.slide_out_right)
+                        .build()
+                )
+            } else {
+                findNavController().navigate(action)
+            }
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.pagingDataFlow.collect {

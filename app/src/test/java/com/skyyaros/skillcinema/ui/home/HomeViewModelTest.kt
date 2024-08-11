@@ -2,7 +2,6 @@ package com.skyyaros.skillcinema.ui.home
 
 import com.google.gson.Gson
 import com.skyyaros.skillcinema.data.FakeKinopoiskRepository
-import com.skyyaros.skillcinema.data.FakeStoreRepository
 import com.skyyaros.skillcinema.entity.FilmsPreviewWithData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +19,6 @@ import java.io.File
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
     private lateinit var fakeKinopoiskRepository: FakeKinopoiskRepository
-    private lateinit var fakeStoreRepository: FakeStoreRepository
     private lateinit var viewModel: HomeViewModel
     private val testDispather = StandardTestDispatcher()
 
@@ -28,8 +26,7 @@ class HomeViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispather)
         fakeKinopoiskRepository = FakeKinopoiskRepository()
-        fakeStoreRepository = FakeStoreRepository()
-        viewModel = HomeViewModel(fakeStoreRepository, fakeKinopoiskRepository)
+        viewModel = HomeViewModel(fakeKinopoiskRepository)
     }
 
     @After

@@ -1,12 +1,20 @@
 package com.skyyaros.skillcinema.data
 
+import com.skyyaros.skillcinema.entity.AppSettings
+import com.skyyaros.skillcinema.entity.AppTheme
 import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.SearchQuery
+import com.skyyaros.skillcinema.entity.VideoSource
 import com.skyyaros.skillcinema.ui.ActivityCallbacks
-import kotlinx.coroutines.flow.SharedFlow
+import com.skyyaros.skillcinema.ui.FullscreenDialogInfoMode
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class FakeActivityCallbacks: ActivityCallbacks {
+    private val fakeStoreFlow = MutableStateFlow(false)
+    private val fakeAppSettingsFlow = MutableStateFlow(AppSettings(VideoSource.ANY, AppTheme.AUTO, false))
+
     override fun showDownBar() {}
 
     override fun hideDownBar() {}
@@ -21,87 +29,11 @@ class FakeActivityCallbacks: ActivityCallbacks {
 
     override fun goToFullScreenMode(needGo: Boolean) {}
 
-    override fun emitResultFV(mode: Int, isChecked: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getResultStreamFV(mode: Int): SharedFlow<Boolean> {
-        TODO("Not yet implemented")
-    }
-
     override fun getSearchQuery(): SearchQuery {
         TODO("Not yet implemented")
     }
 
     override fun setSearchQuery(searchQuery: SearchQuery) {
-        TODO("Not yet implemented")
-    }
-
-    override fun emitResBackDialog(userSelect: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getResStreamBackDialog(): SharedFlow<Int> {
-        TODO("Not yet implemented")
-    }
-
-    override fun emitGenreCountry(id: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getGenreCountryFlow(): SharedFlow<Long> {
-        TODO("Not yet implemented")
-    }
-
-    override fun cleanGenreCountry() {
-        TODO("Not yet implemented")
-    }
-
-    override fun emitYear(years: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getYearFlow(): SharedFlow<Int> {
-        TODO("Not yet implemented")
-    }
-
-    override fun cleanYear() {
-        TODO("Not yet implemented")
-    }
-
-    override fun emitNewCat(newCat: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getNewCatFlow(): SharedFlow<String> {
-        TODO("Not yet implemented")
-    }
-
-    override fun cleanNewCat() {
-        TODO("Not yet implemented")
-    }
-
-    override fun emitBottomSh() {
-        TODO("Not yet implemented")
-    }
-
-    override fun getBottomShFlow(): SharedFlow<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun cleanBottomSh() {
-        TODO("Not yet implemented")
-    }
-
-    override fun emitDeleteCat(category: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getDeleteCatFlow(): SharedFlow<String> {
-        TODO("Not yet implemented")
-    }
-
-    override fun cleanDeleteCat() {
         TODO("Not yet implemented")
     }
 
@@ -142,6 +74,38 @@ class FakeActivityCallbacks: ActivityCallbacks {
     }
 
     override fun deleteCategory(category: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getStartStatusFlow(): StateFlow<Boolean> {
+        return fakeStoreFlow.asStateFlow()
+    }
+
+    override fun setStartStatus(startStatus: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDialogStatusFlow(mode: FullscreenDialogInfoMode): StateFlow<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override fun setDialogStatus(mode: FullscreenDialogInfoMode, isShow: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAppSettingsFlow(): StateFlow<AppSettings?> {
+        return fakeAppSettingsFlow.asStateFlow()
+    }
+
+    override fun saveSettings(newSettings: AppSettings) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUrlPosAnim(curStack: String): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun setUrlPosAnim(curStack: String, urlPos: String) {
         TODO("Not yet implemented")
     }
 }

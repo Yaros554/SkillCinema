@@ -11,6 +11,9 @@ import org.hamcrest.CoreMatchers.`is`
 import java.io.File
 
 //это не тесты! это вспомогательный класс для генерации реалистичных данных для тестов
+/* В папке testData уже имеются готовые файлы для тестов
+* Запускать этот код нужно, если по каким-то причиам эти файлы были утеряны
+* Но тогда необходимо изменить тесты, т.к. они заточены под старые файлы! */
 class TestDataGen {
     private val api = KinopoiskApi.provide()
     private val kinopoiskRepositoryDefault = KinopoiskRepositoryDefault(api)
@@ -29,7 +32,7 @@ class TestDataGen {
         val myGson = File("testData/TestDataHomeFragment.txt").readText()
         val filmsPreviewWithData = Gson().fromJson(myGson, FilmsPreviewWithData::class.java)
         val filmId = filmsPreviewWithData.films[0]!![0].kinopoiskId
-        assertThat(filmId, `is`(4959134L))
+        assertThat(filmId, `is`(4959134L))//вот тут в случае замены файлов будет id другого фильма!
         val detailFilm = kinopoiskRepositoryDefault.getFullDetailFilm(filmId!!)
         val myGson2 = Gson().toJson(detailFilm)
         File("testData/TestDataDetailFilmFragment.txt").writeText(myGson2)

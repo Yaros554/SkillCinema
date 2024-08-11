@@ -2,8 +2,8 @@ package com.skyyaros.skillcinema.data
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import androidx.test.runner.AndroidJUnit4
 import com.skyyaros.skillcinema.entity.FilmActorTable
 import com.skyyaros.skillcinema.entity.Genre
 import kotlinx.coroutines.Job

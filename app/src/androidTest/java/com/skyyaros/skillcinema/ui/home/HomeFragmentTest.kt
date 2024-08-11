@@ -15,8 +15,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import androidx.test.runner.AndroidJUnit4
 import com.skyyaros.skillcinema.ServiceLocator
 import com.skyyaros.skillcinema.data.FakeKinopoiskRepository
 import com.skyyaros.skillcinema.data.FakeStoreRepository
@@ -104,6 +104,6 @@ class HomeFragmentTest {
                 ViewActions.click()
             )
         )
-        verify(navController).navigate(HomeFragmentDirections.actionHomeFragmentToDetailFilmFragment(4894012L))
+        verify(navController).navigate(HomeFragmentDirections.actionHomeFragmentToDetailFilmFragment(4894012L, "Home"))
     }
 }
